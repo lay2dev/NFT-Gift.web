@@ -1,0 +1,27 @@
+{
+  "name": "vite-project",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "yarn ": "yarn"
+  },
+  "dependencies": {
+    "element-plus": "latest",
+    "vue": "^3.0.5",
+    "vue-i18n": "^9.1.6",
+    "vue-router": "^4.0.8",
+    "vuex": "^4.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.2.2",
+    "@vue/compiler-sfc": "^3.0.5",
+    "eslint": "^7.26.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-vue": "^7.9.0",
+    "sass": "^1.34.0",
+    "stylus": "^0.54.8",
+    "vite": "^2.3.3"
+  }
+}

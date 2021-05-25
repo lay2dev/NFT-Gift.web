@@ -12,38 +12,44 @@
     </header>
     <main>
       <div class="nft-list">
-        <div class="nft" v-for="(e, i) in nftList" :key="i">
-          <div class="left">
-            <el-image
-              class="nft-image"
-              :src="e.class_bg_image_url"
-              alt="bg_image_url"
-              fit="cover"
-              lazy
-              :preview-src-list="[e.class_bg_image_url]"
-            />
-            <div class="info">
-              <div class="name">{{ e.class_name }}</div>
-              <div class="user">
+        <template v-for="(e, i) in nftList" :key="i">
+          <router-link
+            :to="{ path: '/gift', query: { class_uuid: e.class_uuid } }"
+          >
+            <div class="nft">
+              <div class="left">
                 <el-image
-                  class="user-avator"
-                  :src="e.issuer_avatar_url"
-                  alt="user-avator"
+                  class="nft-image"
+                  :src="e.class_bg_image_url"
+                  alt="bg_image_url"
                   fit="cover"
                   lazy
-                >
-                  <template #error>
-                    <div class="el-image__error"></div>
-                  </template>
-                </el-image>
-                <div class="user-name">{{ e.issuer_name }}</div>
+                  :preview-src-list="[e.class_bg_image_url]"
+                />
+                <div class="info">
+                  <div class="name">{{ e.class_name }}</div>
+                  <div class="user">
+                    <el-image
+                      class="user-avator"
+                      :src="e.issuer_avatar_url"
+                      alt="user-avator"
+                      fit="cover"
+                      lazy
+                    >
+                      <template #error>
+                        <div class="el-image__error"></div>
+                      </template>
+                    </el-image>
+                    <div class="user-name">{{ e.issuer_name }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="right">
+                {{ parseInt(Math.random() * (1000 - 0) + 0) }}
               </div>
             </div>
-          </div>
-          <div class="right">
-            {{ parseInt(Math.random() * (1000 - 0) + 0) }}
-          </div>
-        </div>
+          </router-link>
+        </template>
       </div>
     </main>
   </div>
@@ -86,10 +92,8 @@ export default {
 
   >main {
     .nft-list {
-      padding: 0 22px;
-
       .nft {
-        padding: 16px 0;
+        padding: 16px 22px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -141,6 +145,10 @@ export default {
           color: var(--primary);
           font-size: 18px;
         }
+      }
+
+      .nft:active {
+        background: #eee;
       }
     }
   }

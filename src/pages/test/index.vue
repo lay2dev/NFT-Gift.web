@@ -24,6 +24,17 @@ export default {
       activeName: '',
     }
   },
+  async created() {
+    // axios
+    const res = await Sea.Ajax({
+      url: 'https://api.sea.team/v4/search',
+      method: 'get',
+      data: {
+        key: 'dudu',
+      },
+    })
+    console.log('🌊', res)
+  },
 }
 </script>
 <style lang="stylus">

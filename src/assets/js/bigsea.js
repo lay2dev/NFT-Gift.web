@@ -571,7 +571,10 @@
       if (req.method === 'GET') {
         query = Object.assign(query, req.data)
       }
-      req.url += '?' + this.query(query)
+      const search = this.query(query)
+      if (search) {
+        req.url += '?' + search
+      }
       // hash 锚点
       const hash = req.hash || url.hash
       if (hash) {
@@ -589,6 +592,10 @@
           r.timeout = req.timeout
         }
         r.open(req.method, req.url, true)
+        // default json
+        if (req.method !== 'GET' && !req.header['Content-Type']) {
+          req.header['Content-Type'] = 'application/json'
+        }
         for (const key in req.header) {
           r.setRequestHeader(key, req.header[key])
         }
@@ -619,7 +626,7 @@
           if (typeof req.data === 'string') {
             r.send(req.data)
           }
-          // 默认 json
+          // default json
           r.send(JSON.stringify(req.data))
         }
       })

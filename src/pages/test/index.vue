@@ -66,14 +66,12 @@ export default {
         address: 'authorization',
       }
       const res = await Sea.Ajax({
-        url:
-          '/ntf/' +
-          key +
-          '?password=' +
-          data.password +
-          '&address=' +
-          data.address,
+        url: '/ntf/todokey',
         method: 'get',
+        data: {
+          password: data.password,
+          address: data.address,
+        },
       })
       if (data.success) {
         // todo get transfer data

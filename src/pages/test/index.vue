@@ -26,14 +26,15 @@ export default {
   },
   async created() {
     // axios
+    Sea.Ajax.HOST = 'http://devapi.unipass.me:3001'
     const res = await Sea.Ajax({
-      url: 'https://api.sea.team/v4/search',
+      url: '/ntf/sdafs',
       method: 'get',
       data: {
-        key: 'dudu',
+        address: 'dfadsf',
       },
     })
-    console.log('🌊', res)
+    console.log('res', res)
   },
 }
 </script>

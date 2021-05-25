@@ -78,6 +78,7 @@ export default {
     .logo {
       width: 46px;
       height: 46px;
+      user-select: none;
     }
 
     .account {
@@ -147,7 +148,7 @@ export default {
         }
       }
 
-      .nft:active {
+      .nft:active, .nft:hover {
         background: #eee;
       }
     }

@@ -37,8 +37,8 @@ a {
   color: var(--primary);
   text-decoration: none;
 }
-
-@media screen and (max-width: 500px) {
+/* mobile css */
+@media (max-width: 500px) {
   .el-message,
   .el-message-box {
     width: 300px;

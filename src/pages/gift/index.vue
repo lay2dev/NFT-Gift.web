@@ -1,11 +1,12 @@
 <template>
+  <back />
   <div id="page-gift">
     <div class="image-box">
       <el-image :src="gift.class_bg_image_url" fit="contain" alt="image" />
     </div>
     <div class="info-box">
       <div class="info">
-        <main>
+        <header>
           <div class="name">{{ gift.class_name }}</div>
           <div class="description">{{ gift.class_description }}</div>
           <div class="user">
@@ -24,8 +25,8 @@
             </div>
             <div class="user-total">{{ gift.class_total }}</div>
           </div>
-        </main>
-        <footer>
+        </header>
+        <main>
           <el-button
             type="primary"
             icon="el-icon-shopping-bag-1"
@@ -33,7 +34,8 @@
           >
             赠送
           </el-button>
-        </footer>
+        </main>
+        <footer></footer>
       </div>
     </div>
   </div>
@@ -65,7 +67,9 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="showSend = false">取 消</el-button>
-        <el-button type="primary" @click="showSend = false">确 定</el-button>
+        <el-button type="primary" @click="$router.push('/share')">
+          确 定
+        </el-button>
       </span>
     </template>
   </el-dialog>
@@ -171,9 +175,8 @@ export default {
       box-shadow: rgb(0 0 0 / 6%) 0px 4px 2px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
 
-      >main {
+      >header {
         width: 100%;
         padding: 20px;
 
@@ -218,7 +221,7 @@ export default {
         }
       }
 
-      >footer {
+      >main {
         width: 100%;
         height: 80px;
         background: white;
@@ -227,6 +230,11 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+      }
+
+      >footer {
+        flex: 1;
+        background: white;
       }
     }
   }

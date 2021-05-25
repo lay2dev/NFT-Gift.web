@@ -11,11 +11,21 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  min-height: 100vh;
 
   > main {
-    flex: 1;
     width: 100%;
+  }
+}
+
+@media (min-width: 500px) {
+  #app {
+    // background: rgb(250, 250, 250);
+    // > main {
+    // position: relative;
+    // max-width: 375px;
+    // max-height: 667px;
+    // overflow: hidden;
+    // }
   }
 }
 </style>

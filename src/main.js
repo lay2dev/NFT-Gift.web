@@ -13,13 +13,15 @@ import store from './vuex.js'
 import router from './router.js'
 // create app
 const app = createApp(App)
+import Back from './components/back.vue'
 app
+  .component('back', Back)
   .use(ElementPlus, { i18n: i18n.global.t })
   .use(i18n)
   .use(store)
   .use(router)
   .mount('#app')
-
+// utils
 import './assets/js/bigsea.js'
 // ajax
 Sea.Ajax.HOST = 'https://api.sea.team'

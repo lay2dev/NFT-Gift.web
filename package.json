@@ -2,7 +2,7 @@
   "name": "vite-project",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "start": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "yarn ": "yarn"
@@ -20,7 +20,7 @@
     "eslint": "^7.26.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-vue": "^7.9.0",
-    "sass": "^1.34.0",
+    "sass": "1.32.13",
     "stylus": "^0.54.8",
     "vite": "^2.3.3"
   }

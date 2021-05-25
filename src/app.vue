@@ -12,7 +12,6 @@
   align-items: center;
   justify-content: space-between;
   min-height: 100vh;
-  margin: 0 40px;
 
   > main {
     flex: 1;

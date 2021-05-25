@@ -7,7 +7,7 @@ export default defineConfig({
   base: '/',
   server: {
     host: '0.0.0.0',
-    port: 6000,
+    port: 3001,
     open: true,
   },
 })

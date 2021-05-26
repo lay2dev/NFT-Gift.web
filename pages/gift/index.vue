@@ -1,7 +1,7 @@
 <template>
   <div id="page-share">
     <back />
-    <el-image :src="require('~/assets/img/top-bg.png')" />
+    <el-image class="top-bg" :src="require('~/assets/img/top-bg.png')" />
     <template v-if="status === 'sucess'">
       <div class="sucess">
         <div class="t1">恭喜你</div>
@@ -9,7 +9,7 @@
       </div>
       <router-link to="/mine">
         <div class="balance">
-          <el-image :src="require('~/assets/img/ze-balance-pay.svg')" />
+          <img :src="require('~/assets/img/ze-balance-pay.svg')" />
           <div>打开钱包</div>
         </div>
       </router-link>
@@ -20,7 +20,7 @@
         <div class="t2">领取失败</div>
       </div>
       <div class="balance">
-        <el-image :src="require('~/assets/img/ze-balance-pay.svg')" />
+        <img :src="require('~/assets/img/ze-balance-pay.svg')" />
         <div>打开钱包</div>
       </div>
     </template>
@@ -48,6 +48,10 @@ export default {
 </script>
 <style lang="stylus">
 #page-share {
+  .top-bg {
+    min-height: 130px;
+  }
+
   background: #F35543;
   height: 100vh;
   display: flex;
@@ -67,11 +71,16 @@ export default {
 
     .t2 {
       margin-top: 28px;
+      margin-bottom: 106px;
     }
   }
 
   .balance {
-    margin-top: 106px;
+    img {
+      width: 83px;
+      height: 83px;
+    }
+
     text-align: center;
     color: #000;
   }

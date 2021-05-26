@@ -1,3 +1,4 @@
+/* global define, log */
 // bigsea.js
 ;(function (factory) {
   // node环境
@@ -8,6 +9,7 @@
   }
   // 浏览器环境
   if (typeof window !== 'undefined') {
+    // eslint-disable-next-line no-console
     window.log = console.log.bind(console, '🌊')
     window.Sea = factory()
   }
@@ -97,7 +99,8 @@
       for (const e of this.arr) {
         if (Array.isArray(e.sea_event)) {
           for (const arr of e.sea_event) {
-            const [name, select, callback] = arr
+            const name = arr[0]
+            const callback = arr[2]
             e.removeEventListener(name, callback)
           }
           e.sea_event = undefined
@@ -272,7 +275,7 @@
     // 开关类
     toggleClass(str) {
       for (const e of this.arr) {
-        return e.classList.toggle(str)
+        e.classList.toggle(str)
       }
     }
 
@@ -472,11 +475,13 @@
         this.cut.count--
         if (this.cut.count === 1) {
           delete this.cut.count
+          // eslint-disable-next-line
           throw `断点：${n}次`
         }
       } else if (n > 1) {
         this.cut.count = n
       } else {
+        // eslint-disable-next-line
         throw `断点`
       }
     },
@@ -487,7 +492,7 @@
     // 正则 特殊字符转义
     re(s, flag) {
       return new RegExp(
-        s.replace(/([.*+?^=!:${}()|[\]\/\\])/g, '\\$&'),
+        s.replace(/([.*+?^=!:${}()|[\]/\\])/g, '\\$&'),
         flag || 'g',
       )
     },
@@ -601,7 +606,7 @@
         }
         r.onreadystatechange = () => {
           if (r.readyState === 4) {
-            let res = this.json(r.response)
+            const res = this.json(r.response)
             if (r.status !== 200) {
               if (typeof this.Ajax.fail === 'function') {
                 this.Ajax.fail(r)

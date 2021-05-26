@@ -14,15 +14,18 @@ const uploadFile = (src, dist) => {
   client
     .put(dist, src)
     .then((res) => {
+      // eslint-disable-next-line no-console
       console.log('上传成功', res.name)
     })
     .catch(() => {
+      // eslint-disable-next-line no-console
       console.log('上传失败', src)
     })
 }
 // 上传目录 src = 本地路径, dist 云端目录
 const uploaDirectory = (src, dist) => {
   if (fs.existsSync(src) === false) {
+    // eslint-disable-next-line no-console
     console.log('请先打包 dict')
     return
   }
@@ -59,6 +62,7 @@ const deleteDirectory = async (prefix) => {
 
   list.objects = list.objects || []
   const result = await Promise.all(list.objects.map((v) => deleteFile(v.name)))
+  // eslint-disable-next-line no-console
   console.log('删除完成', result)
 }
 

@@ -12,10 +12,14 @@ module.exports = {
   plugins: [],
   // add your custom rules here
   rules: {
+    'node/no-callback-literal': 'off',
     'import/no-unresolved': 'off',
     'no-callback-literal': 0,
+    'max-len': 0,
     semi: 'off',
-    'max-len': ['error', { ignoreStrings: true, ignoreComments: true }],
+  },
+  globals: {
+    Sea: 'readonly',
   },
   overrides: [
     {

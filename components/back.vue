@@ -1,9 +1,9 @@
 <template>
   <img
     id="component-back"
-    @click="$router.back()"
     src="~/assets/img/back.svg"
     alt="back"
+    @click="$router.back()"
   />
 </template>
 <style>

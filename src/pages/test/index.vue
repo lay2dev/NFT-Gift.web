@@ -2,8 +2,9 @@
   <div id="page-test">
     <el-collapse v-model="activeName" accordion>
       <el-collapse-item title="创建红包 - 授权签名" name="1">
-        <div class="tip">
-          红包-创建红包：本地生成keyX，并使用localKey对红包内容进行授权签名
+        <div class="tip" @click="createKeyX">红包-创建红包：本地生成keyX</div>
+        <div class="tip" @click="autheyX">
+          红包-创建红包：并使用localKey对红包内容进行授权签名
         </div>
       </el-collapse-item>
       <el-collapse-item title="接收红包 - 组装交易" name="2">
@@ -23,6 +24,7 @@
   </div>
 </template>
 <script>
+import { getSecondaryAuth } from './auth-key-pair'
 const HOST = 'http://devapi.unipass.me:3001'
 // const HOST = 'http://localhost:3001'
 Sea.Ajax.HOST = HOST
@@ -30,9 +32,38 @@ export default {
   data() {
     return {
       activeName: '',
+      short: '',
     }
   },
   methods: {
+    createKeyX() {},
+    autheyX() {
+      //localKey, localPubkey, localAuthInfo
+      const localKey = 'xxxx' // NodeRSA
+      const localPubkey = 'xxxxxx'
+      const localAuthInfo = [
+        {
+          pubkeyHash: 'xxxx',
+          outpoints: 'xxx',
+          dataLen: 'xxxx',
+        },
+        {
+          pubkeyHash: 'xxxx',
+          outpoints: 'xxx',
+          dataLen: 'xxxx',
+        },
+        {
+          pubkeyHash: 'xxxx',
+          outpoints: 'xxx',
+          dataLen: 'xxxx',
+        },
+      ]
+      const { authSig, authInfo } = getSecondaryAuth(
+        localKey,
+        localPubkey,
+        localAuthInfo,
+      )
+    },
     async getShortData() {
       console.log('[api]')
       const data = {
@@ -57,16 +88,18 @@ export default {
         method: 'post',
         data,
       })
-      console.log('res', res)
+      console.log('res', res, this.short)
+      if (res.short) this.short = res.short
+      console.log('res', res, this.short)
     },
     async getRedPacketData() {
-      const key = 'todokey'
+      console.log(this.short)
       const data = {
         password: 'todoencrypt',
         address: 'authorization',
       }
       const res = await Sea.Ajax({
-        url: '/ntf/todokey',
+        url: '/ntf/' + this.short,
         method: 'get',
         data: {
           password: data.password,

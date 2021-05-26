@@ -24,6 +24,11 @@ const router = createRouter({
       component: () => import('./pages/share/index.vue'),
     },
     {
+      path: '/asset',
+      name: 'asset',
+      component: () => import('./pages/asset/index.vue'),
+    },
+    {
       path: '/test',
       name: 'test',
       component: () => import('./pages/test/index.vue'),

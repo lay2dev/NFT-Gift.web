@@ -14,7 +14,7 @@
       <div class="nft-list">
         <template v-for="(e, i) in nftList" :key="i">
           <router-link
-            :to="{ path: '/gift', query: { class_uuid: e.class_uuid } }"
+            :to="{ path: '/asset', query: { class_uuid: e.class_uuid } }"
           >
             <div class="nft">
               <div class="left">

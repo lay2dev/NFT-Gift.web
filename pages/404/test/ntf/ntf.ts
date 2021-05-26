@@ -20,6 +20,16 @@ import {
   INDEXER_URL,
 } from './utils'
 
+/**
+ * create transfer to get red packet
+ * @param masterPubkey packet red retrun masterPubkey
+ * @param masterAuth packet red retrun masterAuth
+ * @param localAuthSig packet red retrun localAuthSig
+ * @param exchangeKey packet red retrun key_pubkey decrypt crypto key par
+ * @param exchangePubkey packet api retrun get key_pubkey
+ * @param localAuthInfo packet api retrun localAuthSig
+ * @param toAddress local users ckb address
+ */
 export async function transfer(
   masterPubkey: string,
   masterAuth: string,
@@ -67,6 +77,13 @@ export async function transfer(
   console.log('txhash', txhash)
 }
 
+/**
+ * auth key to use ntf
+ * @param masterPubkey when unipass sign get materkey
+ * @param exchangePubkey one ntf have one keyx_pubkey its type of array
+ * @param localPubkey when unipass sign get localPubkey
+ * retrun  localAuthSig and localAuthInfo will push to server save
+ */
 export async function authKeyX(
   masterPubkey: string,
   exchangePubkey: string[],
@@ -89,5 +106,5 @@ export async function authKeyX(
     localAuth.push(data)
   }
   const { authInfo, authSig } = await getSecondaryAuth(localPubkey, localAuth)
-  return { authInfo, authSig }
+  return { localAuthSig: authInfo, localAuthInfo: authSig }
 }

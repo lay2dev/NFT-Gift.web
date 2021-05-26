@@ -10,7 +10,6 @@ import {
   Reader,
   Script,
 } from '@lay2/pw-core'
-import { blake160 } from '@nervosnetwork/ckb-sdk-utils'
 import forge from 'node-forge'
 
 export const UNIPASS_TYPE_ID =
@@ -43,6 +42,11 @@ export function getPubkeyHash(pubkey: string) {
   blake2b.update(new Reader(`0x${pubkey.replace('0x', '')}`))
   return blake2b.digest().serializeJson()
 }
+
+/**
+ * get ckb address by pubkey
+ * @param pubkey
+ */
 export function getAddressByPubkey(pubkey: string): string {
   const pubKeyBuffer = Buffer.from(pubkey.replace('0x', ''), 'hex')
   const hashHex = new Blake2bHasher()
@@ -53,7 +57,9 @@ export function getAddressByPubkey(pubkey: string): string {
   let script = new Script(UNIPASS_TYPE_ID, hashHex, HashType.type)
   return script.toAddress(getDefaultPrefix()).toCKBAddress()
 }
-
+/**
+ * decrypt pubukey to cryptoKey
+ */
 export async function decryptMasterKey(masterKey: string): Promise<CryptoKey> {
   const strongPass = forge.pkcs5.pbkdf2('', '', 2 ** 16, 16)
   const privkey = forge.pki.decryptRsaPrivateKey(masterKey, strongPass)
@@ -99,6 +105,9 @@ function str2ab(str: string) {
   return b
 }
 
+/**
+ * one nft data create one kay par (key.private kay key.publick key)
+ */
 export async function generateKey() {
   // create RSA key
   const key = await window.crypto.subtle.generateKey(
@@ -128,11 +137,15 @@ export async function generateKey() {
   return { key, pubkey }
 }
 
+/**
+ * from unipass sign data get masterkey authorization localKey this data will push to service
+ * @param signstr unipass sign data
+ */
 export async function getDataFromSignString(signstr: string) {
   // get masterkey localkey from sign data
   signstr = signstr.replace('0x', '')
-  const mstserKey = signstr.substr(0, 528)
+  const masterkey = signstr.substr(0, 528)
   const authorization = signstr.substring(528, 1040)
   const localKey = signstr.substring(1040, 1586)
-  return { mstserKey, authorization, localKey }
+  return { masterkey, authorization, localKey }
 }

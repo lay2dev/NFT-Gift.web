@@ -25,10 +25,9 @@
 </template>
 <script>
 // test
+import { getAddressByPubkey } from './utils'
 import test from './test.ts'
-console.log('ts', test)
-// test end
-import { getSecondaryAuth } from './auth-key-pair'
+console.log('ts', getAddressByPubkey(sss))
 Sea.Ajax.HOST = import.meta.env.VITE_HOST
 export default {
   data() {
@@ -38,7 +37,9 @@ export default {
     }
   },
   methods: {
-    createKeyX() {},
+    createKeyX() {
+      getAddressByPubkey('Sdfadsfas')
+    },
     autheyX() {
       //localKey, localPubkey, localAuthInfo
       const localKey = 'xxxx' // NodeRSA
@@ -60,11 +61,11 @@ export default {
           dataLen: 'xxxx',
         },
       ]
-      const { authSig, authInfo } = getSecondaryAuth(
-        localKey,
-        localPubkey,
-        localAuthInfo,
-      )
+      // const { authSig, authInfo } = getSecondaryAuth(
+      //   localKey,
+      //   localPubkey,
+      //   localAuthInfo,
+      // )
     },
     async getShortData() {
       console.log('[api]')

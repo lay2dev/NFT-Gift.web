@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@lay2/pw-core": "^0.4.0-alpha.8",
+    "@nervosnetwork/ckb-sdk-utils": "^0.41.1",
     "element-plus": "latest",
     "node-rsa": "^1.1.1",
     "vue": "^3.0.5",

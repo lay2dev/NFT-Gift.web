@@ -1,16 +1,13 @@
-import PWCore, {
+import {
   BuilderOption,
   Builder,
   Address,
   Amount,
-  AmountUnit,
   Cell,
   RawTransaction,
   Transaction,
   CellDep,
-  WitnessArgs,
-  OutPoint
-} from '@lay2/pw-core';
+} from '@lay2/pw-core'
 
 // change all cell's lock and provide fee by self own expense
 export class RedPacketBuilder extends Builder {
@@ -19,43 +16,43 @@ export class RedPacketBuilder extends Builder {
     private cells: Cell[],
     protected options: BuilderOption = {},
     private cellDeps: CellDep[],
-    private since: string = '0x0'
+    private since: string = '0x0',
   ) {
-    super(options.feeRate, options.collector, options.witnessArgs);
+    super(options.feeRate, options.collector, options.witnessArgs)
   }
 
   async build(fee: Amount = Amount.ZERO): Promise<Transaction> {
-    const inputCells: Cell[] = [];
-    const outputCells: Cell[] = [];
+    const inputCells: Cell[] = []
+    const outputCells: Cell[] = []
 
     if (this.cells.length === 0) {
-      throw new Error('no live cells, not neccessary to change lock');
+      throw new Error('no live cells, not neccessary to change lock')
     }
 
     for (const cell of this.cells) {
-      inputCells.push(cell);
+      inputCells.push(cell)
 
-      const outputCell = cell.clone();
-      outputCell.lock = this.toAddress.toLockScript();
-      outputCells.push(outputCell);
+      const outputCell = cell.clone()
+      outputCell.lock = this.toAddress.toLockScript()
+      outputCells.push(outputCell)
     }
 
-    const rawTx = new RawTransaction(inputCells, outputCells, this.cellDeps);
+    const rawTx = new RawTransaction(inputCells, outputCells, this.cellDeps)
 
     for (let i = 0; i < rawTx.inputs.length - 1; i++) {
-      rawTx.inputs[i].since = this.since;
+      rawTx.inputs[i].since = this.since
     }
-    const tx = new Transaction(rawTx, [this.witnessArgs]);
+    const tx = new Transaction(rawTx, [this.witnessArgs])
 
-    this.fee = Builder.calcFee(tx, this.feeRate);
+    this.fee = Builder.calcFee(tx, this.feeRate)
     // this.fee = new Amount('10000', AmountUnit.shannon);
-    const changeCell = tx.raw.outputs.pop() as Cell;
-    changeCell.capacity = changeCell.capacity.sub(this.fee);
-    tx.raw.outputs.push(changeCell);
-    return tx;
+    const changeCell = tx.raw.outputs.pop() as Cell
+    changeCell.capacity = changeCell.capacity.sub(this.fee)
+    tx.raw.outputs.push(changeCell)
+    return tx
   }
 
   getCollector() {
-    return this.collector;
+    return this.collector
   }
 }

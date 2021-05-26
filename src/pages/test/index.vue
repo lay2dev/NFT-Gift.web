@@ -25,9 +25,9 @@
 </template>
 <script>
 // test
-import { getAddressByPubkey } from './utils'
+import getAddressByPubkey from './utils'
 import test from './test.ts'
-console.log('ts', getAddressByPubkey(sss))
+console.log('ts', getAddressByPubkey('sss'))
 Sea.Ajax.HOST = import.meta.env.VITE_HOST
 export default {
   data() {

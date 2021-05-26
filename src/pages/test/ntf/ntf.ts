@@ -69,7 +69,7 @@ export async function transfer(
 
 export async function authKeyX(
   masterPubkey: string,
-  exchangePubkey: string,
+  exchangePubkey: string[],
   localPubkey: string,
 ) {
   const collector = new UnipassIndexerCollector(INDEXER_URL)
@@ -80,12 +80,14 @@ export async function authKeyX(
     new Amount('10000'),
   )
   let inputCells = cells.slice(0, 4)
-  const localAuth: LocalAuthInfo = [
-    {
-      pubkeyHash: getPubkeyHash(exchangePubkey),
+  const localAuth: LocalAuthInfo = []
+  for (let item of exchangePubkey) {
+    const data = {
+      pubkeyHash: getPubkeyHash(item),
       outpoints: inputCells.map((x) => x.outPoint as OutPoint),
-    },
-  ]
+    }
+    localAuth.push(data)
+  }
   const { authInfo, authSig } = await getSecondaryAuth(localPubkey, localAuth)
   return { authInfo, authSig }
 }

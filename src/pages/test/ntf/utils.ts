@@ -127,3 +127,12 @@ export async function generateKey() {
   const pubkey = Buffer.concat([sA, eA, nA]).toString('hex')
   return { key, pubkey }
 }
+
+export async function getDataFromSignString(signstr: string) {
+  // get masterkey localkey from sign data
+  signstr = signstr.replace('0x', '')
+  const mstserKey = signstr.substr(0, 528)
+  const authorization = signstr.substring(528, 1040)
+  const localKey = signstr.substring(1040, 1586)
+  return { mstserKey, authorization, localKey }
+}

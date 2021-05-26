@@ -1,21 +1,26 @@
 module.exports = {
-  extends: ['plugin:vue/vue3-essential', 'airbnb-base'],
-  parserOptions: {
-    ecmaVersion: 2020,
-    sourceType: 'module',
+  root: true,
+  env: {
+    browser: true,
+    node: true,
   },
-  plugins: ['vue'],
+  extends: [
+    '@nuxtjs/eslint-config-typescript',
+    'plugin:nuxt/recommended',
+    'plugin:prettier/recommended',
+  ],
+  plugins: [],
+  // add your custom rules here
   rules: {
-    // 自己写一些想配置的规则
+    'import/no-unresolved': 'off',
+    'no-callback-literal': 0,
     semi: 'off',
-    'max-len': ['error', { ignoreStrings: true }],
+    'max-len': ['error', { ignoreStrings: true, ignoreComments: true }],
   },
   overrides: [
     {
       files: ['*.vue'],
-      rules: {
-        // 这里写覆盖vue文件的规则
-      },
+      rules: {},
     },
   ],
 }

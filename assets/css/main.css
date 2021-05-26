@@ -1,0 +1,27 @@
+:root {
+  --primary: #0f60ab;
+  --success: #67c23a;
+  --warning: #e6a23c;
+  --danger: #f56c6c;
+  --info: #909399;
+  --text-primary: #303133;
+  --text-regular: #606266;
+  --text-secondary: #909399;
+  --text-placeholder: #c0c4cc;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+/* 全局过渡动效设置 https://www.nuxtjs.cn/guide/routing */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.5s;
+}
+
+.page-enter,
+.page-leave-active {
+  opacity: 0;
+}

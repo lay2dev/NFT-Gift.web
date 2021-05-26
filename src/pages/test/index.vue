@@ -24,6 +24,10 @@
   </div>
 </template>
 <script>
+// test
+import test from './test.ts'
+console.log('🌊', test)
+// test end
 import { getSecondaryAuth } from './auth-key-pair'
 const HOST = 'http://devapi.unipass.me:3001'
 // const HOST = 'http://localhost:3001'

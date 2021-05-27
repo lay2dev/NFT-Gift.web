@@ -37,9 +37,11 @@ a {
 }
 /* mobile css */
 @media (max-width: 500px) {
-  .el-message,
+  .el-message {
+    min-width: 300px !important;
+  }
   .el-message-box {
-    width: 300px;
+    width: 300px !important;
   }
 }
 /* guide routing https://www.nuxtjs.cn/guide/routing */

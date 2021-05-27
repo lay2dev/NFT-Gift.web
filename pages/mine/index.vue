@@ -68,6 +68,10 @@ export default {
       nftList: mock,
     }
   },
+  created() {
+    const provider = this.$store.state.provider
+    console.log('🌊', provider)
+  },
 }
 </script>
 

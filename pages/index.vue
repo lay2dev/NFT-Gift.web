@@ -1,11 +1,47 @@
 <template>
   <div id="page-index">
     <div class="title">NFT GIFT</div>
-    <router-link to="/mine">
-      <el-button type="primary" round> 连接 Unipass </el-button>
-    </router-link>
+    <el-button type="primary" round @click="bindLogin">
+      连接 Unipass
+    </el-button>
   </div>
 </template>
+<script>
+import UnipassProvider from '@/assets/js/UnipassProvider.ts'
+import PWCore, {
+  // Address,
+  // AddressType,
+  // Amount,
+  IndexerCollector,
+} from '@lay2/pw-core'
+
+export default {
+  data() {
+    return {}
+  },
+  methods: {
+    async bindLogin() {
+      const env = 'https://unipass-me-git-dev-lay2.vercel.app/'
+      const url = {
+        NODE_URL: 'https://testnet.ckb.dev',
+        INDEXER_URL: 'https://testnet.ckb.dev/indexer',
+        CHAIN_ID: 1,
+      }
+      await new PWCore(url.NODE_URL).init(
+        new UnipassProvider(env),
+        new IndexerCollector(url.INDEXER_URL),
+        url.CHAIN_ID,
+      )
+      if (PWCore.provider) {
+        this.$store.state.provider = PWCore.provider
+        this.$router.push('/mine')
+      } else {
+        this.$message.error('连接失败')
+      }
+    },
+  },
+}
+</script>
 <style lang="stylus">
 #page-index {
   display: flex;
@@ -17,12 +53,8 @@
   padding-bottom: 100px;
   margin: 0 40px;
 
-  a {
+  .el-button {
     width: 100%;
-
-    .el-button {
-      width: 100%;
-    }
   }
 }
 </style>

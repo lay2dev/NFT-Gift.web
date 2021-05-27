@@ -1,7 +1,7 @@
 <template>
   <div id="page-share">
     <back />
-    <img src="~/assets/img/top-bg.png" />
+    <el-image :src="require('~/assets/img/top-bg.png')"></el-image>
   </div>
 </template>
 <script>

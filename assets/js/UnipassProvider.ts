@@ -8,8 +8,7 @@ import {
   Provider,
   Script,
 } from '@lay2/pw-core'
-import { getAddressByPubkey } from '~/pages/test/ntf/utils'
-
+// import { getAddressByPubkey } from '~/pages/test/ntf/utils'
 type UP_ACT =
   | 'UP-READY'
   | 'UP-LOGIN'
@@ -99,7 +98,6 @@ export default class UnipassProvider extends Provider {
   }
 
   recover(): Promise<UnipassProvider> {
-    console.log('[UnipassProvider] to recover')
     return new Promise((resolve) => {
       const { uniFrame } = openIframe(
         'login',
@@ -142,7 +140,6 @@ export default class UnipassProvider extends Provider {
   }
 
   sign(message: string): Promise<string> {
-    console.log('[UnipassProvider] message to sign', message)
     return new Promise((resolve) => {
       const { uniFrame } = openIframe('sign', `${this.UNIPASS_BASE}/#/sign`)
       this.msgHandler = (event) => {
@@ -155,7 +152,6 @@ export default class UnipassProvider extends Provider {
             } else {
               signature = JSON.stringify(msg.payload)
             }
-            console.log('[Sign] signature: ', signature)
             this.msgHandler &&
               window.removeEventListener('message', this.msgHandler)
             uniFrame && closeFrame(uniFrame)
@@ -165,14 +161,12 @@ export default class UnipassProvider extends Provider {
               resolve(signature)
             }
           } else if (msg.upact === 'UP-READY') {
-            console.log('[UnipassProvider] sign READY')
             const msg: UnipassMessage = {
               upact: 'UP-SIGN',
               payload: message,
             }
             uniFrame.contentWindow &&
               uniFrame.contentWindow.postMessage(msg, this.UNIPASS_BASE)
-            console.log('[UnipassProvider] opend')
           } else if (msg.upact === 'UP-LOGIN') {
             const { pubkey, email } = msg.payload as UnipassAccount
             const ckbAddress = pubkeyToAddress(pubkey)
@@ -232,25 +226,25 @@ function openIframe(
 }
 
 function closeFrame(frame: HTMLIFrameElement) {
-  console.log('[UnipassProvider] close frame')
   frame.remove()
-  console.log('[UnipassProvider] frame.remove')
   document.body.style.removeProperty('overflow')
-  console.log('[UnipassProvider] document.body.style.removeProperty()')
 }
 
 function pubkeyToAddress(pubkey: string): string {
-  console.log('[address]', getAddressByPubkey(pubkey))
   const pubKeyBuffer = Buffer.from(pubkey.replace('0x', ''), 'hex')
   const hashHex = new Blake2bHasher()
     .update(pubKeyBuffer.buffer)
     .digest()
     .serializeJson()
     .slice(0, 42)
+  // const isLina = localStorage.getItem('lina')
+  // const isTest = localStorage.getItem('test')
+  // const script: Script
   const script = new Script(
-    '0x614d40a86e1b29a8f4d8d93b9f3b390bf740803fa19a69f1c95716e029ea09b3',
+    process.env.NUXT_ENV_UNIPASS_TYPE_ID as string,
     hashHex,
     HashType.type,
   )
+
   return script.toAddress(getDefaultPrefix()).toCKBAddress()
 }

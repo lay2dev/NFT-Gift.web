@@ -13,47 +13,42 @@
     <main>
       <div class="nft-list">
         <template v-for="(e, i) in nftList">
-          <router-link
-            :key="i"
-            :to="{ path: '/asset', query: { token_uuid: e.token_uuid } }"
-          >
-            <div class="nft">
-              <div class="left">
-                <el-image
-                  class="nft-image"
-                  :src="e.class_bg_image_url"
-                  alt="bg_image_url"
-                  fit="cover"
-                  lazy
-                  :preview-src-list="[e.class_bg_image_url]"
-                />
-                <div class="info">
-                  <div class="name">
-                    {{ e.class_name }}
-                  </div>
-                  <div class="user">
-                    <el-image
-                      class="user-avator"
-                      :src="e.issuer_avatar_url"
-                      alt="user-avator"
-                      fit="cover"
-                      lazy
-                    >
-                      <template #error>
-                        <div class="el-image__error" />
-                      </template>
-                    </el-image>
-                    <div class="user-name">
-                      {{ e.issuer_name }}
-                    </div>
+          <div :key="i" class="nft" @click="bindNFT(e)">
+            <div class="left">
+              <el-image
+                class="nft-image"
+                :src="e.class_bg_image_url"
+                alt="bg_image_url"
+                fit="cover"
+                lazy
+                :preview-src-list="[e.class_bg_image_url]"
+              />
+              <div class="info">
+                <div class="name">
+                  {{ e.class_name }}
+                </div>
+                <div class="user">
+                  <el-image
+                    class="user-avator"
+                    :src="e.issuer_avatar_url"
+                    alt="user-avator"
+                    fit="cover"
+                    lazy
+                  >
+                    <template #error>
+                      <div class="el-image__error" />
+                    </template>
+                  </el-image>
+                  <div class="user-name">
+                    {{ e.issuer_name }}
                   </div>
                 </div>
               </div>
-              <div class="right">
-                {{ nftDict[e.class_uuid] }}
-              </div>
             </div>
-          </router-link>
+            <div class="right">
+              {{ nftDict[e.class_uuid] }}
+            </div>
+          </div>
         </template>
       </div>
     </main>
@@ -72,29 +67,18 @@ export default {
     }
   },
   created() {
-    const provider = this.checkLoign()
-    this.init(provider)
+    this.checkLoign()
+    this.init()
   },
   methods: {
-    async init(provider) {
-      if (!provider) return
-      const { Sea } = this
-      const host = process.env.NUXT_ENV_JINSE
-      // aven look
-      console.log('🌊', provider._address.addressString)
-      const address =
-        'ckt1qsfy5cxd0x0pl09xvsvkmert8alsajm38qfnmjh2fzfu2804kq47vg3jksn3yfgasw29h9whngxp9len3fwvqulayfq'
-      const res = await Sea.Ajax({
-        url: `${host}/api/explorer/v1/holder_tokens/${address}`,
-        data: {
-          page: 1,
-          limit: 1000,
-          include_submitting: true,
-        },
-      })
+    async init() {
+      if (!this.provider) return
+      // first page
+      const res = await this.getList(1)
       if (res.token_list) {
-        const arr = Sea.set(res.token_list, 'class_uuid')
-        for (const e of res.token_list) {
+        const tokenList = await this.initList(res)
+        const arr = this.Sea.set(tokenList, 'class_uuid')
+        for (const e of tokenList) {
           const id = e.class_uuid
           if (this.nftDict[id]) {
             this.nftDict[id] += 1
@@ -105,10 +89,38 @@ export default {
         this.nftList = arr
       }
     },
+    async initList(res) {
+      // be left over pages
+      const maxPage = res.meta.max_page
+      const promise = []
+      for (let i = 2; i <= maxPage; i++) {
+        promise.push(this.getList(i))
+      }
+      const resArr = await Promise.all(promise)
+      const result = [...res.token_list]
+      for (const item of resArr) {
+        for (const nft of item.token_list) {
+          result.push(nft)
+        }
+      }
+      return result
+    },
+    getList(page) {
+      const { Sea } = this
+      const host = process.env.NUXT_ENV_JINSE
+      const address = this.provider._address.addressString
+      return Sea.Ajax({
+        url: `${host}/api/explorer/v1/holder_tokens/${address}`,
+        data: {
+          page,
+          include_submitting: true,
+        },
+      })
+    },
     checkLoign() {
       const provider = this.$store.state.provider
       if (provider) {
-        return provider
+        this.provider = provider
       } else {
         this.$router.replace('/')
       }
@@ -133,6 +145,11 @@ export default {
       }
       console.log('🌊pubkey', pubkey)
       console.log('🌊signature', signature)
+    },
+    bindNFT(nft) {
+      nft.i_have = this.nftDict[nft.class_uuid]
+      this.$store.state.nft = nft
+      this.$router.push('/asset')
     },
     bindExit() {
       Sea.localStorage('provider', '')

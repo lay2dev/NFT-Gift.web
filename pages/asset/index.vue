@@ -35,7 +35,6 @@
             赠送
           </el-button>
         </main>
-        <footer></footer>
       </div>
     </div>
     <el-dialog :visible.sync="showSend" title="赠送" width="300px">
@@ -136,6 +135,7 @@ export default {
       box-shadow: rgb(0 0 0 / 6%) 0px 4px 2px;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
 
       >header {
         width: 100%;
@@ -184,18 +184,13 @@ export default {
 
       >main {
         width: 100%;
-        height: 80px;
+        height: 20vh;
         background: white;
         border-radius: 35px 35px 0px 0px;
         box-shadow: rgb(0 0 0 / 6%) 0px 6px 2px;
         display: flex;
         justify-content: center;
         align-items: center;
-      }
-
-      >footer {
-        flex: 1;
-        background: white;
       }
     }
   }

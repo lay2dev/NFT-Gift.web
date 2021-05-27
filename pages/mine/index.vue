@@ -67,29 +67,18 @@ export default {
     }
   },
   created() {
-    const provider = this.checkLoign()
-    this.init(provider)
+    this.checkLoign()
+    this.init()
   },
   methods: {
-    async init(provider) {
-      if (!provider) return
-      const { Sea } = this
-      const host = process.env.NUXT_ENV_JINSE
-      // aven look
-      console.log('🌊', provider._address.addressString)
-      const address =
-        'ckt1qsfy5cxd0x0pl09xvsvkmert8alsajm38qfnmjh2fzfu2804kq47vg3jksn3yfgasw29h9whngxp9len3fwvqulayfq'
-      const res = await Sea.Ajax({
-        url: `${host}/api/explorer/v1/holder_tokens/${address}`,
-        data: {
-          page: 1,
-          limit: 1000,
-          include_submitting: true,
-        },
-      })
+    async init() {
+      if (!this.provider) return
+      // first page
+      const res = await this.getList(1)
       if (res.token_list) {
-        const arr = Sea.set(res.token_list, 'class_uuid')
-        for (const e of res.token_list) {
+        const tokenList = await this.initList(res)
+        const arr = this.Sea.set(tokenList, 'class_uuid')
+        for (const e of tokenList) {
           const id = e.class_uuid
           if (this.nftDict[id]) {
             this.nftDict[id] += 1
@@ -100,10 +89,38 @@ export default {
         this.nftList = arr
       }
     },
+    async initList(res) {
+      // be left over pages
+      const maxPage = res.meta.max_page
+      const promise = []
+      for (let i = 2; i <= maxPage; i++) {
+        promise.push(this.getList(i))
+      }
+      const resArr = await Promise.all(promise)
+      const result = [...res.token_list]
+      for (const item of resArr) {
+        for (const nft of item.token_list) {
+          result.push(nft)
+        }
+      }
+      return result
+    },
+    getList(page) {
+      const { Sea } = this
+      const host = process.env.NUXT_ENV_JINSE
+      const address = this.provider._address.addressString
+      return Sea.Ajax({
+        url: `${host}/api/explorer/v1/holder_tokens/${address}`,
+        data: {
+          page,
+          include_submitting: true,
+        },
+      })
+    },
     checkLoign() {
       const provider = this.$store.state.provider
       if (provider) {
-        return provider
+        this.provider = provider
       } else {
         this.$router.replace('/')
       }

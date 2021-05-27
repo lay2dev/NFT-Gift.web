@@ -20,9 +20,9 @@
     "core-js": "^3.12.1",
     "element-ui": "^2.15.1",
     "node-forge": "^0.10.0",
-    "node-sass": "5.0.0",
+    "node-sass": "6.0.0",
     "nuxt": "^2.15.6",
-    "sass-loader": "10.1.1",
+    "sass-loader": "11.1.1",
     "stylus": "^0.54.8",
     "stylus-loader": "4.3.3"
   },

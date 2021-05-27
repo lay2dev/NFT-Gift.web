@@ -13,47 +13,42 @@
     <main>
       <div class="nft-list">
         <template v-for="(e, i) in nftList">
-          <router-link
-            :key="i"
-            :to="{ path: '/asset', query: { token_uuid: e.token_uuid } }"
-          >
-            <div class="nft">
-              <div class="left">
-                <el-image
-                  class="nft-image"
-                  :src="e.class_bg_image_url"
-                  alt="bg_image_url"
-                  fit="cover"
-                  lazy
-                  :preview-src-list="[e.class_bg_image_url]"
-                />
-                <div class="info">
-                  <div class="name">
-                    {{ e.class_name }}
-                  </div>
-                  <div class="user">
-                    <el-image
-                      class="user-avator"
-                      :src="e.issuer_avatar_url"
-                      alt="user-avator"
-                      fit="cover"
-                      lazy
-                    >
-                      <template #error>
-                        <div class="el-image__error" />
-                      </template>
-                    </el-image>
-                    <div class="user-name">
-                      {{ e.issuer_name }}
-                    </div>
+          <div :key="i" class="nft" @click="bindNFT(e)">
+            <div class="left">
+              <el-image
+                class="nft-image"
+                :src="e.class_bg_image_url"
+                alt="bg_image_url"
+                fit="cover"
+                lazy
+                :preview-src-list="[e.class_bg_image_url]"
+              />
+              <div class="info">
+                <div class="name">
+                  {{ e.class_name }}
+                </div>
+                <div class="user">
+                  <el-image
+                    class="user-avator"
+                    :src="e.issuer_avatar_url"
+                    alt="user-avator"
+                    fit="cover"
+                    lazy
+                  >
+                    <template #error>
+                      <div class="el-image__error" />
+                    </template>
+                  </el-image>
+                  <div class="user-name">
+                    {{ e.issuer_name }}
                   </div>
                 </div>
               </div>
-              <div class="right">
-                {{ nftDict[e.class_uuid] }}
-              </div>
             </div>
-          </router-link>
+            <div class="right">
+              {{ nftDict[e.class_uuid] }}
+            </div>
+          </div>
         </template>
       </div>
     </main>
@@ -133,6 +128,11 @@ export default {
       }
       console.log('🌊pubkey', pubkey)
       console.log('🌊signature', signature)
+    },
+    bindNFT(nft) {
+      nft.i_have = this.nftDict[nft.class_uuid]
+      this.$store.state.nft = nft
+      this.$router.push('/asset')
     },
     bindExit() {
       Sea.localStorage('provider', '')

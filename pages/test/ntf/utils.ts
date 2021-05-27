@@ -138,11 +138,10 @@ export async function generateKey() {
 }
 
 /**
- * from unipass sign data get masterkey authorization localKey this data will push to service
+ * from unipass sign data get masterkey authorization localKey and this data will push to service
  * @param signstr unipass sign data
  */
 export async function getDataFromSignString(signstr: string) {
-  // get masterkey localkey from sign data
   signstr = signstr.replace('0x', '')
   const masterkey = signstr.substr(0, 528)
   const authorization = signstr.substring(528, 1040)

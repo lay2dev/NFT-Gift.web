@@ -17,7 +17,7 @@ export function getSecondaryAuth(
   const authItemsBuffer = serializeLocalAuth(localAuthInfo)
 
   const authItemsHex = `0x${authItemsBuffer.toString('hex')}`
-  // todo unipass sign
+  // todo unipass sign authItemsHex
   const sig = ''
 
   const authSig = Buffer.concat([

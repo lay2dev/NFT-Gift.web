@@ -23,9 +23,19 @@
     </el-collapse>
   </div>
 </template>
-<script>
+<script lang="ts">
 // test
-import getAddressByPubkey from './utils.ts'
+import {
+  getAddressByPubkey,
+  getDataFromSignString,
+  getKeyPassword,
+  getPubkeyHash,
+  INDEXER_URL,
+  generateKey,
+} from './ntf/utils'
+import { getSecondaryAuth, LocalAuthInfo } from './ntf/auth-item'
+import { Address, AddressType, Amount, OutPoint } from '@lay2/pw-core'
+import { UnipassIndexerCollector } from './ntf/unipass-indexer-collector'
 console.log('ts', getAddressByPubkey('55'))
 export default {
   data() {
@@ -38,44 +48,57 @@ export default {
     createKeyX() {
       getAddressByPubkey('Sdfadsfas')
     },
-    autheyX() {
-      // localKey, localPubkey, localAuthInfo
-      const localKey = 'xxxx' // NodeRSA
-      const localPubkey = 'xxxxxx'
-      const localAuthInfo = [
-        {
-          pubkeyHash: 'xxxx',
-          outpoints: 'xxx',
-          dataLen: 'xxxx',
-        },
-        {
-          pubkeyHash: 'xxxx',
-          outpoints: 'xxx',
-          dataLen: 'xxxx',
-        },
-        {
-          pubkeyHash: 'xxxx',
-          outpoints: 'xxx',
-          dataLen: 'xxxx',
-        },
-      ]
-      // const { authSig, authInfo } = getSecondaryAuth(
-      //   localKey,
-      //   localPubkey,
-      //   localAuthInfo,
-      // )
-    },
-    async getShortData() {
+    autheyX() {},
+    async getShortData(pwd: string, nfts: []) {
       console.log('[api]')
+      const sign = 'data from unipass back sign message'
+      const { masterkey, authorization, localKey } = getDataFromSignString(sign)
+      // todo get N key
+      const redPacket = []
+      const keyAuthArray = []
+
+      for (let item of nfts) {
+        const { key, pubkey, pem } = await generateKey('salt', pwd)
+        redPacket.push({
+          encrypt: pem,
+          keyPubkey: pubkey,
+          outpoints: item, // todo item.outpoints
+          outpointSize: item, // todo item.outpointSize
+        })
+        keyAuthArray.push({
+          pubkey,
+          outpoints: item, // todo item.outpoints
+        })
+      }
+      const collector = new UnipassIndexerCollector(INDEXER_URL)
+      const fromAddress = getAddressByPubkey(masterkey)
+      console.log('fromAddress', fromAddress)
+      const cells = await collector.collectAllLiveCells(
+        new Address(fromAddress, AddressType.ckb),
+        new Amount('10000'),
+      )
+      let inputCells = cells.slice(0, 4)
+      const localAuth: LocalAuthInfo = []
+      for (let item of keyAuthArray) {
+        const data = {
+          pubkeyHash: getPubkeyHash(item),
+          // todo get by api
+          outpoints: inputCells.map((x) => x.outPoint as OutPoint),
+        }
+        localAuth.push(data)
+      }
+      const { authSig, authInfo } = getSecondaryAuth(localKey, localAuth)
+      const password = getKeyPassword(pwd)
       const data = {
-        encrypt: 'todoencrypt',
-        authorization: 'authorization',
-        localKeySig: 'localKeySig',
-        localKeyPubkey: 'localKeyPubkey',
-        masterKeyPubkey: 'masterKeyPubkey',
-        localAuthInfo: 'localAuthInfo',
+        password,
+        authorization: authorization, //
+        localKeySig: authSig,
+        localKeyPubkey: localKey,
+        masterKeyPubkey: masterkey,
+        localAuthInfo: authInfo,
         redPacket: [
           {
+            encrypt: 'todoencrypt',
             keyPubkey: 'keyPubkey',
             outpoints: 'outpoints',
             outpointSize: 'outpointSize',

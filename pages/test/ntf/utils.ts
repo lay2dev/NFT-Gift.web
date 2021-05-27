@@ -12,6 +12,12 @@ import {
 } from '@lay2/pw-core'
 import forge from 'node-forge'
 
+interface UnipassData {
+  masterkey: string
+  authorization: string
+  localKey: string
+}
+
 export const UNIPASS_TYPE_ID =
   '0x949db47aac7d1a2a0d921344dc5c1ddefda390813a1881d56a0872d798e0d629'
 export const NODE_URL = 'https://testnet.ckb.dev'
@@ -60,8 +66,12 @@ export function getAddressByPubkey(pubkey: string): string {
 /**
  * decrypt pubukey to cryptoKey
  */
-export async function decryptMasterKey(masterKey: string): Promise<CryptoKey> {
-  const strongPass = forge.pkcs5.pbkdf2('', '', 2 ** 16, 16)
+export async function decryptMasterKey(
+  masterKey: string,
+  salt: string,
+  password: string,
+): Promise<CryptoKey> {
+  const strongPass = forge.pkcs5.pbkdf2(password, salt, 2 ** 16, 16)
   const privkey = forge.pki.decryptRsaPrivateKey(masterKey, strongPass)
 
   // convert to pkcs8 format pem, refer to https://github.com/digitalbazaar/forge/issues/109#issuecomment-38009619
@@ -104,11 +114,14 @@ function str2ab(str: string) {
   }
   return b
 }
+function ab2str(buf: ArrayBuffer) {
+  return String.fromCharCode.apply(null, Array.from(new Uint8Array(buf)))
+}
 
 /**
  * one nft data create one kay par (key.private kay key.publick key)
  */
-export async function generateKey() {
+export async function generateKey(salt: string, password: string) {
   // create RSA key
   const key = await window.crypto.subtle.generateKey(
     {
@@ -134,17 +147,42 @@ export async function generateKey() {
   sA.writeUInt32LE(nA.length * 8, 0)
 
   const pubkey = Buffer.concat([sA, eA, nA]).toString('hex')
-  return { key, pubkey }
+  // generate pem from private key
+  let pkcs8: ArrayBuffer | null = await window.crypto.subtle.exportKey(
+    'pkcs8',
+    key.privateKey,
+  )
+  const exportedAsString = ab2str(pkcs8)
+  const exportedAsBase64 = window.btoa(exportedAsString)
+  const pemExported = `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`
+  pkcs8 = null
+  const strongPass = forge.pkcs5.pbkdf2(password, salt, 2 ** 16, 16)
+  const rsaKey = forge.pki.privateKeyFromPem(pemExported)
+  const pem = forge.pki.encryptRsaPrivateKey(rsaKey, strongPass, {
+    algorithm: 'aes256',
+  })
+  console.log('[master key pem', pem)
+  return { key, pubkey, pem }
 }
 
 /**
  * from unipass sign data get masterkey authorization localKey and this data will push to service
  * @param signstr unipass sign data
  */
-export async function getDataFromSignString(signstr: string) {
+export function getDataFromSignString(signstr: string): UnipassData {
   signstr = signstr.replace('0x', '')
   const masterkey = signstr.substr(0, 528)
   const authorization = signstr.substring(528, 1040)
   const localKey = signstr.substring(1040, 1586)
   return { masterkey, authorization, localKey }
+}
+/**
+ * this keyPass will push to server
+ */
+export function getKeyPassword(password: string) {
+  const hmac = forge.hmac.create()
+  hmac.start('sha256', password)
+  hmac.update('getKeyPassword')
+  const keyPass = hmac.digest().toHex()
+  return keyPass
 }

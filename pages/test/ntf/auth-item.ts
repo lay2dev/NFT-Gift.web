@@ -5,13 +5,17 @@ export interface AuthItem {
   outpoints: OutPoint[]
   dataLen?: number
 }
+interface AuthData {
+  authSig: string
+  authInfo: string
+}
 
 export type LocalAuthInfo = AuthItem[]
 
 export function getSecondaryAuth(
   localPubkey: string,
   localAuthInfo: LocalAuthInfo,
-) {
+): AuthData {
   console.log('localPubkey2', localPubkey)
 
   const authItemsBuffer = serializeLocalAuth(localAuthInfo)

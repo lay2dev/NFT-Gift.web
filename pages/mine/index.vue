@@ -70,7 +70,7 @@ export default {
   },
   created() {
     const provider = this.$store.state.provider
-    console.log('🌊', provider)
+    console.log('🌊', provider._address.addressString)
   },
   methods: {
     bindExit() {

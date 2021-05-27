@@ -30,12 +30,13 @@
     "@nuxt/typescript-build": "^2.1.0",
     "@nuxtjs/eslint-config-typescript": "^6.0.0",
     "@nuxtjs/eslint-module": "^3.0.2",
+    "@types/node-forge": "^0.9.9",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.26.0",
-    "eslint-plugin-nuxt": "^2.0.0",
-    "eslint-plugin-vue": "^7.9.0",
-    "eslint-plugin-prettier": "^3.4.0",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-nuxt": "^2.0.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-vue": "^7.9.0",
     "prettier": "^2.3.0"
   },
   "eslintIgnore": [

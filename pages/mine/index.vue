@@ -60,6 +60,8 @@
   </div>
 </template>
 <script>
+import { createHash } from 'crypto'
+import UnipassProvider from '@/assets/js/UnipassProvider.ts'
 import mock from './mock'
 
 export default {
@@ -70,9 +72,34 @@ export default {
   },
   created() {
     const provider = this.$store.state.provider
-    console.log('🌊', provider._address.addressString)
+    if (provider) {
+      console.log('🌊provider', provider)
+    } else {
+      this.$router.replace('/')
+    }
   },
   methods: {
+    async bindSign(message) {
+      console.log('🌊message', message)
+      const messageHash = createHash('SHA256')
+        .update(message)
+        .digest('hex')
+        .toString()
+      const data = await new UnipassProvider(
+        process.env.NUXT_ENV_UNIPASS_URL,
+      ).sign(messageHash)
+      let signature = ''
+      let pubkey = ''
+      if (data.startsWith('0x')) {
+        signature = data
+      } else {
+        const info = JSON.parse(data)
+        pubkey = info.pubkey
+        signature = `0x01${info.sign.replace('0x', '')}`
+      }
+      console.log('🌊pubkey', pubkey)
+      console.log('🌊signature', signature)
+    },
     bindExit() {
       Sea.localStorage('provider', '')
       this.$router.replace('/')

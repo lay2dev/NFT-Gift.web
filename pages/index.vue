@@ -31,14 +31,13 @@ export default {
       }
     },
     async bindLogin() {
-      const env = 'https://unipass-me-git-dev-lay2.vercel.app/'
       const url = {
         NODE_URL: 'https://testnet.ckb.dev',
         INDEXER_URL: 'https://testnet.ckb.dev/indexer',
         CHAIN_ID: 1,
       }
       await new PWCore(url.NODE_URL).init(
-        new UnipassProvider(env),
+        new UnipassProvider(process.env.NUXT_ENV_UNIPASS_URL),
         new IndexerCollector(url.INDEXER_URL),
         url.CHAIN_ID,
       )

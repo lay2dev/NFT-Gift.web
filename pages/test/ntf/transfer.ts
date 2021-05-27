@@ -3,16 +3,13 @@ import PWCore, {
   AddressType,
   Amount,
   BuilderOption,
-  OutPoint,
 } from '@lay2/pw-core'
-import { getSecondaryAuth, LocalAuthInfo } from './auth-item'
 import { RedPacketBuilder } from './red-packet-builder'
 import { RedPacketProvider } from './red-packet-provider'
 import { UnipassIndexerCollector } from './unipass-indexer-collector'
 import { UnipassSigner } from './unipass-signer'
 import {
   getAddressByPubkey,
-  getPubkeyHash,
   rsaDep,
   acpDep,
   unipassDep,

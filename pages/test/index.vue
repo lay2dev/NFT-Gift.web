@@ -23,7 +23,7 @@
     </el-collapse>
   </div>
 </template>
-<script lang="ts">
+<script>
 // test
 import {
   getAddressByPubkey,
@@ -32,11 +32,12 @@ import {
   getPubkeyHash,
   INDEXER_URL,
   generateKey,
+  decryptMasterKey,
 } from './ntf/utils'
-import { getSecondaryAuth, LocalAuthInfo } from './ntf/auth-item'
-import { Address, AddressType, Amount, OutPoint } from '@lay2/pw-core'
+import { getSecondaryAuth } from './ntf/auth-item'
+import { redPacketTransfer } from './ntf/nft'
+import { Address, AddressType, Amount } from '@lay2/pw-core'
 import { UnipassIndexerCollector } from './ntf/unipass-indexer-collector'
-console.log('ts', getAddressByPubkey('55'))
 export default {
   data() {
     return {
@@ -49,16 +50,16 @@ export default {
       getAddressByPubkey('Sdfadsfas')
     },
     autheyX() {},
-    async getShortData(pwd: string, nfts: []) {
+    async getShortData(pwd, nfts) {
       console.log('[api]')
+      // todo sign unipass
       const sign = 'data from unipass back sign message'
       const { masterkey, authorization, localKey } = getDataFromSignString(sign)
       // todo get N key
       const redPacket = []
       const keyAuthArray = []
-
       for (let item of nfts) {
-        const { key, pubkey, pem } = await generateKey('salt', pwd)
+        const { key, pubkey, pem } = await generateKey('generateKey', pwd)
         redPacket.push({
           encrypt: pem,
           keyPubkey: pubkey,
@@ -78,17 +79,18 @@ export default {
         new Amount('10000'),
       )
       let inputCells = cells.slice(0, 4)
-      const localAuth: LocalAuthInfo = []
+      const localAuth = []
       for (let item of keyAuthArray) {
         const data = {
-          pubkeyHash: getPubkeyHash(item),
-          // todo get by api
-          outpoints: inputCells.map((x) => x.outPoint as OutPoint),
+          pubkeyHash: getPubkeyHash(item.pubkey),
+          // todo get outpoints by api
+          outpoints: inputCells.map((x) => x.outPoint),
         }
         localAuth.push(data)
       }
       const { authSig, authInfo } = getSecondaryAuth(localKey, localAuth)
       const password = getKeyPassword(pwd)
+      // todo push data
       const data = {
         password,
         authorization: authorization, //
@@ -96,16 +98,10 @@ export default {
         localKeyPubkey: localKey,
         masterKeyPubkey: masterkey,
         localAuthInfo: authInfo,
-        redPacket: [
-          {
-            encrypt: 'todoencrypt',
-            keyPubkey: 'keyPubkey',
-            outpoints: 'outpoints',
-            outpointSize: 'outpointSize',
-          },
-        ],
+        redPacket,
       }
       console.log(data)
+      // todo js ts use one file bug
       console.log('[Host]', Sea.Ajax.HOST)
       const res = await Sea.Ajax({
         url: '/ntf',
@@ -116,11 +112,15 @@ export default {
       if (res.short) this.short = res.short
       console.log('res', res, this.short)
     },
-    async getRedPacketData() {
-      console.log(this.short)
+
+    async getRedPacketData(pubkey, pwd) {
+      console.log(this.short) // this is short url
+      const address = getAddressByPubkey(pubkey)
+      const password = getKeyPassword(pwd)
+      // todo get data
       const data = {
-        password: 'todoencrypt',
-        address: 'authorization',
+        password,
+        address: address,
       }
       const res = await Sea.Ajax({
         url: `/ntf/${this.short}`,
@@ -131,7 +131,33 @@ export default {
         },
       })
       if (data.success) {
-        // todo get transfer data
+        const resData = res.data
+        const data = {
+          authorization: resData.authorization, //
+          localKeySig: resData.authSig,
+          localKeyPubkey: resData.localKey,
+          masterKeyPubkey: resData.masterkey,
+          localAuthInfo: resData.authInfo,
+          redPacket: resData.redPacket,
+        }
+        // todo
+        const key = await decryptMasterKey(
+          data.redPacket.encrypt,
+          'generateKey',
+          pwd,
+        )
+        // todo transfer
+        const tx = await redPacketTransfer(
+          data.masterKeyPubkey,
+          data.authorization,
+          data.localKeySig,
+          key,
+          data.redPacket.pubkey,
+          data.localAuthInfo,
+          address,
+        )
+        console.log('txhash:', tx)
+        // todo tx post other api
       } else {
         // todo show no red packet
       }

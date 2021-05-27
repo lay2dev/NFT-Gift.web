@@ -1,34 +1,45 @@
 {
-  "name": "vite-project",
-  "version": "0.0.0",
+  "name": "sea.web",
+  "version": "1.0.0",
+  "private": true,
   "scripts": {
-    "start": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "yarn ": "yarn"
+    "start": "nuxt",
+    "build": "nuxt generate",
+    "preview": "nuxt start",
+    "publish": "sh bin/publish-cdn.sh",
+    "lint": "eslint --fix --ext \".js,.vue\" --ignore-path .gitignore .",
+    "yarn": "yarn"
   },
   "dependencies": {
     "@lay2/pw-core": "^0.4.0-alpha.8",
     "@nervosnetwork/ckb-sdk-utils": "^0.41.1",
-    "element-plus": "latest",
-    "node-forge": "^0.10.0",
-    "node-rsa": "^1.1.1",
-    "vue": "^3.0.5",
-    "vue-i18n": "^9.1.6",
-    "vue-router": "^4.0.8",
-    "vuex": "^4.0.0"
+    "@nuxt/content": "^1.14.0",
+    "@nuxtjs/axios": "^5.13.1",
+    "@nuxtjs/pwa": "^3.3.5",
+    "ali-oss": "^6.15.2",
+    "core-js": "^3.12.1",
+    "element-ui": "^2.15.1",
+    "node-sass": "5.0.0",
+    "nuxt": "^2.15.6",
+    "sass-loader": "10.1.1",
+    "stylus": "^0.54.8",
+    "stylus-loader": "4.3.3"
   },
   "devDependencies": {
-    "@types/node-forge": "^0.9.9",
-    "@vitejs/plugin-vue": "^1.2.2",
-    "@vue/compiler-sfc": "^3.0.5",
+    "@nuxt/types": "^2.15.3",
+    "@nuxt/typescript-build": "^2.1.0",
+    "@nuxtjs/eslint-config-typescript": "^6.0.0",
+    "@nuxtjs/eslint-module": "^3.0.2",
+    "babel-eslint": "^10.1.0",
     "eslint": "^7.26.0",
-    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-nuxt": "^2.0.0",
     "eslint-plugin-vue": "^7.9.0",
-    "sass": "1.32.13",
-    "stylus": "^0.54.8",
-    "typescript": "^4.1.3",
-    "vite": "^2.3.3",
-    "vue-tsc": "^0.0.24"
-  }
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-config-prettier": "^8.3.0",
+    "prettier": "^2.3.0"
+  },
+  "eslintIgnore": [
+    ".gitignore",
+    "static/game/*"
+  ]
 }

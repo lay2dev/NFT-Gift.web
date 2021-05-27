@@ -1,56 +1,35 @@
-# unipass-vite
+# nuxt
 
-> A starter kit for Element Plus with Vite
+## 设置 npm 镜像源
 
-<img width="800" alt="Element Plus" src="https://user-images.githubusercontent.com/10731096/97282764-0726eb80-187a-11eb-9658-6dc98ccb8f8d.png">
+查看当前
+`yarn config get registry`
+默认
+`yarn config set registry https://registry.yarnpkg.com`
+腾讯 [教程](https://cloud.tencent.com/document/product/213/8623)
+`yarn config set registry https://mirrors.cloud.tencent.com/npm`
 
-## Project setup
+## 行尾序列
 
-```
-yarn install
-```
+先设置 [教程](https://juejin.cn/post/6844904069304156168)
+`git config --global core.autocrlf false`
+再重新克隆项目
 
-### Compiles and hot-reloads for development
+## Build Setup
 
-```
-yarn run dev
-```
+```bash
+# 安装依赖
+$ yarn install
 
-### Compiles and minifies for production
+# 启动服务 localhost:3000
+$ yarn dev
 
-```
-yarn run build
-```
+# build for production and launch server
+$ yarn build
+$ yarn start
 
-### Preview for production
-
-```
-yarn run preview
-```
-
-## npm registry
-
-- 当前
-  `yarn config get registry`
-- 默认
-  `yarn config set registry https://registry.yarnpkg.com`
-- 腾讯
-  `yarn config set registry https://mirrors.cloud.tencent.com/npm`
-  `
-
-## vuex
-
-```js
-// 获取
-this.$store.state.toekn
-this.$store.getters.getToken
-// 同步更新
-this.$store.state.toekn = 'dudu'
-this.$store.commit('setToken', 'dudu')
-// 异步更新
-await this.$store.dispatch('setTokenAsync', 'dudu')
+# 静态打包
+$ yarn generate
 ```
 
-## router
-
-https://segmentfault.com/a/1190000039157357
+For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).

@@ -9,6 +9,7 @@
       <el-collapse-item title=" 2 NFT 设置密码" name="2">
         <div><el-input v-model="password"></el-input></div>
         <div @click="getNFT">点击获取 NFT:{{ nft }}</div>
+        <div>带签名数据 message:{{ message }}</div>
       </el-collapse-item>
       <el-collapse-item title="3 签名授权" name="3">
         <div @click="bindSign">点击签名:{{ sign }}</div>
@@ -21,13 +22,13 @@
       </el-collapse-item>
       <el-collapse-item title="6 输入口令获取数据" name="6">
         <div><el-input v-model="password"></el-input></div>
-        <div>data:{{ data }}</div>
+        <div @click="getRedPacketData">data:{{ data }}</div>
       </el-collapse-item>
       <el-collapse-item title="7 提交交易" name="7">
         <div>tx:{{ tx }}</div>
       </el-collapse-item>
       <el-collapse-item title="8 返回交易" name="8">
-        <div>res:{{ res }}</div>
+        <div @click="testPassword">res:{{ res }}</div>
       </el-collapse-item>
     </el-collapse>
   </div>
@@ -100,7 +101,7 @@ export default {
         },
       })
       if (res.token_list) {
-        console.log('list', res.token_list)
+        console.log('list', res.token_list[0])
         if (res.token_list.length) {
           this.nft = res.token_list[0]
           await this.createRedPacketData()
@@ -110,30 +111,33 @@ export default {
     async createRedPacketData() {
       const nfts = [this.nft]
       const redPacket = []
-      const keyAuthArray = []
+      const localAuth = []
       for (const item of nfts) {
         const { pubkey, pem } = await generateKey('generateKey', this.password)
+        console.log('[token_outpoint]', item.token_outpoint)
         redPacket.push({
           encrypt: pem,
           keyPubkey: pubkey,
-          outpoint: item.token_outpoint, // todo item.outpoints
-          outpointSize: 1, // todo item.outpointSize
+          outpoints: [
+            {
+              index: item.token_outpoint.index,
+              txHash: item.token_outpoint.tx_hash,
+            },
+          ],
+          outpointSize: 1,
         })
-        keyAuthArray.push({
-          pubkey,
-          outpoints: 1 + item.token_outpoint, // todo item.outpoints
+        localAuth.push({
+          pubkeyHash: getPubkeyHash(pubkey),
+          outpoints: [
+            {
+              index: item.token_outpoint.index,
+              txHash: item.token_outpoint.tx_hash,
+            },
+          ],
         })
       }
       this.redPacket = redPacket
       console.log(this.redPacket)
-      const localAuth = []
-      for (const item of keyAuthArray) {
-        const data = {
-          pubkeyHash: getPubkeyHash(item.pubkey),
-          outpoints: item.token_outpoint, // todo
-        }
-        localAuth.push(data)
-      }
       console.log('[localAuth]', localAuth)
       // todo  get signdata
       const authItemsBuffer = serializeLocalAuth(localAuth)
@@ -144,15 +148,21 @@ export default {
     async bindSign() {
       const data = await new UnipassProvider(
         process.env.NUXT_ENV_UNIPASS_URL,
-      ).sign(message)
+      ).sign(this.message)
+      console.log('[sign]', data)
       this.sign = data
+      console.log('[this.sign]', this.sign)
       const { masterkey, authorization, localKey } = getDataFromSignString(
         this.sign,
       )
+      console.log('[masterkey, authorization, localKey]', {
+        masterkey,
+        authorization,
+        localKey,
+      })
       this.masterkey = masterkey
       this.authorization = authorization
       this.localKey = localKey
-      console.log('🌊signature', sign)
       const { authSig, authInfo } = getSecondaryAuth(
         localKey,
         this.message,
@@ -163,6 +173,7 @@ export default {
     },
     async getShortData() {
       const password = getKeyPassword(this.address)
+      console.log('[password]', password, this.password)
       // todo push data
       const data = {
         password,
@@ -175,26 +186,35 @@ export default {
       }
       console.log(data)
       // todo js ts use one file bug
+      Sea.Ajax.HOST = process.env.NUXT_ENV_HOST
       console.log('[Host]', Sea.Ajax.HOST)
       const res = await Sea.Ajax({
         url: '/ntf',
         method: 'post',
         data,
       })
-      console.log('res', res, this.short)
+      console.log('res', res, this.short, window.location)
       if (res.short) this.short = res.short
       console.log('res', res, this.short)
+      // todo router
+      this.shortUrl = window.location.origin + '/share/' + this.short
     },
 
+    testPassword() {
+      const password = getKeyPassword(this.password)
+      console.log(password)
+    },
     async getRedPacketData() {
-      console.log(this.short) // this is short url
+      console.log('[getRedPacketData]', this.short) // this is short url
       const address = getAddressByPubkey(this.masterkey)
       const password = getKeyPassword(this.password)
+      console.log('[password]', password, this.password)
       // todo get data
       const data = {
         password,
         address,
       }
+      console.log('[data]', data)
       const res = await Sea.Ajax({
         url: `/ntf/${this.short}`,
         method: 'get',

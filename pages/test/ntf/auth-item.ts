@@ -61,6 +61,7 @@ function serializeAuthItem(authItem: AuthItem): Buffer {
 
 function serializeOutpoints(outpoints: OutPoint[]) {
   let buffer
+  // eslint-disable-next-line camelcase
   const outpoint_size = outpoints.length
   const sizeBuffer = Buffer.alloc(4)
   sizeBuffer.writeUInt32LE(outpoint_size, 0)

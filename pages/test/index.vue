@@ -11,10 +11,10 @@
         <div @click="getNFT">点击获取 NFT:{{ nft }}</div>
       </el-collapse-item>
       <el-collapse-item title="3 签名授权" name="3">
-        <div>sign:{{ sign }}</div>
+        <div @click="bindSign">点击签名:{{ sign }}</div>
       </el-collapse-item>
       <el-collapse-item title="4 提交服务器" name="4">
-        <div>short:{{ short }}</div>
+        <div @click="getShortData">short:{{ short }}</div>
       </el-collapse-item>
       <el-collapse-item title="5 分享地址" name="5">
         <div>shortUrl:{{ shortUrl }}</div>
@@ -34,13 +34,9 @@
 </template>
 <script>
 // test
+import { createHash } from 'crypto'
 import UnipassProvider from '@/assets/js/UnipassProvider.ts'
-import PWCore, {
-  // Address,
-  // AddressType,
-  // Amount,
-  IndexerCollector,
-} from '@lay2/pw-core'
+import PWCore, { IndexerCollector } from '@lay2/pw-core'
 import {
   getAddressByPubkey,
   getDataFromSignString,
@@ -64,6 +60,12 @@ export default {
       tx: '',
       data: '',
       res: '',
+      masterkey: '',
+      authorization: '',
+      localKey: '',
+      redPacket: [],
+      authSig: '',
+      authInfo: '',
     }
   },
   methods: {
@@ -87,6 +89,7 @@ export default {
     },
     async getNFT() {
       const { Sea } = this
+      console.log('[address]', this.address)
       const host = 'https://goldenlegend.test.nervina.cn'
       const res = await Sea.Ajax({
         url: `${host}/api/explorer/v1/holder_tokens/${this.address}`,
@@ -98,54 +101,70 @@ export default {
       })
       if (res.token_list) {
         console.log('list', res.token_list)
-        this.nftList = res.token_list
+        if (res.token_list.length) {
+          this.nft = res.token_list[0]
+          createRedPacketData()
+        }
       }
     },
-    createKeyX() {
-      getAddressByPubkey('Sdfadsfas')
-    },
-    autheyX() {},
-    async getShortData(pwd, nfts) {
-      console.log('[api]')
-      // todo sign unipass
-      const sign = 'data from unipass back sign message'
-      const { masterkey, authorization, localKey } = getDataFromSignString(sign)
-      // todo get N key
+    async createRedPacketData() {
+      const nfts = [this.nft]
       const redPacket = []
       const keyAuthArray = []
       for (const item of nfts) {
-        const { pubkey, pem } = await generateKey('generateKey', pwd)
+        const { pubkey, pem } = await generateKey('generateKey', this.password)
         redPacket.push({
           encrypt: pem,
           keyPubkey: pubkey,
-          outpoint: item.outpoint, // todo item.outpoints
-          outpointSize: item.outpoint_size, // todo item.outpointSize
+          outpoint: item.token_outpoint, // todo item.outpoints
+          outpointSize: 1, // todo item.outpointSize
         })
         keyAuthArray.push({
           pubkey,
-          outpoints: item, // todo item.outpoints
+          outpoints: 1 + item.token_outpoint, // todo item.outpoints
         })
       }
+      this.redPacket = redPacket
       const localAuth = []
       for (const item of keyAuthArray) {
         const data = {
           pubkeyHash: getPubkeyHash(item.pubkey),
-          // get outpoints by api outpoints = outpoint_size + [outpoint]
           outpoints: item.outpoint_size + item.outpoint,
         }
         localAuth.push(data)
       }
+    },
+    async bindSign() {
+      const messageHash = createHash('SHA256')
+        .update(message)
+        .digest('hex')
+        .toString()
+      const data = await new UnipassProvider(
+        process.env.NUXT_ENV_UNIPASS_URL,
+      ).sign(messageHash)
+      this.sign = data
+      const { masterkey, authorization, localKey } = getDataFromSignString(
+        this.sign,
+      )
+      this.masterkey = masterkey
+      this.authorization = authorization
+      this.localKey = localKey
+      console.log('🌊signature', sign)
       const { authSig, authInfo } = getSecondaryAuth(localKey, localAuth)
-      const password = getKeyPassword(pwd)
+      this.authSig = authSig
+      this.authInfo = authInfo
+    },
+    async getShortData() {
+      const password = getKeyPassword(this.address)
       // todo push data
       const data = {
         password,
-        authorization, //
-        localKeySig: authSig,
-        localKeyPubkey: localKey,
-        masterKeyPubkey: masterkey,
-        localAuthInfo: authInfo,
-        redPacket,
+        authorization: this.authorization, //
+        masterKeyPubkey: this.masterkey,
+        localKeyPubkey: this.localKey,
+        localKeySig: this.authSig,
+        localAuthInfo: this.authInfo,
+        redPacket: this.redPacket,
       }
       console.log(data)
       // todo js ts use one file bug
@@ -160,10 +179,10 @@ export default {
       console.log('res', res, this.short)
     },
 
-    async getRedPacketData(pubkey, pwd) {
+    async getRedPacketData() {
       console.log(this.short) // this is short url
-      const address = getAddressByPubkey(pubkey)
-      const password = getKeyPassword(pwd)
+      const address = getAddressByPubkey(this.masterkey)
+      const password = getKeyPassword(this.password)
       // todo get data
       const data = {
         password,
@@ -203,34 +222,13 @@ export default {
           data.localAuthInfo,
           address,
         )
+        this.tx = tx
         console.log('txhash:', tx)
         // todo tx post other api
       } else {
         // todo show no red packet
       }
       console.log(res)
-    },
-
-    async bindSign(message) {
-      console.log('🌊message', message)
-      const messageHash = createHash('SHA256')
-        .update(message)
-        .digest('hex')
-        .toString()
-      const data = await new UnipassProvider(
-        process.env.NUXT_ENV_UNIPASS_URL,
-      ).sign(messageHash)
-      let signature = ''
-      let pubkey = ''
-      if (data.startsWith('0x')) {
-        signature = data
-      } else {
-        const info = JSON.parse(data)
-        pubkey = info.pubkey
-        signature = `0x01${info.sign.replace('0x', '')}`
-      }
-      console.log('🌊pubkey', pubkey)
-      console.log('🌊signature', signature)
     },
   },
 }

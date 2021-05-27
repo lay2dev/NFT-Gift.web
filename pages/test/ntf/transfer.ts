@@ -77,34 +77,34 @@ export async function redPacketTransfer(
   console.log('txhash', txhash)
 }
 
-/**
- * auth key to use ntf
- * @param masterPubkey when unipass sign get materkey
- * @param exchangePubkey one ntf have one keyx_pubkey its type of array
- * @param localPubkey when unipass sign get localPubkey
- * retrun  localAuthSig and localAuthInfo will push to server save
- */
-export async function authKeyX(
-  masterPubkey: string,
-  exchangePubkey: string[],
-  localPubkey: string,
-) {
-  const collector = new UnipassIndexerCollector(INDEXER_URL)
-  const fromAddress = getAddressByPubkey(masterPubkey)
-  console.log('fromAddress', fromAddress)
-  const cells = await collector.collectAllLiveCells(
-    new Address(fromAddress, AddressType.ckb),
-    new Amount('10000'),
-  )
-  const inputCells = cells.slice(0, 4)
-  const localAuth: LocalAuthInfo = []
-  for (const item of exchangePubkey) {
-    const data = {
-      pubkeyHash: getPubkeyHash(item),
-      outpoints: inputCells.map((x) => x.outPoint as OutPoint),
-    }
-    localAuth.push(data)
-  }
-  const { authInfo, authSig } = await getSecondaryAuth(localPubkey, localAuth)
-  return { localAuthSig: authInfo, localAuthInfo: authSig }
-}
+// /**
+//  * auth key to use ntf
+//  * @param masterPubkey when unipass sign get materkey
+//  * @param exchangePubkey one ntf have one keyx_pubkey its type of array
+//  * @param localPubkey when unipass sign get localPubkey
+//  * retrun  localAuthSig and localAuthInfo will push to server save
+//  */
+// export async function authKeyX(
+//   masterPubkey: string,
+//   exchangePubkey: string[],
+//   localPubkey: string,
+// ) {
+//   const collector = new UnipassIndexerCollector(INDEXER_URL)
+//   const fromAddress = getAddressByPubkey(masterPubkey)
+//   console.log('fromAddress', fromAddress)
+//   const cells = await collector.collectAllLiveCells(
+//     new Address(fromAddress, AddressType.ckb),
+//     new Amount('10000'),
+//   )
+//   const inputCells = cells.slice(0, 4)
+//   const localAuth: LocalAuthInfo = []
+//   for (const item of exchangePubkey) {
+//     const data = {
+//       pubkeyHash: getPubkeyHash(item),
+//       outpoints: inputCells.map((x) => x.outPoint as OutPoint),
+//     }
+//     localAuth.push(data)
+//   }
+//   const { authInfo, authSig } = await getSecondaryAuth(localPubkey, localAuth)
+//   return { localAuthSig: authInfo, localAuthInfo: authSig }
+// }

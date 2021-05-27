@@ -30,7 +30,7 @@ import {
  * @param localAuthInfo packet api retrun localAuthSig
  * @param toAddress local users ckb address
  */
-export async function transfer(
+export async function redPacketTransfer(
   masterPubkey: string,
   masterAuth: string,
   localAuthSig: string,

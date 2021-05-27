@@ -47,6 +47,7 @@ import {
 } from './ntf/utils'
 import { getSecondaryAuth, serializeLocalAuth } from './ntf/auth-item'
 import { redPacketTransfer } from './ntf/transfer'
+
 export default {
   data() {
     return {
@@ -115,15 +116,16 @@ export default {
       for (const item of nfts) {
         const { pubkey, pem } = await generateKey('generateKey', this.password)
         console.log('[token_outpoint]', item.token_outpoint)
+        const outpoints = [
+          {
+            index: item.token_outpoint.index,
+            txHash: item.token_outpoint.tx_hash,
+          },
+        ]
         redPacket.push({
           encrypt: pem,
           keyPubkey: pubkey,
-          outpoints: [
-            {
-              index: item.token_outpoint.index,
-              txHash: item.token_outpoint.tx_hash,
-            },
-          ],
+          outpoints: JSON.stringify(outpoints),
           outpointSize: 1,
         })
         localAuth.push({
@@ -172,7 +174,7 @@ export default {
       this.authInfo = authInfo
     },
     async getShortData() {
-      const password = getKeyPassword(this.address)
+      const password = getKeyPassword(this.password)
       console.log('[password]', password, this.password)
       // todo push data
       const data = {
@@ -215,6 +217,8 @@ export default {
         address,
       }
       console.log('[data]', data)
+      Sea.Ajax.HOST = process.env.NUXT_ENV_HOST
+      console.log('[host]', Sea.Ajax.HOST)
       const res = await Sea.Ajax({
         url: `/ntf/${this.short}`,
         method: 'get',
@@ -223,29 +227,35 @@ export default {
           address: data.address,
         },
       })
-      if (data.success) {
+      if (res.success) {
         const resData = res.data
+        console.log('[resData]', resData)
         const data = {
           authorization: resData.authorization, //
-          localKeySig: resData.authSig,
-          localKeyPubkey: resData.localKey,
-          masterKeyPubkey: resData.masterkey,
-          localAuthInfo: resData.authInfo,
-          redPacket: resData.redPacket,
+          localKeySig: resData.localKeySig,
+          localKeyPubkey: resData.localKeyPubkey,
+          masterKeyPubkey: resData.masterKeyPubkey,
+          localAuthInfo: resData.localAuthInfo,
+          encrypt: resData.encrypt,
+          keyPubkey: resData.keyPubkey,
+          outpointSize: resData.outpointSize,
+          outpoints: JSON.parse(resData.outpoints),
         }
+        console.log('[data]', resData, resData.encrypt)
         // todo
         const key = await decryptMasterKey(
-          data.redPacket.encrypt,
+          data.encrypt,
           'generateKey',
-          pwd,
+          this.password,
         )
+        console.log('[key]', key)
         // todo transfer
         const tx = await redPacketTransfer(
           data.masterKeyPubkey,
           data.authorization,
           data.localKeySig,
           key,
-          data.redPacket.pubkey,
+          data.pubkey,
           data.localAuthInfo,
           address,
         )

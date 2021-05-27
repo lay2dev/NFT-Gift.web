@@ -44,14 +44,18 @@ export async function redPacketTransfer(
     exchangePubkey,
     localAuthInfo,
   )
+  console.log('[provider]', provider)
   const collector = new UnipassIndexerCollector(INDEXER_URL)
+  console.log('[collector]', collector)
   const pwcore = await new PWCore(NODE_URL).init(provider, collector)
+  console.log('[pwcore]', pwcore)
   const fromAddress = getAddressByPubkey(masterPubkey)
   console.log('fromAddress', fromAddress)
   const cells = await collector.collectAllLiveCells(
     new Address(fromAddress, AddressType.ckb),
     new Amount('10000'),
   )
+  console.log('localAuthInfo', localAuthInfo)
   const inputCells = cells.slice(0, 4)
   const lockLen =
     (1 + (8 + 256 * 2) * 3) * 2 + localAuthInfo.replace('0x', '').length
@@ -63,13 +67,18 @@ export async function redPacketTransfer(
       output_type: '',
     },
   }
-  const builder = new RedPacketBuilder(
-    new Address(toAddress, AddressType.ckb),
-    inputCells,
-    options,
-    [rsaDep, acpDep, unipassDep],
-  )
-  const signer = new UnipassSigner([provider])
-  const txhash = await pwcore.sendTransaction(builder, signer)
-  console.log('txhash', txhash)
+  try {
+    const builder = new RedPacketBuilder(
+      new Address(toAddress, AddressType.ckb),
+      inputCells,
+      options,
+      [rsaDep, acpDep, unipassDep],
+    )
+    const signer = new UnipassSigner([provider])
+    const txhash = await pwcore.sendTransaction(builder, signer)
+    console.log('txhash', txhash)
+    return txhash
+  } catch (e) {
+    console.log(e)
+  }
 }

@@ -9,6 +9,11 @@
 腾讯 [教程](https://cloud.tencent.com/document/product/213/8623)
 `yarn config set registry https://mirrors.cloud.tencent.com/npm`
 
+```
+1: npm config set registry https://mirrors.tencent.com/npm/
+2: npm install nrm -g; nrm add tencent https://mirrors.tencent.com/npm/; nrm use tencent;
+```
+
 ## 行尾序列
 
 先设置 [教程](https://juejin.cn/post/6844904069304156168)

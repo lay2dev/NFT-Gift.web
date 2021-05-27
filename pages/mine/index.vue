@@ -7,7 +7,7 @@
         src="~/assets/img/exit_to_app.svg"
         alt="exit"
         class="exit"
-        @click="$router.push('/')"
+        @click="bindExit"
       />
     </header>
     <main>
@@ -71,6 +71,12 @@ export default {
   created() {
     const provider = this.$store.state.provider
     console.log('🌊', provider)
+  },
+  methods: {
+    bindExit() {
+      Sea.localStorage('provider', '')
+      this.$router.replace('/')
+    },
   },
 }
 </script>

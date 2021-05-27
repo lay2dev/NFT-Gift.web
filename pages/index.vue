@@ -19,7 +19,17 @@ export default {
   data() {
     return {}
   },
+  mounted() {
+    this.init()
+  },
   methods: {
+    init() {
+      const provider = Sea.localStorage('provider')
+      if (provider) {
+        this.$store.state.provider = provider
+        this.$router.push('/mine')
+      }
+    },
     async bindLogin() {
       const env = 'https://unipass-me-git-dev-lay2.vercel.app/'
       const url = {
@@ -33,6 +43,7 @@ export default {
         url.CHAIN_ID,
       )
       if (PWCore.provider) {
+        Sea.localStorage('provider', PWCore.provider)
         this.$store.state.provider = PWCore.provider
         this.$router.push('/mine')
       } else {

@@ -25,6 +25,7 @@
 </template>
 <script>
 // test
+import { Address, AddressType, Amount } from '@lay2/pw-core'
 import {
   getAddressByPubkey,
   getDataFromSignString,
@@ -35,8 +36,7 @@ import {
   decryptMasterKey,
 } from './ntf/utils'
 import { getSecondaryAuth } from './ntf/auth-item'
-import { redPacketTransfer } from './ntf/nft'
-import { Address, AddressType, Amount } from '@lay2/pw-core'
+// import { redPacketTransfer } from './ntf/nft'
 import { UnipassIndexerCollector } from './ntf/unipass-indexer-collector'
 export default {
   data() {

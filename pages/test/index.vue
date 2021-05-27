@@ -1,51 +1,106 @@
 <template>
   <div id="page-test">
     <el-collapse v-model="activeName" accordion>
-      <el-collapse-item title="创建红包 - 授权签名" name="1">
-        <div class="tip" @click="createKeyX">红包-创建红包：本地生成keyX</div>
-        <div class="tip" @click="autheyX">
-          红包-创建红包：并使用localKey对红包内容进行授权签名
+      <el-collapse-item title="1登录" name="1">
+        <div @click="bindLogin">
+          <span>当前地址：{{ address }}</span>
         </div>
       </el-collapse-item>
-      <el-collapse-item title="接收红包 - 组装交易" name="2">
-        <div class="tip" @click="getRedPacketData">
-          红包-接收红包：获取红包状态
-        </div>
-        <div class="tip">
-          红包-接收红包：通过收到的红包链接，组装交易，使用keyX进行签名，并将完整提交交易上链
-        </div>
+      <el-collapse-item title=" 2 NFT 设置密码" name="2">
+        <div><el-input v-model="password"></el-input></div>
+        <div @click="getNFT">点击获取 NFT:{{ nft }}</div>
       </el-collapse-item>
-      <el-collapse-item title="分享图片" name="3">
-        <div class="tip" @click="getShortData">
-          红包-生成内含二维码的红包分享图片
-        </div>
+      <el-collapse-item title="3 签名授权" name="3">
+        <div>sign:{{ sign }}</div>
+      </el-collapse-item>
+      <el-collapse-item title="4 提交服务器" name="4">
+        <div>short:{{ short }}</div>
+      </el-collapse-item>
+      <el-collapse-item title="5 分享地址" name="5">
+        <div>shortUrl:{{ shortUrl }}</div>
+      </el-collapse-item>
+      <el-collapse-item title="6 输入口令获取数据" name="6">
+        <div><el-input v-model="password"></el-input></div>
+        <div>data:{{ data }}</div>
+      </el-collapse-item>
+      <el-collapse-item title="7 提交交易" name="7">
+        <div>tx:{{ tx }}</div>
+      </el-collapse-item>
+      <el-collapse-item title="8 返回交易" name="8">
+        <div>res:{{ res }}</div>
       </el-collapse-item>
     </el-collapse>
   </div>
 </template>
 <script>
 // test
-import { Address, AddressType, Amount } from '@lay2/pw-core'
+import UnipassProvider from '@/assets/js/UnipassProvider.ts'
+import PWCore, {
+  // Address,
+  // AddressType,
+  // Amount,
+  IndexerCollector,
+} from '@lay2/pw-core'
 import {
   getAddressByPubkey,
   getDataFromSignString,
   getKeyPassword,
   getPubkeyHash,
-  INDEXER_URL,
   generateKey,
   decryptMasterKey,
 } from './ntf/utils'
 import { getSecondaryAuth } from './ntf/auth-item'
-import { redPacketTransfer } from './ntf/nft'
-import { UnipassIndexerCollector } from './ntf/unipass-indexer-collector'
+import { redPacketTransfer } from './ntf/transfer'
 export default {
   data() {
     return {
       activeName: '',
       short: '',
+      shortUrl: '',
+      address: '',
+      password: '',
+      nft: null,
+      sign: '',
+      tx: '',
+      data: '',
+      res: '',
     }
   },
   methods: {
+    async bindLogin() {
+      const url = {
+        NODE_URL: 'https://testnet.ckb.dev',
+        INDEXER_URL: 'https://testnet.ckb.dev/indexer',
+        CHAIN_ID: 1,
+      }
+      await new PWCore(url.NODE_URL).init(
+        new UnipassProvider(process.env.NUXT_ENV_UNIPASS_URL),
+        new IndexerCollector(url.INDEXER_URL),
+        url.CHAIN_ID,
+      )
+      if (PWCore.provider) {
+        this.address = PWCore.provider.address.addressString
+        console.log(this.address)
+      } else {
+        this.$message.error('连接失败')
+      }
+    },
+    async getNFT() {
+      const { Sea } = this
+      const host = 'https://goldenlegend.test.nervina.cn'
+      const res = await Sea.Ajax({
+        url: `${host}/api/explorer/v1/holder_tokens/${this.address}`,
+        data: {
+          page: 1,
+          limit: 1000,
+          include_submitting: true,
+        },
+      })
+      if (res.token_list) {
+        console.log('list', res.token_list)
+        this.nftList = res.token_list
+      }
+    },
     createKeyX() {
       getAddressByPubkey('Sdfadsfas')
     },
@@ -154,6 +209,28 @@ export default {
         // todo show no red packet
       }
       console.log(res)
+    },
+
+    async bindSign(message) {
+      console.log('🌊message', message)
+      const messageHash = createHash('SHA256')
+        .update(message)
+        .digest('hex')
+        .toString()
+      const data = await new UnipassProvider(
+        process.env.NUXT_ENV_UNIPASS_URL,
+      ).sign(messageHash)
+      let signature = ''
+      let pubkey = ''
+      if (data.startsWith('0x')) {
+        signature = data
+      } else {
+        const info = JSON.parse(data)
+        pubkey = info.pubkey
+        signature = `0x01${info.sign.replace('0x', '')}`
+      }
+      console.log('🌊pubkey', pubkey)
+      console.log('🌊signature', signature)
     },
   },
 }

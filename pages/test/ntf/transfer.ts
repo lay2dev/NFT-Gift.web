@@ -55,7 +55,7 @@ export async function redPacketTransfer(
     new Address(fromAddress, AddressType.ckb),
     new Amount('10000'),
   )
-  let inputCells = cells.slice(0, 4)
+  const inputCells = cells.slice(0, 4)
   const lockLen =
     (1 + (8 + 256 * 2) * 3) * 2 + localAuthInfo.replace('0x', '').length
   console.log('lockLen', lockLen)
@@ -96,9 +96,9 @@ export async function authKeyX(
     new Address(fromAddress, AddressType.ckb),
     new Amount('10000'),
   )
-  let inputCells = cells.slice(0, 4)
+  const inputCells = cells.slice(0, 4)
   const localAuth: LocalAuthInfo = []
-  for (let item of exchangePubkey) {
+  for (const item of exchangePubkey) {
     const data = {
       pubkeyHash: getPubkeyHash(item),
       outpoints: inputCells.map((x) => x.outPoint as OutPoint),

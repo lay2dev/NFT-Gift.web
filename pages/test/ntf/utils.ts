@@ -1,5 +1,4 @@
 import {
-  Address,
   Blake2bHasher,
   CellDep,
   DepType,
@@ -60,7 +59,7 @@ export function getAddressByPubkey(pubkey: string): string {
     .digest()
     .serializeJson()
     .slice(0, 42)
-  let script = new Script(UNIPASS_TYPE_ID, hashHex, HashType.type)
+  const script = new Script(UNIPASS_TYPE_ID, hashHex, HashType.type)
   return script.toAddress(getDefaultPrefix()).toCKBAddress()
 }
 /**

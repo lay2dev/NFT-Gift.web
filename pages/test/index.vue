@@ -36,7 +36,7 @@ import {
   decryptMasterKey,
 } from './ntf/utils'
 import { getSecondaryAuth } from './ntf/auth-item'
-// import { redPacketTransfer } from './ntf/nft'
+import { redPacketTransfer } from './ntf/nft'
 import { UnipassIndexerCollector } from './ntf/unipass-indexer-collector'
 export default {
   data() {
@@ -58,33 +58,25 @@ export default {
       // todo get N key
       const redPacket = []
       const keyAuthArray = []
-      for (let item of nfts) {
-        const { key, pubkey, pem } = await generateKey('generateKey', pwd)
+      for (const item of nfts) {
+        const { pubkey, pem } = await generateKey('generateKey', pwd)
         redPacket.push({
           encrypt: pem,
           keyPubkey: pubkey,
-          outpoints: item, // todo item.outpoints
-          outpointSize: item, // todo item.outpointSize
+          outpoint: item.outpoint, // todo item.outpoints
+          outpointSize: item.outpoint_size, // todo item.outpointSize
         })
         keyAuthArray.push({
           pubkey,
           outpoints: item, // todo item.outpoints
         })
       }
-      const collector = new UnipassIndexerCollector(INDEXER_URL)
-      const fromAddress = getAddressByPubkey(masterkey)
-      console.log('fromAddress', fromAddress)
-      const cells = await collector.collectAllLiveCells(
-        new Address(fromAddress, AddressType.ckb),
-        new Amount('10000'),
-      )
-      let inputCells = cells.slice(0, 4)
       const localAuth = []
-      for (let item of keyAuthArray) {
+      for (const item of keyAuthArray) {
         const data = {
           pubkeyHash: getPubkeyHash(item.pubkey),
-          // todo get outpoints by api
-          outpoints: inputCells.map((x) => x.outPoint),
+          // get outpoints by api outpoints = outpoint_size + [outpoint]
+          outpoints: item.outpoint_size + item.outpoint,
         }
         localAuth.push(data)
       }
@@ -93,7 +85,7 @@ export default {
       // todo push data
       const data = {
         password,
-        authorization: authorization, //
+        authorization, //
         localKeySig: authSig,
         localKeyPubkey: localKey,
         masterKeyPubkey: masterkey,
@@ -120,7 +112,7 @@ export default {
       // todo get data
       const data = {
         password,
-        address: address,
+        address,
       }
       const res = await Sea.Ajax({
         url: `/ntf/${this.short}`,

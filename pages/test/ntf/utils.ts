@@ -18,7 +18,7 @@ interface UnipassData {
 }
 
 export const UNIPASS_TYPE_ID =
-  '0x949db47aac7d1a2a0d921344dc5c1ddefda390813a1881d56a0872d798e0d629'
+  '0x124a60cd799e1fbca664196de46b3f7f0ecb7138133dcaea4893c51df5b02be6'
 export const NODE_URL = 'https://testnet.ckb.dev'
 export const INDEXER_URL = 'https://testnet.ckb.dev/indexer'
 export const rsaDep = new CellDep(
@@ -53,6 +53,7 @@ export function getPubkeyHash(pubkey: string) {
  * @param pubkey
  */
 export function getAddressByPubkey(pubkey: string): string {
+  console.log('[pubkey]', pubkey)
   const pubKeyBuffer = Buffer.from(pubkey.replace('0x', ''), 'hex')
   const hashHex = new Blake2bHasher()
     .update(pubKeyBuffer.buffer)
@@ -120,7 +121,7 @@ function ab2str(buf: ArrayBuffer) {
 /**
  * one nft data create one kay par (key.private kay key.publick key)
  */
-export async function generateKey(salt: string, password: string) {
+export async function generateKey(salt: string, password?: string) {
   // create RSA key
   const key = await window.crypto.subtle.generateKey(
     {
@@ -129,7 +130,7 @@ export async function generateKey(salt: string, password: string) {
       publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
       hash: { name: 'SHA-256' },
     },
-    false,
+    !!password,
     ['sign', 'verify'],
   )
 
@@ -146,21 +147,32 @@ export async function generateKey(salt: string, password: string) {
   sA.writeUInt32LE(nA.length * 8, 0)
 
   const pubkey = Buffer.concat([sA, eA, nA]).toString('hex')
-  // generate pem from private key
-  let pkcs8: ArrayBuffer | null = await window.crypto.subtle.exportKey(
-    'pkcs8',
-    key.privateKey,
-  )
-  const exportedAsString = ab2str(pkcs8)
-  const exportedAsBase64 = window.btoa(exportedAsString)
-  const pemExported = `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`
-  pkcs8 = null
-  const strongPass = forge.pkcs5.pbkdf2(password, salt, 2 ** 16, 16)
-  const rsaKey = forge.pki.privateKeyFromPem(pemExported)
-  const pem = forge.pki.encryptRsaPrivateKey(rsaKey, strongPass, {
-    algorithm: 'aes256',
-  })
-  console.log('[master key pem', pem)
+
+  let pem: string | null = null
+  if (password) {
+    // generate pem from private key
+    let pkcs8: ArrayBuffer | null = await window.crypto.subtle.exportKey(
+      'pkcs8',
+      key.privateKey,
+    )
+    const exportedAsString = ab2str(pkcs8)
+    const exportedAsBase64 = window.btoa(exportedAsString)
+    const pemExported = `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`
+    pkcs8 = null
+
+    // encrypt key with password
+    // const start = new Date().getTime();
+    const strongPass = forge.pkcs5.pbkdf2(password, salt, 2 ** 16, 16)
+    // const end = new Date().getTime();
+    // alert(`[kdf time] ${(end - start) / 1000}`);
+
+    const rsaKey = forge.pki.privateKeyFromPem(pemExported)
+    pem = forge.pki.encryptRsaPrivateKey(rsaKey, strongPass, {
+      algorithm: 'aes256',
+    })
+    console.log('[master key pem', pem)
+  }
+
   return { key, pubkey, pem }
 }
 

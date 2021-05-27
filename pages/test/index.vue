@@ -34,7 +34,6 @@
 </template>
 <script>
 // test
-import { createHash } from 'crypto'
 import UnipassProvider from '@/assets/js/UnipassProvider.ts'
 import PWCore, { IndexerCollector } from '@lay2/pw-core'
 import {
@@ -45,7 +44,7 @@ import {
   generateKey,
   decryptMasterKey,
 } from './ntf/utils'
-import { getSecondaryAuth } from './ntf/auth-item'
+import { getSecondaryAuth, serializeLocalAuth } from './ntf/auth-item'
 import { redPacketTransfer } from './ntf/transfer'
 export default {
   data() {
@@ -66,6 +65,7 @@ export default {
       redPacket: [],
       authSig: '',
       authInfo: '',
+      message: '',
     }
   },
   methods: {
@@ -92,7 +92,7 @@ export default {
       console.log('[address]', this.address)
       const host = 'https://goldenlegend.test.nervina.cn'
       const res = await Sea.Ajax({
-        url: `${host}/api/explorer/v1/holder_tokens/${this.address}`,
+        url: `${host}/api/explorer/v1/holder_tokens/ckt1qsfy5cxd0x0pl09xvsvkmert8alsajm38qfnmjh2fzfu2804kq47dpu576827rnszukq8k4pkjga7nkjmes05senttc`,
         data: {
           page: 1,
           limit: 1000,
@@ -103,7 +103,7 @@ export default {
         console.log('list', res.token_list)
         if (res.token_list.length) {
           this.nft = res.token_list[0]
-          createRedPacketData()
+          await this.createRedPacketData()
         }
       }
     },
@@ -125,23 +125,26 @@ export default {
         })
       }
       this.redPacket = redPacket
+      console.log(this.redPacket)
       const localAuth = []
       for (const item of keyAuthArray) {
         const data = {
           pubkeyHash: getPubkeyHash(item.pubkey),
-          outpoints: item.outpoint_size + item.outpoint,
+          outpoints: item.token_outpoint, // todo
         }
         localAuth.push(data)
       }
+      console.log('[localAuth]', localAuth)
+      // todo  get signdata
+      const authItemsBuffer = serializeLocalAuth(localAuth)
+      const authItemsHex = `0x${authItemsBuffer.toString('hex')}`
+      console.log('[authItemsHex]', authItemsHex)
+      this.message = authItemsHex
     },
     async bindSign() {
-      const messageHash = createHash('SHA256')
-        .update(message)
-        .digest('hex')
-        .toString()
       const data = await new UnipassProvider(
         process.env.NUXT_ENV_UNIPASS_URL,
-      ).sign(messageHash)
+      ).sign(message)
       this.sign = data
       const { masterkey, authorization, localKey } = getDataFromSignString(
         this.sign,
@@ -150,7 +153,11 @@ export default {
       this.authorization = authorization
       this.localKey = localKey
       console.log('🌊signature', sign)
-      const { authSig, authInfo } = getSecondaryAuth(localKey, localAuth)
+      const { authSig, authInfo } = getSecondaryAuth(
+        localKey,
+        this.message,
+        this.sign,
+      )
       this.authSig = authSig
       this.authInfo = authInfo
     },

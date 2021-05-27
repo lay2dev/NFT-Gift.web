@@ -98,11 +98,7 @@ const mainCKB = {
 }
 
 export function cellDeps(): AllCellDeps {
-  const isLina = localStorage.getItem('lina')
-  let data = AggronCellDeps
-  if (isLina) data = LinaCellDeps
-  console.log('[cells]:', isLina, data)
-  return data
+  return LinaCellDeps
 }
 
 export function saveEnvData(url: string) {

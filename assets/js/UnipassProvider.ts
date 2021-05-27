@@ -9,7 +9,6 @@ import {
   Script,
 } from '@lay2/pw-core'
 import { getAddressByPubkey } from '~/pages/test/ntf/utils'
-// import { getData, saveData } from './LocalData'
 
 type UP_ACT =
   | 'UP-READY'
@@ -241,38 +240,17 @@ function closeFrame(frame: HTMLIFrameElement) {
 }
 
 function pubkeyToAddress(pubkey: string): string {
-  console.log('[pubkey]', pubkey)
-  console.log('[pubkey-address]', getAddressByPubkey(pubkey))
+  console.log('[address]', getAddressByPubkey(pubkey))
   const pubKeyBuffer = Buffer.from(pubkey.replace('0x', ''), 'hex')
-
   const hashHex = new Blake2bHasher()
     .update(pubKeyBuffer.buffer)
     .digest()
     .serializeJson()
     .slice(0, 42)
-  console.log('hashHex')
-  const isLina = localStorage.getItem('lina')
-  const isTest = localStorage.getItem('test')
-  let script: Script
-  if (isLina) {
-    script = new Script(
-      '0x614d40a86e1b29a8f4d8d93b9f3b390bf740803fa19a69f1c95716e029ea09b3',
-      hashHex,
-      HashType.type,
-    )
-  } else if (isTest) {
-    script = new Script(
-      '0x949db47aac7d1a2a0d921344dc5c1ddefda390813a1881d56a0872d798e0d629',
-      hashHex,
-      HashType.type,
-    )
-  } else {
-    script = new Script(
-      '0x949db47aac7d1a2a0d921344dc5c1ddefda390813a1881d56a0872d798e0d629',
-      hashHex,
-      HashType.type,
-    )
-  }
-  console.log(script)
+  const script = new Script(
+    '0x614d40a86e1b29a8f4d8d93b9f3b390bf740803fa19a69f1c95716e029ea09b3',
+    hashHex,
+    HashType.type,
+  )
   return script.toAddress(getDefaultPrefix()).toCKBAddress()
 }

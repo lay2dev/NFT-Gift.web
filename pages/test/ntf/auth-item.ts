@@ -14,28 +14,21 @@ export type LocalAuthInfo = AuthItem[]
 
 export function getSecondaryAuth(
   localPubkey: string,
-  localAuthInfo: LocalAuthInfo,
+  authItemsHex: string,
+  sig: string,
 ): AuthData {
-  console.log('localPubkey2', localPubkey)
-
-  const authItemsBuffer = serializeLocalAuth(localAuthInfo)
-
-  const authItemsHex = `0x${authItemsBuffer.toString('hex')}`
   // todo unipass sign authItemsHex
-  const sig = ''
-
   const authSig = Buffer.concat([
     Buffer.from(localPubkey.replace('0x', ''), 'hex'),
     Buffer.from(sig.replace('0x', ''), 'hex'),
   ])
-
   return {
     authSig: `0x${authSig.toString('hex')}`,
     authInfo: authItemsHex,
   }
 }
 
-function serializeLocalAuth(localAuth: LocalAuthInfo) {
+export function serializeLocalAuth(localAuth: LocalAuthInfo) {
   const size = localAuth.length
   const sizeBuffer = Buffer.alloc(4)
   sizeBuffer.writeUInt32LE(size, 0)

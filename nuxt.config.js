@@ -17,7 +17,11 @@ export default {
         href: 'https://cdn.jsdelivr.net/npm/normalize.css@latest/normalize.min.css',
       },
     ],
-    script: [{ src: '/cdn/bigsea.js' }],
+    script: [
+      {
+        // src: ''
+      },
+    ],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css

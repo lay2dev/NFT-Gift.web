@@ -12,6 +12,7 @@ import PWCore, {
   // Address,
   // AddressType,
   // Amount,
+  ChainID,
   IndexerCollector,
 } from '@lay2/pw-core'
 
@@ -34,7 +35,10 @@ export default {
       const url = {
         NODE_URL: 'https://testnet.ckb.dev',
         INDEXER_URL: 'https://testnet.ckb.dev/indexer',
-        CHAIN_ID: 1,
+        CHAIN_ID: ChainID.ckb_testnet,
+        // NODE_URL: 'https://lina.ckb.dev',
+        // INDEXER_URL: 'https://mainnet.ckb.dev/indexer',
+        // CHAIN_ID: ChainID.ckb,
       }
       await new PWCore(url.NODE_URL).init(
         new UnipassProvider(process.env.NUXT_ENV_UNIPASS_URL),

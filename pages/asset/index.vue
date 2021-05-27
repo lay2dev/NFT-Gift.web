@@ -106,6 +106,10 @@ export default {
       },
     }
   },
+  created() {
+    // const id = this.$route.query.token_uuid
+    // this.Sea.Ajax({})
+  },
   methods: {
     bindSend() {
       this.showSend = true

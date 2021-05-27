@@ -15,7 +15,7 @@
         <template v-for="(e, i) in nftList">
           <router-link
             :key="i"
-            :to="{ path: '/asset', query: { class_uuid: e.class_uuid } }"
+            :to="{ path: '/asset', query: { token_uuid: e.token_uuid } }"
           >
             <div class="nft">
               <div class="left">
@@ -50,7 +50,7 @@
                 </div>
               </div>
               <div class="right">
-                {{ parseInt(Math.random() * (1000 - 0) + 0) }}
+                {{ nftDict[e.class_uuid] }}
               </div>
             </div>
           </router-link>
@@ -67,16 +67,21 @@ export default {
   data() {
     return {
       nftList: [],
+      nftDict: {},
+      provider: null,
     }
   },
   created() {
-    this.checkLoign()
-    this.init()
+    const provider = this.checkLoign()
+    this.init(provider)
   },
   methods: {
-    async init() {
+    async init(provider) {
+      if (!provider) return
       const { Sea } = this
-      const host = 'https://goldenlegend.test.nervina.cn'
+      const host = process.env.NUXT_ENV_JINSE
+      // aven look
+      console.log('🌊', provider._address.addressString)
       const address =
         'ckt1qsfy5cxd0x0pl09xvsvkmert8alsajm38qfnmjh2fzfu2804kq47vg3jksn3yfgasw29h9whngxp9len3fwvqulayfq'
       const res = await Sea.Ajax({
@@ -88,13 +93,22 @@ export default {
         },
       })
       if (res.token_list) {
-        this.nftList = res.token_list
+        const arr = Sea.set(res.token_list, 'class_uuid')
+        for (const e of res.token_list) {
+          const id = e.class_uuid
+          if (this.nftDict[id]) {
+            this.nftDict[id] += 1
+          } else {
+            this.nftDict[id] = 1
+          }
+        }
+        this.nftList = arr
       }
     },
     checkLoign() {
       const provider = this.$store.state.provider
       if (provider) {
-        console.log('🌊provider', provider)
+        return provider
       } else {
         this.$router.replace('/')
       }

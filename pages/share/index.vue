@@ -1,7 +1,7 @@
 <template>
   <div id="page-share">
     <back />
-    <el-image src="/src/pages/share/top-bg.png"></el-image>
+    <img src="~/assets/img/top-bg.png" />
   </div>
 </template>
 <script>

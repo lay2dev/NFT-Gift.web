@@ -3,21 +3,13 @@
     <Nuxt />
   </div>
 </template>
-
 <script>
 export default {
-  mounted() {
-    const { Sea } = window
+  beforeCreate() {
+    const { Sea } = this
     Sea.Ajax.HOST = process.env.NUXT_ENV_HOST
     // 默认参数
-    // Sea.Ajax.default = function () {
-    //   const data = {}
-    //   const token = Sea.localStorage('token')
-    //   if (token) {
-    //     data.token = token
-    //   }
-    //   return data
-    // }
+    // Sea.Ajax.default = function () {}
     // Ajax 请求失败返回值 统一处理
     Sea.Ajax.fail = (r) => {
       this.$message.error(`请求失败 ${r.statusText}`)

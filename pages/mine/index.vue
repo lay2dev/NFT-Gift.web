@@ -62,23 +62,43 @@
 <script>
 import { createHash } from 'crypto'
 import UnipassProvider from '@/assets/js/UnipassProvider.ts'
-import mock from './mock'
 
 export default {
   data() {
     return {
-      nftList: mock,
+      nftList: [],
     }
   },
   created() {
-    const provider = this.$store.state.provider
-    if (provider) {
-      console.log('🌊provider', provider)
-    } else {
-      this.$router.replace('/')
-    }
+    this.checkLoign()
+    this.init()
   },
   methods: {
+    async init() {
+      const { Sea } = this
+      const host = 'https://goldenlegend.test.nervina.cn'
+      const address =
+        'ckt1qsfy5cxd0x0pl09xvsvkmert8alsajm38qfnmjh2fzfu2804kq47vg3jksn3yfgasw29h9whngxp9len3fwvqulayfq'
+      const res = await Sea.Ajax({
+        url: `${host}/api/explorer/v1/holder_tokens/${address}`,
+        data: {
+          page: 1,
+          limit: 1000,
+          include_submitting: true,
+        },
+      })
+      if (res.token_list) {
+        this.nftList = res.token_list
+      }
+    },
+    checkLoign() {
+      const provider = this.$store.state.provider
+      if (provider) {
+        console.log('🌊provider', provider)
+      } else {
+        this.$router.replace('/')
+      }
+    },
     async bindSign(message) {
       console.log('🌊message', message)
       const messageHash = createHash('SHA256')

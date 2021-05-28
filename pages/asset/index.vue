@@ -79,20 +79,13 @@
 </template>
 <script>
 import UnipassProvider from '@/assets/js/UnipassProvider.ts'
-// import PWCore, { IndexerCollector } from '@lay2/pw-core'
 import {
-  // getAddressByPubkey,
   getDataFromSignString,
   getKeyPassword,
   getPubkeyHash,
   generateKey,
-  // decryptMasterKey,
 } from '@/assets/js/ntf/utils'
-import {
-  getSecondaryAuth,
-  serializeLocalAuth,
-  // deserializeLocalAuth,
-} from '@/assets/js/ntf/auth-item'
+import { getSecondaryAuth, serializeLocalAuth } from '@/assets/js/ntf/auth-item'
 
 export default {
   data() {

@@ -8,13 +8,7 @@
 </template>
 <script>
 import UnipassProvider from '@/assets/js/UnipassProvider.ts'
-import PWCore, {
-  // Address,
-  // AddressType,
-  // Amount,
-  ChainID,
-  IndexerCollector,
-} from '@lay2/pw-core'
+import PWCore, { ChainID, IndexerCollector } from '@lay2/pw-core'
 
 export default {
   data() {

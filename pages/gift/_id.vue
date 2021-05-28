@@ -1,6 +1,7 @@
 <template>
   <div id="page-share">
-    <el-image class="top-bg" :src="require('~/assets/img/top-bg.png')" />
+    <div class="email">{{ provider && provider._email }}</div>
+    <img class="top-bg" src="~/assets/img/top-bg.png" />
     <template v-if="status === 'sucess'">
       <div class="sucess">
         <div class="t1">恭喜你</div>
@@ -38,6 +39,15 @@
   </div>
 </template>
 <script>
+import UnipassProvider from '@/assets/js/UnipassProvider.ts'
+import PWCore, { ChainID, IndexerCollector } from '@lay2/pw-core'
+import {
+  getKeyPassword,
+  decryptMasterKey,
+  getAddressByPubkey,
+} from '@/assets/js/ntf/utils'
+import { redPacketTransfer } from '@/assets/js/ntf/transfer'
+
 export default {
   validate({ params }) {
     return Boolean(params.id)
@@ -46,34 +56,44 @@ export default {
     return {
       status: '',
       password: '',
+      provider: null,
+    }
+  },
+  mounted() {
+    const provider = Sea.localStorage('provider')
+    if (provider) {
+      this.provider = provider
     }
   },
   methods: {
     bindGet() {
+      if (!this.provider) {
+        this.bindLogin()
+        return
+      }
       // this.status = 'sucess'
       const id = this.$route.params.id
       const password = this.password || 'default'
-      console.log('🌊', id, password)
+      this.getRedPacketData({
+        id,
+        address: this.provider._address.addressString,
+        password: getKeyPassword(password),
+      })
     },
-    async getRedPacketData() {
-      const address = getAddressByPubkey(this.masterkey)
-      const password = getKeyPassword(this.password)
-      // todo get data
-      const data = {
-        password,
-        address,
-      }
-      Sea.Ajax.HOST = process.env.NUXT_ENV_HOST
-      const res = await Sea.Ajax({
-        url: `/ntf/${this.short}`,
+    async getRedPacketData({ id, address, password }) {
+      let res
+      res = await Sea.Ajax({
+        url: `/ntf/${id}`,
         method: 'get',
         data: {
-          password: data.password,
-          address: data.address,
+          password,
+          address,
         },
       })
       if (res.success) {
         const resData = res.data
+        const fromAddress = getAddressByPubkey(resData.masterKeyPubkey)
+        const toAddress = this.provider._address.addressString
         const data = {
           authorization: resData.authorization, //
           localKeySig: resData.localKeySig,
@@ -85,14 +105,11 @@ export default {
           outpointSize: resData.outpointSize,
           outpoints: JSON.parse(resData.outpoints),
         }
-        // todo
         const key = await decryptMasterKey(
           data.encrypt,
           'generateKey',
           this.password,
         )
-
-        // todo transfer
         const tx = await redPacketTransfer(
           data.masterKeyPubkey,
           data.authorization,
@@ -103,10 +120,38 @@ export default {
           address,
           data.outpoints,
         )
-        this.tx = tx
-        // todo tx post other api
+        const host = process.env.NUXT_ENV_JINSE
+        res = await Sea.Ajax({
+          url: `${host}/red_envelope_transactions`,
+          method: 'post',
+          data: {
+            tx_hash: tx,
+            from_address: fromAddress,
+            to_address: toAddress,
+          },
+        })
+        console.log('res', res)
+      }
+    },
+    async bindLogin() {
+      const url = {
+        NODE_URL: 'https://testnet.ckb.dev',
+        INDEXER_URL: 'https://testnet.ckb.dev/indexer',
+        CHAIN_ID: ChainID.ckb_testnet,
+      }
+      await new PWCore(url.NODE_URL).init(
+        new UnipassProvider(process.env.NUXT_ENV_UNIPASS_URL),
+        new IndexerCollector(url.INDEXER_URL),
+        url.CHAIN_ID,
+      )
+      const provider = PWCore.provider
+      if (provider && provider._address) {
+        Sea.localStorage('provider', provider)
+        this.$message.info('登录成功')
+        this.provider = provider
+        this.bindGet()
       } else {
-        // todo show no red packet
+        this.$message.warning('登录不成功')
       }
     },
   },
@@ -114,9 +159,17 @@ export default {
 </script>
 <style lang="stylus">
 #page-share {
+  position: relative;
+
+  .email {
+    position: absolute;
+    top: 16px;
+    text-align: center;
+    color: #f88d6e;
+  }
+
   .top-bg {
-    min-height: 130px;
-    width: 100vw;
+    width: 100%;
   }
 
   background: #F35543;

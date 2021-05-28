@@ -5,8 +5,7 @@
 </template>
 <script>
 export default {
-  beforeCreate() {
-    const { Sea } = this
+  mounted() {
     Sea.Ajax.HOST = process.env.NUXT_ENV_HOST
     // 默认参数
     // Sea.Ajax.default = function () {}

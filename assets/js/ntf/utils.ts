@@ -197,13 +197,9 @@ export async function generateKey(salt: string, password?: string) {
 export function getDataFromSignString(signstr: string): UnipassData {
   signstr = signstr.replace('0x01', '')
   const masterkey = signstr.substr(0, 528)
-  console.log('masterkey', masterkey, masterkey.length)
   const authorization = signstr.substring(528, 1040)
-  console.log('authorization', authorization, authorization.length)
   const localKey = signstr.substring(1040, 1568)
-  console.log('localKey', localKey, localKey.length)
   const sig = signstr.substring(1568, signstr.length)
-  console.log('sig', sig, sig.length)
   return { masterkey, authorization, localKey, sig }
 }
 /**

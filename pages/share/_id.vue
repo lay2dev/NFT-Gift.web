@@ -24,20 +24,21 @@
 import QRCode from 'qrcode'
 import html2canvas from 'html2canvas'
 export default {
+  validate({ params }) {
+    // 必须是number类型
+    return Boolean(params.id)
+  },
   data() {
     return {
       password: '',
       QRCode: '',
       png: '',
       loading: true,
+      shareUrl: '',
     }
   },
-  computed: {
-    shareUrl() {
-      return 'https://gift.unipass.me/VA1LawM72'
-    },
-  },
   mounted() {
+    this.shareUrl = window.location.href
     this.initQRCode()
   },
   methods: {

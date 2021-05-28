@@ -76,14 +76,22 @@
   </div>
 </template>
 <script>
+import UnipassProvider from '@/assets/js/UnipassProvider.ts'
+// import PWCore, { IndexerCollector } from '@lay2/pw-core'
 import {
   // getAddressByPubkey,
-  // getDataFromSignString,
-  // getKeyPassword,
+  getDataFromSignString,
+  getKeyPassword,
   getPubkeyHash,
   generateKey,
   // decryptMasterKey,
 } from '@/assets/js/ntf/utils'
+import {
+  getSecondaryAuth,
+  serializeLocalAuth,
+  // deserializeLocalAuth,
+} from '@/assets/js/ntf/auth-item'
+
 export default {
   data() {
     return {
@@ -106,12 +114,33 @@ export default {
   methods: {
     bindHandsel() {
       this.showSend = true
-      const { password, number } = this.form
-      const nft = this.$store.state.nft
-      this.createRedPacketData({ nft, password, number })
     },
-    bindSend() {
-      this.$router.push('/share')
+    async bindSend() {
+      const { redPacket, authItemsHex } = await this.createRedPacketData({
+        nft: this.$store.state.nft,
+        password: this.form.password,
+        number: this.form.number,
+      })
+      const sign = await this.bindSign({
+        message: authItemsHex,
+      })
+      if (!sign.authorization) {
+        return
+      }
+      const { short } = await this.getShortData({
+        password: getKeyPassword(this.form.password),
+        authorization: sign.authorization,
+        masterKeyPubkey: sign.masterkey,
+        localKeyPubkey: sign.localKey,
+        localKeySig: sign.authSig,
+        localAuthInfo: sign.authInfo,
+        redPacket,
+      })
+      if (short) {
+        this.$router.push(`/share/${short}`)
+      } else {
+        this.$message.error('请求失败')
+      }
     },
     async createRedPacketData({ nft, password, number }) {
       const nfts = [nft]
@@ -143,9 +172,34 @@ export default {
       }
       const authItemsBuffer = serializeLocalAuth(localAuth)
       const authItemsHex = `0x${authItemsBuffer.toString('hex')}`
-      // this.redPacket = redPacket
-      // this.message = authItemsHex
-      console.log('🌊', redPacket, authItemsHex)
+      return {
+        redPacket,
+        authItemsHex,
+      }
+    },
+    async bindSign({ message }) {
+      const data = await new UnipassProvider(
+        process.env.NUXT_ENV_UNIPASS_URL,
+      ).sign(message)
+      const sign = getDataFromSignString(data)
+      const { masterkey, authorization, localKey, sig } = sign
+      const { authSig, authInfo } = getSecondaryAuth(localKey, message, sig)
+      return {
+        masterkey,
+        authorization,
+        localKey,
+        authSig,
+        authInfo,
+      }
+    },
+    async getShortData(data) {
+      const res = await Sea.Ajax({
+        url: '/ntf',
+        method: 'post',
+        data,
+      })
+      return res
+      // this.shortUrl = window.location.origin + '/share/' + res.short
     },
   },
 }

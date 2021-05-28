@@ -607,7 +607,8 @@
         r.onreadystatechange = () => {
           if (r.readyState === 4) {
             const res = this.json(r.response)
-            if (r.status !== 200) {
+            const sucess = r.status >= 200 && r.status < 300
+            if (!sucess) {
               if (typeof this.Ajax.fail === 'function') {
                 this.Ajax.fail(r)
               }

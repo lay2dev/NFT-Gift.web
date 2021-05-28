@@ -3,7 +3,7 @@ import { getAddressByPubkey } from './utils'
 
 export class RedPacketProvider extends Provider {
   constructor(
-    private masterPubkey: string,
+    masterPubkey: string,
     private masterAuth: string,
     private localAuth: string,
     private exchangeKey: CryptoKey,
@@ -11,9 +11,11 @@ export class RedPacketProvider extends Provider {
     private localAuthInfo: string,
   ) {
     super(Platform.ckb)
-    console.log('[localAuth-provider]', masterAuth, typeof masterAuth)
     const addressStr = getAddressByPubkey(masterPubkey)
     this.address = new Address(addressStr, AddressType.ckb)
+    console.log('[address-provider]', this.address)
+    this.masterAuth =
+      masterPubkey.replace('0x', '') + this.masterAuth.replace('0x', '')
   }
 
   async init(): Promise<Provider> {
@@ -25,14 +27,12 @@ export class RedPacketProvider extends Provider {
     console.log('exchangePubkey', this.exchangePubkey)
     console.log('localAuthInfo', this.localAuthInfo)
     console.log('localAuth', this.localAuth)
-    this.masterAuth =
-      this.masterPubkey.replace('0x', '') + this.masterAuth.replace('0x', '')
     console.log('masterAuth', this.masterAuth)
 
     const sig = await window.crypto.subtle.sign(
       { name: 'RSASSA-PKCS1-v1_5' },
       this.exchangeKey,
-      Buffer.from(this.exchangePubkey.replace('0x', ''), 'hex').buffer,
+      Buffer.from(message.replace('0x', ''), 'hex').buffer,
     )
     console.log('sig', sig)
     const lock = Buffer.concat([

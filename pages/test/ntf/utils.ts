@@ -15,6 +15,7 @@ interface UnipassData {
   masterkey: string
   authorization: string
   localKey: string
+  sig: string
 }
 
 export const UNIPASS_TYPE_ID =
@@ -32,6 +33,13 @@ export const acpDep = new CellDep(
   DepType.code,
   new OutPoint(
     '0x04a1ac7fe15e454741d3c5c9a409efb9a967714ad2f530870514417978a9f655',
+    '0x0',
+  ),
+)
+export const redPacketDep = new CellDep(
+  DepType.code,
+  new OutPoint(
+    '0x7f9e3c1a2fc90411eb90fc2363101f6bd7b33875c3535117db5e52cd8a78b313',
     '0x0',
   ),
 )
@@ -194,7 +202,9 @@ export function getDataFromSignString(signstr: string): UnipassData {
   console.log('authorization', authorization, authorization.length)
   const localKey = signstr.substring(1040, 1568)
   console.log('localKey', localKey, localKey.length)
-  return { masterkey, authorization, localKey }
+  const sig = signstr.substring(1568, signstr.length)
+  console.log('sig', sig, sig.length)
+  return { masterkey, authorization, localKey, sig }
 }
 /**
  * this keyPass will push to server

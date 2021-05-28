@@ -48,7 +48,6 @@ export class RedPacketBuilder extends Builder {
     const changeCell = tx.raw.outputs.pop() as Cell
     changeCell.capacity = changeCell.capacity.sub(this.fee)
     tx.raw.outputs.push(changeCell)
-    console.log('[tx-new]', tx.raw.serializeJson())
     console.log(JSON.stringify(tx), 'rectifyTx')
     return tx
   }

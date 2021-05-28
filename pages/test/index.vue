@@ -165,13 +165,14 @@ export default {
       console.log('[sign]', data)
       this.sign = data
       console.log('[this.sign]', this.sign)
-      const { masterkey, authorization, localKey } = getDataFromSignString(
+      const { masterkey, authorization, localKey, sig } = getDataFromSignString(
         this.sign,
       )
       console.log('[masterkey, authorization, localKey]', {
         masterkey,
         authorization,
         localKey,
+        sig,
       })
       this.masterkey = masterkey
       this.authorization = authorization
@@ -179,10 +180,11 @@ export default {
       const { authSig, authInfo } = getSecondaryAuth(
         localKey,
         this.message,
-        this.sign,
+        sig,
       )
       this.authSig = authSig
       this.authInfo = authInfo
+      console.log('this.authSig', this.authSig)
     },
     async getShortData() {
       const password = getKeyPassword(this.password)

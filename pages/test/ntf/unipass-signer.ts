@@ -11,6 +11,10 @@ export class UnipassSigner extends Signer {
     for (const message of messages) {
       let matched = false
       for (const provider of this.providers) {
+        console.log(
+          provider.address.toLockScript().toHash(),
+          message.lock.toHash(),
+        )
         if (
           provider.address.toLockScript().toHash() === message.lock.toHash()
         ) {

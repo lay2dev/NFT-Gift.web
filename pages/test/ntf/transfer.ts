@@ -32,7 +32,7 @@ import {
  */
 export async function redPacketTransfer(
   masterPubkey: string,
-  masterAuth: string,
+  authorization: string,
   localAuthSig: string,
   exchangeKey: CryptoKey,
   exchangePubkey: string,
@@ -40,10 +40,9 @@ export async function redPacketTransfer(
   toAddress: string,
   outpoints: OutPoint[],
 ) {
-  console.log('[localAuth-transfer]', masterAuth, typeof masterAuth)
   const provider = new RedPacketProvider(
     masterPubkey,
-    masterAuth,
+    authorization,
     localAuthSig,
     exchangeKey,
     exchangePubkey,

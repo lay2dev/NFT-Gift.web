@@ -115,9 +115,11 @@ export default {
     height: 343px;
     align-items: center;
 
-    img {
+    .el-image {
       width: 300px;
       height: 300px;
+      border-radius: 4px;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.24);
       // will-change: transform;
       // transition: all 1000ms cubic-bezier(0.03, 0.98, 0.52, 0.99) 0s;
       // transform: perspective(1000px) rotateX(0deg) rotateY(15deg) scale3d(1, 1, 1);

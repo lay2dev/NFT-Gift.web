@@ -19,7 +19,7 @@
                 class="nft-image"
                 :src="e.class_bg_image_url"
                 alt="bg_image_url"
-                fit="cover"
+                fit="contain"
                 lazy
                 :preview-src-list="[e.class_bg_image_url]"
               />
@@ -208,14 +208,13 @@ export default {
           align-items: center;
 
           .nft-image {
+            background: #eee;
             height: 50px;
             width: 50px;
             flex-shrink: 0;
-
-            img {
-              border: 1px solid #eee;
-              border-radius: 4px;
-            }
+            box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.24);
+            border-radius: 4px;
+            overflow: hidden;
           }
 
           .info {
@@ -251,8 +250,8 @@ export default {
           align-items: center;
 
           .total {
-            color: var(--primary);
             font-size: 18px;
+            font-weight: 500;
           }
 
           .state {

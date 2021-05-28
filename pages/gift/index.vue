@@ -26,11 +26,13 @@
     </template>
     <template v-else>
       <div class="get">
+        <div class="t1">您有一个待领取的</div>
+        <div class="t2">NFT 红包</div>
         <div class="password">
-          <el-input v-model="password" placeholder="输入红包口令"></el-input>
+          <el-input v-model="password" placeholder="输口令，领NFT"></el-input>
         </div>
         <div class="receive-box" @click="status = 'sucess'">
-          <div class="receive">立即领取</div>
+          <div class="receive">立 即 领 取</div>
         </div>
       </div>
     </template>
@@ -40,7 +42,7 @@
 export default {
   data() {
     return {
-      status: 'sucess',
+      status: '',
       password: '',
     }
   },
@@ -86,8 +88,23 @@ export default {
   }
 
   .get {
+    .t1, .t2 {
+      color: #fff;
+      font-size: 28px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .t1 {
+      margin-top: 49px;
+    }
+
+    .t2 {
+      margin-top: 16px;
+    }
+
     .password {
-      margin: 182px 56px 96px;
+      margin: 49px 56px 96px;
 
       .el-input__inner {
         text-align: center;

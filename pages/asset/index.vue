@@ -37,15 +37,19 @@
         </main>
       </div>
     </div>
-    <el-dialog :visible.sync="showSend" title="赠送" width="300px">
+    <el-dialog
+      :visible.sync="showSend"
+      class="dialog-send"
+      title="创建 NFT 红包"
+      width="300px"
+    >
       <el-form :model="form">
-        <div>
+        <div class="i-have">
           您当前拥有
           <span :style="{ color: 'var(--primary)' }">{{ nft.i_have }}</span>
           个
         </div>
-        <el-form-item label="赠送个数">
-          <br />
+        <el-form-item label="赠送数量">
           <el-input-number
             v-model="form.number"
             :min="1"
@@ -58,14 +62,14 @@
             v-model.trim="form.password"
             maxlength="16"
             show-word-limit
-            placeholder="领取红包时验证"
+            placeholder="抢NFT红包，玩加密新社交"
           ></el-input>
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="showSend = false">取 消</el-button>
-          <el-button type="primary" @click="bindSend">确 定</el-button>
+          <el-button @click="showSend = false">取消</el-button>
+          <el-button type="primary" @click="bindSend">下一步</el-button>
         </span>
       </template>
     </el-dialog>
@@ -96,7 +100,7 @@ export default {
       this.showSend = true
     },
     bindSend() {
-      console.log('🌊', '确定')
+      this.$router.push('/share')
     },
   },
 }
@@ -194,6 +198,17 @@ export default {
         justify-content: center;
         align-items: center;
       }
+    }
+  }
+
+  .dialog-send {
+    .i-have {
+      text-align: right;
+      margin-bottom: -30px;
+    }
+
+    .el-input-number {
+      width: 100%;
     }
   }
 }

@@ -128,7 +128,8 @@ export default {
       })
     },
     checkLoign() {
-      const provider = this.$store.state.provider
+      const provider =
+        this.$store.state.provider || this.Sea.localStorage('provider')
       if (provider) {
         this.provider = provider
       } else {

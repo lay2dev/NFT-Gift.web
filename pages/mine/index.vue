@@ -76,7 +76,7 @@ export default {
       provider: null,
     }
   },
-  created() {
+  mounted() {
     this.checkLoign()
     this.init()
   },
@@ -116,10 +116,9 @@ export default {
       return result
     },
     getList(page) {
-      const { Sea } = this
       const host = process.env.NUXT_ENV_JINSE
       const address = this.provider._address.addressString
-      return Sea.Ajax({
+      return this.Sea.Ajax({
         url: `${host}/api/explorer/v1/holder_tokens/${address}`,
         data: {
           page,
@@ -136,27 +135,27 @@ export default {
         this.$router.replace('/')
       }
     },
-    async bindSign(message) {
-      console.log('🌊message', message)
-      const messageHash = createHash('SHA256')
-        .update(message)
-        .digest('hex')
-        .toString()
-      const data = await new UnipassProvider(
-        process.env.NUXT_ENV_UNIPASS_URL,
-      ).sign(messageHash)
-      let signature = ''
-      let pubkey = ''
-      if (data.startsWith('0x')) {
-        signature = data
-      } else {
-        const info = JSON.parse(data)
-        pubkey = info.pubkey
-        signature = `0x01${info.sign.replace('0x', '')}`
-      }
-      console.log('🌊pubkey', pubkey)
-      console.log('🌊signature', signature)
-    },
+    // async bindSign(message) {
+    //   console.log('🌊message', message)
+    //   const messageHash = createHash('SHA256')
+    //     .update(message)
+    //     .digest('hex')
+    //     .toString()
+    //   const data = await new UnipassProvider(
+    //     process.env.NUXT_ENV_UNIPASS_URL,
+    //   ).sign(messageHash)
+    //   let signature = ''
+    //   let pubkey = ''
+    //   if (data.startsWith('0x')) {
+    //     signature = data
+    //   } else {
+    //     const info = JSON.parse(data)
+    //     pubkey = info.pubkey
+    //     signature = `0x01${info.sign.replace('0x', '')}`
+    //   }
+    //   console.log('🌊pubkey', pubkey)
+    //   console.log('🌊signature', signature)
+    // },
     bindNFT(nft) {
       nft.i_have = this.nftDict[nft.class_uuid]
       this.$store.state.nft = nft

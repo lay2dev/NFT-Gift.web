@@ -53,8 +53,6 @@ export default class UnipassProvider extends Provider {
 
   init(): Promise<UnipassProvider> {
     return new Promise((resolve) => {
-      // const data = getData()
-      // console.log(data, '-----')
       const { uniFrame } = openIframe(
         'login',
         `${this.UNIPASS_BASE}/#/login`,
@@ -74,12 +72,6 @@ export default class UnipassProvider extends Provider {
             const { pubkey, email } = msg.payload as UnipassAccount
             const ckbAddress = pubkeyToAddress(pubkey)
             this.address = new Address(ckbAddress, AddressType.ckb)
-            // console.log('address', this.address)
-            // saveData({
-            //   email,
-            //   pubkey,
-            //   address: ckbAddress,
-            // })
             this._email = email
             this.msgHandler &&
               window.removeEventListener('message', this.msgHandler)
@@ -118,12 +110,6 @@ export default class UnipassProvider extends Provider {
             const { pubkey, email, recovery } = msg.payload as UnipassAccount
             const ckbAddress = pubkeyToAddress(pubkey)
             this.address = new Address(ckbAddress, AddressType.ckb)
-            // console.log('address', this.address)
-            // saveData({
-            //   email,
-            //   pubkey,
-            //   address: ckbAddress,
-            // })
             this._email = email
             this._recovery = recovery as boolean
             this.msgHandler &&

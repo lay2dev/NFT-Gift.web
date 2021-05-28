@@ -45,12 +45,13 @@ export default {
         new IndexerCollector(url.INDEXER_URL),
         url.CHAIN_ID,
       )
-      if (PWCore.provider) {
-        Sea.localStorage('provider', PWCore.provider)
-        this.$store.state.provider = PWCore.provider
+      const provider = PWCore.provider
+      if (provider && provider._address) {
+        Sea.localStorage('provider', provider)
+        this.$store.state.provider = provider
         this.$router.push('/mine')
       } else {
-        this.$message.error('连接失败')
+        this.$message.warning('登录不成功')
       }
     },
   },

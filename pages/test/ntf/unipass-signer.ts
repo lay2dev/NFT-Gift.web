@@ -1,30 +1,29 @@
-import { Signer, Provider, Blake2bHasher, Message } from '@lay2/pw-core';
+import { Signer, Provider, Blake2bHasher, Message } from '@lay2/pw-core'
 
 export class UnipassSigner extends Signer {
   constructor(readonly providers: Provider[]) {
-    super(new Blake2bHasher());
+    super(new Blake2bHasher())
   }
 
   async signMessages(messages: Message[]) {
-    const sigs = [];
+    const sigs = []
 
     for (const message of messages) {
-      let matched = false;
+      const matched = false
+      console.log('[signMessages]', messages)
       for (const provider of this.providers) {
-        if (
-          provider.address.toLockScript().toHash() === message.lock.toHash()
-        ) {
-          sigs.push(await provider.sign(message.message));
-
-          matched = true;
-          break;
-        }
+        console.log(
+          '[signMessages-provider]',
+          message.lock.toHash(),
+          provider.address.toLockScript().toHash(),
+        )
+        sigs.push(await provider.sign(message.message))
       }
 
       if (!matched) {
-        sigs.push('0x');
+        sigs.push('0x')
       }
     }
-    return sigs;
+    return sigs
   }
 }

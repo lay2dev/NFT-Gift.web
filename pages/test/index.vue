@@ -118,7 +118,7 @@ export default {
         console.log('[token_outpoint]', item.token_outpoint)
         const outpoints = [
           {
-            index: item.token_outpoint.index,
+            index: `0x${item.token_outpoint.index.toString(16)}`,
             txHash: item.token_outpoint.tx_hash,
           },
         ]
@@ -258,6 +258,7 @@ export default {
           data.pubkey,
           data.localAuthInfo,
           address,
+          data.outpoints,
         )
         this.tx = tx
         console.log('txhash:', tx)

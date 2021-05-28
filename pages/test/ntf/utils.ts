@@ -24,21 +24,21 @@ export const INDEXER_URL = 'https://testnet.ckb.dev/indexer'
 export const rsaDep = new CellDep(
   DepType.code,
   new OutPoint(
-    '0xd7022ca7f883ffa7e067bf0ecd945fefa49b3a0c82d3edb6939f976b53a6069f',
+    '0xd346695aa3293a84e9f985448668e9692892c959e7e83d6d8042e59c08b8cf5c',
     '0x0',
   ),
 )
 export const acpDep = new CellDep(
   DepType.code,
   new OutPoint(
-    '0x363b22a0de38c31e83fb83fa7210c447a4861408f1c56502f545cfffda25d9cc',
+    '0x04a1ac7fe15e454741d3c5c9a409efb9a967714ad2f530870514417978a9f655',
     '0x0',
   ),
 )
 export const unipassDep = new CellDep(
   DepType.code,
   new OutPoint(
-    '0x01e18325376c649237a41b2d79f32bc793c51d25dfa250f2611161042e71f942',
+    '0x86a2b5e12372b88bf4c288e99626c016d00a3aad37fe34781bca3ff3842373d0',
     '0x0',
   ),
 )

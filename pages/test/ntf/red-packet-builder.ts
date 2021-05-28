@@ -43,12 +43,13 @@ export class RedPacketBuilder extends Builder {
       rawTx.inputs[i].since = this.since
     }
     const tx = new Transaction(rawTx, [this.witnessArgs])
-
     this.fee = Builder.calcFee(tx, this.feeRate)
     // this.fee = new Amount('10000', AmountUnit.shannon);
     const changeCell = tx.raw.outputs.pop() as Cell
     changeCell.capacity = changeCell.capacity.sub(this.fee)
     tx.raw.outputs.push(changeCell)
+    console.log('[tx-new]', tx.raw.serializeJson())
+    console.log(JSON.stringify(tx), 'rectifyTx')
     return tx
   }
 

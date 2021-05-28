@@ -1,6 +1,5 @@
 <template>
   <div id="page-share">
-    <back />
     <el-image class="top-bg" :src="require('~/assets/img/top-bg.png')" />
     <template v-if="status === 'sucess'">
       <div class="sucess">
@@ -31,7 +30,7 @@
         <div class="password">
           <el-input v-model="password" placeholder="输口令，领NFT"></el-input>
         </div>
-        <div class="receive-box" @click="status = 'sucess'">
+        <div class="receive-box" @click="bindGet">
           <div class="receive">立 即 领 取</div>
         </div>
       </div>
@@ -40,11 +39,76 @@
 </template>
 <script>
 export default {
+  validate({ params }) {
+    return Boolean(params.id)
+  },
   data() {
     return {
       status: '',
       password: '',
     }
+  },
+  methods: {
+    bindGet() {
+      // this.status = 'sucess'
+      const id = this.$route.params.id
+      const password = this.password || 'default'
+      console.log('🌊', id, password)
+    },
+    async getRedPacketData() {
+      const address = getAddressByPubkey(this.masterkey)
+      const password = getKeyPassword(this.password)
+      // todo get data
+      const data = {
+        password,
+        address,
+      }
+      Sea.Ajax.HOST = process.env.NUXT_ENV_HOST
+      const res = await Sea.Ajax({
+        url: `/ntf/${this.short}`,
+        method: 'get',
+        data: {
+          password: data.password,
+          address: data.address,
+        },
+      })
+      if (res.success) {
+        const resData = res.data
+        const data = {
+          authorization: resData.authorization, //
+          localKeySig: resData.localKeySig,
+          localKeyPubkey: resData.localKeyPubkey,
+          masterKeyPubkey: resData.masterKeyPubkey,
+          localAuthInfo: resData.localAuthInfo,
+          encrypt: resData.encrypt,
+          keyPubkey: resData.keyPubkey,
+          outpointSize: resData.outpointSize,
+          outpoints: JSON.parse(resData.outpoints),
+        }
+        // todo
+        const key = await decryptMasterKey(
+          data.encrypt,
+          'generateKey',
+          this.password,
+        )
+
+        // todo transfer
+        const tx = await redPacketTransfer(
+          data.masterKeyPubkey,
+          data.authorization,
+          data.localKeySig,
+          key,
+          data.keyPubkey,
+          data.localAuthInfo,
+          address,
+          data.outpoints,
+        )
+        this.tx = tx
+        // todo tx post other api
+      } else {
+        // todo show no red packet
+      }
+    },
   },
 }
 </script>
@@ -52,6 +116,7 @@ export default {
 #page-share {
   .top-bg {
     min-height: 130px;
+    width: 100vw;
   }
 
   background: #F35543;

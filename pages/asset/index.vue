@@ -69,7 +69,9 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="showSend = false">取消</el-button>
-          <el-button type="primary" @click="bindSend">下一步</el-button>
+          <el-button type="primary" :loading="loading" @click="bindSend">
+            下一步
+          </el-button>
         </span>
       </template>
     </el-dialog>
@@ -101,6 +103,7 @@ export default {
       },
       showSend: false,
       nft: {},
+      loading: false,
     }
   },
   created() {
@@ -116,31 +119,32 @@ export default {
       this.showSend = true
     },
     async bindSend() {
+      this.loading = true
       const { redPacket, authItemsHex } = await this.createRedPacketData({
         nft: this.$store.state.nft,
-        password: this.form.password,
+        password: this.form.password || 'default',
         number: this.form.number,
       })
       const sign = await this.bindSign({
         message: authItemsHex,
       })
-      if (!sign.authorization) {
-        return
+      if (sign.authorization) {
+        const { short } = await this.getShortData({
+          password: getKeyPassword(this.form.password),
+          authorization: sign.authorization,
+          masterKeyPubkey: sign.masterkey,
+          localKeyPubkey: sign.localKey,
+          localKeySig: sign.authSig,
+          localAuthInfo: sign.authInfo,
+          redPacket,
+        })
+        if (short) {
+          this.$router.push(`/share/${short}`)
+        } else {
+          this.$message.error('请求失败')
+        }
       }
-      const { short } = await this.getShortData({
-        password: getKeyPassword(this.form.password),
-        authorization: sign.authorization,
-        masterKeyPubkey: sign.masterkey,
-        localKeyPubkey: sign.localKey,
-        localKeySig: sign.authSig,
-        localAuthInfo: sign.authInfo,
-        redPacket,
-      })
-      if (short) {
-        this.$router.push(`/share/${short}`)
-      } else {
-        this.$message.error('请求失败')
-      }
+      this.loading = false
     },
     async createRedPacketData({ nft, password, number }) {
       const nfts = [nft]

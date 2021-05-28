@@ -7,11 +7,11 @@
       <div class="t2">- 领取 NFT，尝试新玩法 -</div>
       <div class="qrcode-box">
         <img class="rectangle" src="~/assets/img/red-rectangle.png" alt="" />
-        <img v-show="QRCode" class="qrcode" :src="QRCode" alt="qrcode" />
+        <img v-if="QRCode" class="qrcode" :src="QRCode" alt="qrcode" />
       </div>
       <div class="t3">长按领取至钱包</div>
       <div class="t4">输入红包口令，获得专属于你的 NFT</div>
-      <img class="share" :src="png" alt="share" />
+      <img v-if="png" class="share" :src="png" alt="share" />
     </div>
     <div class="red-tip">长按图片分享给朋友</div>
     <el-button class="red-share" type="primary" round @click="bindShare">
@@ -23,7 +23,6 @@
 // https://segmentfault.com/a/1190000011478657
 import QRCode from 'qrcode'
 import html2canvas from 'html2canvas'
-
 export default {
   data() {
     return {
@@ -33,17 +32,29 @@ export default {
       loading: true,
     }
   },
+  computed: {
+    shareUrl() {
+      return 'https://gift.unipass.me/VA1LawM72'
+    },
+  },
   mounted() {
     this.initQRCode()
   },
   methods: {
     bindShare() {
-      console.log('🌊', '复制')
+      const v = `打开链接，输入口令，抢NFT红包，玩转加密新社交，${this.shareUrl}`
+      this.$clipboard(v)
+      this.$alert(`已复制分享链接，快去粘贴<br>${this.shareUrl}`, '复制成功', {
+        showConfirmButton: false,
+        closeOnClickModal: true,
+        closeOnPressEscape: true,
+        dangerouslyUseHTMLString: true,
+        type: 'info',
+      }).catch(() => {})
     },
     async initQRCode() {
-      const host = 'https://gift.unipass.me/VA1LawM72'
       // https://www.npmjs.com/package/qrcode#example-1
-      const url = await QRCode.toDataURL(host, {
+      const url = await QRCode.toDataURL(this.shareUrl, {
         type: 'image/png',
         margin: 1,
         color: {
@@ -53,7 +64,8 @@ export default {
       })
       this.QRCode = url
       this.$nextTick(() => {
-        html2canvas(this.$refs['red-box']).then((canvas) => {
+        const redBox = this.$refs['red-box']
+        html2canvas(redBox).then((canvas) => {
           this.loading = false
           if (canvas && canvas.getContext) {
             const png = canvas.toDataURL('image/png')

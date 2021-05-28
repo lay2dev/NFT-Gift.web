@@ -265,17 +265,17 @@ export default {
           deserializeLocalAuth(data.localAuthInfo),
         )
         // todo transfer
-        // const tx = await redPacketTransfer(
-        //   data.masterKeyPubkey,
-        //   data.authorization,
-        //   data.localKeySig,
-        //   key,
-        //   data.keyPubkey,
-        //   data.localAuthInfo,
-        //   address,
-        //   data.outpoints,
-        // )
-        // this.tx = tx
+        const tx = await redPacketTransfer(
+          data.masterKeyPubkey,
+          data.authorization,
+          data.localKeySig,
+          key,
+          data.keyPubkey,
+          data.localAuthInfo,
+          address,
+          data.outpoints,
+        )
+        this.tx = tx
         console.log('txhash:', tx)
         // todo tx post other api
       } else {

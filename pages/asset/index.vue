@@ -114,7 +114,6 @@ export default {
     async bindSend() {
       this.loading = true
       const { redPacket, authItemsHex } = await this.createRedPacketData({
-        nft: this.$store.state.nft,
         password: this.form.password || 'default',
         number: this.form.number,
       })
@@ -139,8 +138,8 @@ export default {
       }
       this.loading = false
     },
-    async createRedPacketData({ nft, password, number }) {
-      const nfts = [nft]
+    async createRedPacketData({ password, number }) {
+      const nfts = this.$store.state.nfts.slice(0, number)
       const redPacket = []
       const localAuth = []
       for (const item of nfts) {

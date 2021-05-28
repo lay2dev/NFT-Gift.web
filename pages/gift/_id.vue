@@ -5,7 +5,7 @@
     <template v-if="status === 'sucess'">
       <div class="sucess">
         <div class="t1">恭喜你</div>
-        <div class="t2">领取成功</div>
+        <div class="t2">成功领取到一个NFT</div>
       </div>
       <router-link to="/mine">
         <div class="balance">
@@ -17,7 +17,7 @@
     <template v-else-if="status === 'fail'">
       <div class="fail">
         <div class="t1">抱歉</div>
-        <div class="t2">领取失败</div>
+        <div class="t2">NFT红包已经被抢完了</div>
       </div>
       <div class="balance">
         <img :src="require('~/assets/img/ze-balance-pay.svg')" />
@@ -71,7 +71,6 @@ export default {
         this.bindLogin()
         return
       }
-      // this.status = 'sucess'
       const id = this.$route.params.id
       const password = this.password || 'default'
       this.getRedPacketData({
@@ -120,17 +119,26 @@ export default {
           address,
           data.outpoints,
         )
-        const host = process.env.NUXT_ENV_JINSE
-        res = await Sea.Ajax({
-          url: `${host}/red_envelope_transactions`,
-          method: 'post',
-          data: {
-            tx_hash: tx,
-            from_address: fromAddress,
-            to_address: toAddress,
-          },
-        })
-        console.log('res', res)
+        if (tx) {
+          const host = process.env.NUXT_ENV_JINSE
+          res = await Sea.Ajax({
+            url: `${host}/api/explorer/v1/red_envelope_transactions`,
+            method: 'post',
+            data: {
+              tx_hash: tx,
+              from_address: fromAddress,
+              to_address: toAddress,
+            },
+          })
+          if (res === 'ok') {
+            this.status = 'success'
+            return
+          }
+        }
+        // this.status = 'fail'
+        this.$message.error('未知错误')
+      } else {
+        this.$message.error('红包口令错误')
       }
     },
     async bindLogin() {
@@ -149,7 +157,6 @@ export default {
         Sea.localStorage('provider', provider)
         this.$message.info('登录成功')
         this.provider = provider
-        this.bindGet()
       } else {
         this.$message.warning('登录不成功')
       }

@@ -65,6 +65,7 @@ export default {
     return {
       nftList: [],
       nftDict: {},
+      tokenList: [],
       stateDict: {
         pending: '接收中',
         submitting: '确认中',
@@ -88,6 +89,7 @@ export default {
       const res = await this.getList(1)
       if (res.token_list) {
         const tokenList = await this.initList(res)
+        this.tokenList = Sea.deepCopy(tokenList)
         const arr = this.Sea.set(tokenList, 'class_uuid')
         for (const e of tokenList) {
           const id = e.class_uuid
@@ -129,6 +131,8 @@ export default {
     },
     bindNFT(nft) {
       nft.i_have = this.nftDict[nft.class_uuid]
+      const nfts = this.tokenList.filter((e) => e.class_uuid === nft.class_uuid)
+      this.$store.state.nfts = nfts
       this.$store.state.nft = nft
       this.$router.push('/asset')
     },

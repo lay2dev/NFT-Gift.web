@@ -23,7 +23,7 @@
                 </template>
               </el-image>
             </div>
-            <div class="user-total">我拥有 {{ nft.i_have }}</div>
+            <div class="user-total">拥有 {{ nft.i_have }}</div>
           </div>
         </header>
         <main>

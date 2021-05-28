@@ -46,7 +46,12 @@
               </div>
             </div>
             <div class="right">
-              {{ nftDict[e.class_uuid] }}
+              <div class="total">
+                {{ nftDict[e.class_uuid] }}
+              </div>
+              <div class="state" :class="e.tx_state">
+                {{ stateDict[e.tx_state] }}
+              </div>
             </div>
           </div>
         </template>
@@ -63,6 +68,11 @@ export default {
     return {
       nftList: [],
       nftDict: {},
+      stateDict: {
+        pending: '接收中',
+        submitting: '确认中',
+        committed: '',
+      },
       provider: null,
     }
   },
@@ -237,8 +247,32 @@ export default {
         }
 
         .right {
-          color: var(--primary);
-          font-size: 18px;
+          display: flex;
+          align-items: center;
+
+          .total {
+            color: var(--primary);
+            font-size: 18px;
+          }
+
+          .state {
+            border-radius: 4px;
+            color: white;
+            padding: 2px 4px;
+            margin-left: 8px;
+          }
+
+          .state.committed {
+            padding: 0;
+          }
+
+          .state.pending {
+            background: var(--primary);
+          }
+
+          .state.submitting {
+            background: var(--success);
+          }
         }
       }
 

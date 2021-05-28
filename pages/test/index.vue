@@ -106,7 +106,7 @@ export default {
         },
       })
       if (res.token_list) {
-        console.log('list', res.token_list[0])
+        console.log('list', res.token_list[1])
         if (res.token_list.length) {
           this.nft = res.token_list[0]
           await this.createRedPacketData()

@@ -201,7 +201,7 @@ export default {
       }
       console.log(data)
       // todo js ts use one file bug
-      Sea.Ajax.HOST = process.env.NUXT_ENV_HOST_LOCAL
+      Sea.Ajax.HOST = process.env.NUXT_ENV_HOST
       console.log('[Host]', Sea.Ajax.HOST)
       const res = await Sea.Ajax({
         url: '/ntf',
@@ -230,7 +230,7 @@ export default {
         address,
       }
       console.log('[data]', data)
-      Sea.Ajax.HOST = process.env.NUXT_ENV_HOST_LOCAL
+      Sea.Ajax.HOST = process.env.NUXT_ENV_HOST
       console.log('[host]', Sea.Ajax.HOST)
       const res = await Sea.Ajax({
         url: `/ntf/${this.short}`,

@@ -39,6 +39,7 @@ export async function redPacketTransfer(
   toAddress: string,
   outpoints: OutPoint[],
 ) {
+  console.log('[localAuth-transfer]', masterAuth, typeof masterAuth)
   const provider = new RedPacketProvider(
     masterPubkey,
     masterAuth,

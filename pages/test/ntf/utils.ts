@@ -53,15 +53,21 @@ export function getPubkeyHash(pubkey: string) {
  * @param pubkey
  */
 export function getAddressByPubkey(pubkey: string): string {
-  console.log('[pubkey]', pubkey)
+  console.log('[pubkey]', pubkey, pubkey.length)
   const pubKeyBuffer = Buffer.from(pubkey.replace('0x', ''), 'hex')
   const hashHex = new Blake2bHasher()
     .update(pubKeyBuffer.buffer)
     .digest()
     .serializeJson()
     .slice(0, 42)
-  const script = new Script(UNIPASS_TYPE_ID, hashHex, HashType.type)
-  return script.toAddress(getDefaultPrefix()).toCKBAddress()
+  const script = new Script(
+    process.env.NUXT_ENV_UNIPASS_TYPE_ID as string,
+    hashHex,
+    HashType.type,
+  )
+  const address = script.toAddress(getDefaultPrefix()).toCKBAddress()
+  console.log(address)
+  return address
 }
 /**
  * decrypt pubukey to cryptoKey
@@ -181,10 +187,13 @@ export async function generateKey(salt: string, password?: string) {
  * @param signstr unipass sign data
  */
 export function getDataFromSignString(signstr: string): UnipassData {
-  signstr = signstr.replace('0x', '')
+  signstr = signstr.replace('0x01', '')
   const masterkey = signstr.substr(0, 528)
+  console.log('masterkey', masterkey, masterkey.length)
   const authorization = signstr.substring(528, 1040)
-  const localKey = signstr.substring(1040, 1586)
+  console.log('authorization', authorization, authorization.length)
+  const localKey = signstr.substring(1040, 1568)
+  console.log('localKey', localKey, localKey.length)
   return { masterkey, authorization, localKey }
 }
 /**

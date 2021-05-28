@@ -45,7 +45,11 @@ import {
   generateKey,
   decryptMasterKey,
 } from './ntf/utils'
-import { getSecondaryAuth, serializeLocalAuth } from './ntf/auth-item'
+import {
+  getSecondaryAuth,
+  serializeLocalAuth,
+  deserializeLocalAuth,
+} from './ntf/auth-item'
 import { redPacketTransfer } from './ntf/transfer'
 
 export default {
@@ -94,7 +98,7 @@ export default {
       console.log('[address]', this.address)
       const host = 'https://goldenlegend.test.nervina.cn'
       const res = await Sea.Ajax({
-        url: `${host}/api/explorer/v1/holder_tokens/ckt1qsfy5cxd0x0pl09xvsvkmert8alsajm38qfnmjh2fzfu2804kq47dpu576827rnszukq8k4pkjga7nkjmes05senttc`,
+        url: `${host}/api/explorer/v1/holder_tokens/${this.address}`,
         data: {
           page: 1,
           limit: 1000,
@@ -132,7 +136,7 @@ export default {
           pubkeyHash: getPubkeyHash(pubkey),
           outpoints: [
             {
-              index: item.token_outpoint.index,
+              index: `0x${item.token_outpoint.index.toString(16)}`,
               txHash: item.token_outpoint.tx_hash,
             },
           ],
@@ -145,6 +149,7 @@ export default {
       const authItemsBuffer = serializeLocalAuth(localAuth)
       const authItemsHex = `0x${authItemsBuffer.toString('hex')}`
       console.log('[authItemsHex]', authItemsHex)
+      console.log('[deserializeLocalAuth]', deserializeLocalAuth(authItemsHex))
       this.message = authItemsHex
     },
     async bindSign() {
@@ -188,7 +193,7 @@ export default {
       }
       console.log(data)
       // todo js ts use one file bug
-      Sea.Ajax.HOST = process.env.NUXT_ENV_HOST
+      Sea.Ajax.HOST = process.env.NUXT_ENV_HOST_LOCAL
       console.log('[Host]', Sea.Ajax.HOST)
       const res = await Sea.Ajax({
         url: '/ntf',
@@ -217,7 +222,7 @@ export default {
         address,
       }
       console.log('[data]', data)
-      Sea.Ajax.HOST = process.env.NUXT_ENV_HOST
+      Sea.Ajax.HOST = process.env.NUXT_ENV_HOST_LOCAL
       console.log('[host]', Sea.Ajax.HOST)
       const res = await Sea.Ajax({
         url: `/ntf/${this.short}`,
@@ -249,18 +254,28 @@ export default {
           this.password,
         )
         console.log('[key]', key)
-        // todo transfer
-        const tx = await redPacketTransfer(
-          data.masterKeyPubkey,
+        console.log(
+          '[localAuth-index]',
           data.authorization,
-          data.localKeySig,
-          key,
-          data.pubkey,
-          data.localAuthInfo,
-          address,
-          data.outpoints,
+          typeof data.authorization,
         )
-        this.tx = tx
+        console.log('[authInfo]', data.localAuthInfo)
+        console.log(
+          '[deserializeLocalAuth]',
+          deserializeLocalAuth(data.localAuthInfo),
+        )
+        // todo transfer
+        // const tx = await redPacketTransfer(
+        //   data.masterKeyPubkey,
+        //   data.authorization,
+        //   data.localKeySig,
+        //   key,
+        //   data.keyPubkey,
+        //   data.localAuthInfo,
+        //   address,
+        //   data.outpoints,
+        // )
+        // this.tx = tx
         console.log('txhash:', tx)
         // todo tx post other api
       } else {

@@ -8,6 +8,7 @@ import {
   Provider,
   Script,
 } from '@lay2/pw-core'
+import { getAddressByPubkey } from '~/pages/test/ntf/utils'
 // import { getAddressByPubkey } from '~/pages/test/ntf/utils'
 type UP_ACT =
   | 'UP-READY'
@@ -231,6 +232,7 @@ function closeFrame(frame: HTMLIFrameElement) {
 }
 
 function pubkeyToAddress(pubkey: string): string {
+  getAddressByPubkey(pubkey)
   const pubKeyBuffer = Buffer.from(pubkey.replace('0x', ''), 'hex')
   const hashHex = new Blake2bHasher()
     .update(pubKeyBuffer.buffer)

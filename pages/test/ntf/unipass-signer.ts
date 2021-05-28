@@ -9,15 +9,16 @@ export class UnipassSigner extends Signer {
     const sigs = []
 
     for (const message of messages) {
-      const matched = false
-      console.log('[signMessages]', messages)
+      let matched = false
       for (const provider of this.providers) {
-        console.log(
-          '[signMessages-provider]',
-          message.lock.toHash(),
-          provider.address.toLockScript().toHash(),
-        )
-        sigs.push(await provider.sign(message.message))
+        if (
+          provider.address.toLockScript().toHash() === message.lock.toHash()
+        ) {
+          sigs.push(await provider.sign(message.message))
+
+          matched = true
+          break
+        }
       }
 
       if (!matched) {

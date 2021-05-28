@@ -60,9 +60,6 @@
   </div>
 </template>
 <script>
-import { createHash } from 'crypto'
-import UnipassProvider from '@/assets/js/UnipassProvider.ts'
-
 export default {
   data() {
     return {
@@ -77,12 +74,16 @@ export default {
     }
   },
   mounted() {
-    this.checkLoign()
-    this.init()
+    const provider = Sea.localStorage('provider')
+    if (provider && provider._address) {
+      this.provider = provider
+      this.init()
+    } else {
+      this.$router.replace('/')
+    }
   },
   methods: {
     async init() {
-      if (!this.provider) return
       // first page
       const res = await this.getList(1)
       if (res.token_list) {
@@ -126,36 +127,6 @@ export default {
         },
       })
     },
-    checkLoign() {
-      const provider =
-        this.$store.state.provider || this.Sea.localStorage('provider')
-      if (provider) {
-        this.provider = provider
-      } else {
-        this.$router.replace('/')
-      }
-    },
-    // async bindSign(message) {
-    //   console.log('🌊message', message)
-    //   const messageHash = createHash('SHA256')
-    //     .update(message)
-    //     .digest('hex')
-    //     .toString()
-    //   const data = await new UnipassProvider(
-    //     process.env.NUXT_ENV_UNIPASS_URL,
-    //   ).sign(messageHash)
-    //   let signature = ''
-    //   let pubkey = ''
-    //   if (data.startsWith('0x')) {
-    //     signature = data
-    //   } else {
-    //     const info = JSON.parse(data)
-    //     pubkey = info.pubkey
-    //     signature = `0x01${info.sign.replace('0x', '')}`
-    //   }
-    //   console.log('🌊pubkey', pubkey)
-    //   console.log('🌊signature', signature)
-    // },
     bindNFT(nft) {
       nft.i_have = this.nftDict[nft.class_uuid]
       this.$store.state.nft = nft

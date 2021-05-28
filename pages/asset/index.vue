@@ -76,6 +76,14 @@
   </div>
 </template>
 <script>
+import {
+  // getAddressByPubkey,
+  // getDataFromSignString,
+  // getKeyPassword,
+  getPubkeyHash,
+  generateKey,
+  // decryptMasterKey,
+} from '@/assets/js/ntf/utils'
 export default {
   data() {
     return {
@@ -98,9 +106,46 @@ export default {
   methods: {
     bindHandsel() {
       this.showSend = true
+      const { password, number } = this.form
+      const nft = this.$store.state.nft
+      this.createRedPacketData({ nft, password, number })
     },
     bindSend() {
       this.$router.push('/share')
+    },
+    async createRedPacketData({ nft, password, number }) {
+      const nfts = [nft]
+      const redPacket = []
+      const localAuth = []
+      for (const item of nfts) {
+        const { pubkey, pem } = await generateKey('generateKey', password)
+        const outpoints = [
+          {
+            index: `0x${item.token_outpoint.index.toString(16)}`,
+            txHash: item.token_outpoint.tx_hash,
+          },
+        ]
+        redPacket.push({
+          encrypt: pem,
+          keyPubkey: pubkey,
+          outpoints: JSON.stringify(outpoints),
+          outpointSize: number,
+        })
+        localAuth.push({
+          pubkeyHash: getPubkeyHash(pubkey),
+          outpoints: [
+            {
+              index: `0x${item.token_outpoint.index.toString(16)}`,
+              txHash: item.token_outpoint.tx_hash,
+            },
+          ],
+        })
+      }
+      const authItemsBuffer = serializeLocalAuth(localAuth)
+      const authItemsHex = `0x${authItemsBuffer.toString('hex')}`
+      // this.redPacket = redPacket
+      // this.message = authItemsHex
+      console.log('🌊', redPacket, authItemsHex)
     },
   },
 }

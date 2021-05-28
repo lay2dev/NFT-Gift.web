@@ -1,23 +1,23 @@
 import PWCore, {
   Address,
   AddressType,
-  Amount,
   BuilderOption,
+  Cell,
   OutPoint,
+  RPC,
 } from '@lay2/pw-core'
-import { getSecondaryAuth, LocalAuthInfo } from './auth-item'
 import { RedPacketBuilder } from './red-packet-builder'
 import { RedPacketProvider } from './red-packet-provider'
 import { UnipassIndexerCollector } from './unipass-indexer-collector'
 import { UnipassSigner } from './unipass-signer'
 import {
   getAddressByPubkey,
-  getPubkeyHash,
   rsaDep,
   acpDep,
   unipassDep,
   NODE_URL,
   INDEXER_URL,
+  redPacketDep,
 } from './utils'
 
 /**
@@ -32,16 +32,17 @@ import {
  */
 export async function redPacketTransfer(
   masterPubkey: string,
-  masterAuth: string,
+  authorization: string,
   localAuthSig: string,
   exchangeKey: CryptoKey,
   exchangePubkey: string,
   localAuthInfo: string,
   toAddress: string,
+  outpoints: OutPoint[],
 ) {
   const provider = new RedPacketProvider(
     masterPubkey,
-    masterAuth,
+    authorization,
     localAuthSig,
     exchangeKey,
     exchangePubkey,
@@ -51,11 +52,12 @@ export async function redPacketTransfer(
   const pwcore = await new PWCore(NODE_URL).init(provider, collector)
   const fromAddress = getAddressByPubkey(masterPubkey)
   console.log('fromAddress', fromAddress)
-  const cells = await collector.collectAllLiveCells(
-    new Address(fromAddress, AddressType.ckb),
-    new Amount('10000'),
-  )
-  let inputCells = cells.slice(0, 4)
+  const rpc = new RPC(NODE_URL)
+  const cells = []
+  for (const item of outpoints) {
+    cells.push(await Cell.loadFromBlockchain(rpc, item))
+  }
+  const inputCells = cells.slice(0, 4)
   const lockLen =
     (1 + (8 + 256 * 2) * 3) * 2 + localAuthInfo.replace('0x', '').length
   console.log('lockLen', lockLen)
@@ -66,45 +68,18 @@ export async function redPacketTransfer(
       output_type: '',
     },
   }
-  const builder = new RedPacketBuilder(
-    new Address(toAddress, AddressType.ckb),
-    inputCells,
-    options,
-    [rsaDep, acpDep, unipassDep],
-  )
-  const signer = new UnipassSigner([provider])
-  const txhash = await pwcore.sendTransaction(builder, signer)
-  console.log('txhash', txhash)
-}
-
-/**
- * auth key to use ntf
- * @param masterPubkey when unipass sign get materkey
- * @param exchangePubkey one ntf have one keyx_pubkey its type of array
- * @param localPubkey when unipass sign get localPubkey
- * retrun  localAuthSig and localAuthInfo will push to server save
- */
-export async function authKeyX(
-  masterPubkey: string,
-  exchangePubkey: string[],
-  localPubkey: string,
-) {
-  const collector = new UnipassIndexerCollector(INDEXER_URL)
-  const fromAddress = getAddressByPubkey(masterPubkey)
-  console.log('fromAddress', fromAddress)
-  const cells = await collector.collectAllLiveCells(
-    new Address(fromAddress, AddressType.ckb),
-    new Amount('10000'),
-  )
-  let inputCells = cells.slice(0, 4)
-  const localAuth: LocalAuthInfo = []
-  for (let item of exchangePubkey) {
-    const data = {
-      pubkeyHash: getPubkeyHash(item),
-      outpoints: inputCells.map((x) => x.outPoint as OutPoint),
-    }
-    localAuth.push(data)
+  try {
+    const builder = new RedPacketBuilder(
+      new Address(toAddress, AddressType.ckb),
+      inputCells,
+      options,
+      [rsaDep, acpDep, redPacketDep, unipassDep],
+    )
+    const signer = new UnipassSigner([provider])
+    const txhash = await pwcore.sendTransaction(builder, signer)
+    console.log('txhash', txhash)
+    return txhash
+  } catch (e) {
+    console.log(e)
   }
-  const { authInfo, authSig } = await getSecondaryAuth(localPubkey, localAuth)
-  return { localAuthSig: authInfo, localAuthInfo: authSig }
 }

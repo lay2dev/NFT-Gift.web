@@ -1,5 +1,4 @@
 import {
-  Address,
   Blake2bHasher,
   CellDep,
   DepType,
@@ -16,30 +15,38 @@ interface UnipassData {
   masterkey: string
   authorization: string
   localKey: string
+  sig: string
 }
 
 export const UNIPASS_TYPE_ID =
-  '0x949db47aac7d1a2a0d921344dc5c1ddefda390813a1881d56a0872d798e0d629'
+  '0x124a60cd799e1fbca664196de46b3f7f0ecb7138133dcaea4893c51df5b02be6'
 export const NODE_URL = 'https://testnet.ckb.dev'
 export const INDEXER_URL = 'https://testnet.ckb.dev/indexer'
 export const rsaDep = new CellDep(
   DepType.code,
   new OutPoint(
-    '0xd7022ca7f883ffa7e067bf0ecd945fefa49b3a0c82d3edb6939f976b53a6069f',
+    '0xd346695aa3293a84e9f985448668e9692892c959e7e83d6d8042e59c08b8cf5c',
     '0x0',
   ),
 )
 export const acpDep = new CellDep(
   DepType.code,
   new OutPoint(
-    '0x363b22a0de38c31e83fb83fa7210c447a4861408f1c56502f545cfffda25d9cc',
+    '0x04a1ac7fe15e454741d3c5c9a409efb9a967714ad2f530870514417978a9f655',
+    '0x0',
+  ),
+)
+export const redPacketDep = new CellDep(
+  DepType.code,
+  new OutPoint(
+    '0x7f9e3c1a2fc90411eb90fc2363101f6bd7b33875c3535117db5e52cd8a78b313',
     '0x0',
   ),
 )
 export const unipassDep = new CellDep(
   DepType.code,
   new OutPoint(
-    '0x01e18325376c649237a41b2d79f32bc793c51d25dfa250f2611161042e71f942',
+    '0x86a2b5e12372b88bf4c288e99626c016d00a3aad37fe34781bca3ff3842373d0',
     '0x0',
   ),
 )
@@ -54,14 +61,21 @@ export function getPubkeyHash(pubkey: string) {
  * @param pubkey
  */
 export function getAddressByPubkey(pubkey: string): string {
+  console.log('[pubkey]', pubkey, pubkey.length)
   const pubKeyBuffer = Buffer.from(pubkey.replace('0x', ''), 'hex')
   const hashHex = new Blake2bHasher()
     .update(pubKeyBuffer.buffer)
     .digest()
     .serializeJson()
     .slice(0, 42)
-  let script = new Script(UNIPASS_TYPE_ID, hashHex, HashType.type)
-  return script.toAddress(getDefaultPrefix()).toCKBAddress()
+  const script = new Script(
+    process.env.NUXT_ENV_UNIPASS_TYPE_ID as string,
+    hashHex,
+    HashType.type,
+  )
+  const address = script.toAddress(getDefaultPrefix()).toCKBAddress()
+  console.log(address)
+  return address
 }
 /**
  * decrypt pubukey to cryptoKey
@@ -121,7 +135,7 @@ function ab2str(buf: ArrayBuffer) {
 /**
  * one nft data create one kay par (key.private kay key.publick key)
  */
-export async function generateKey(salt: string, password: string) {
+export async function generateKey(salt: string, password?: string) {
   // create RSA key
   const key = await window.crypto.subtle.generateKey(
     {
@@ -130,7 +144,7 @@ export async function generateKey(salt: string, password: string) {
       publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
       hash: { name: 'SHA-256' },
     },
-    false,
+    !!password,
     ['sign', 'verify'],
   )
 
@@ -147,21 +161,32 @@ export async function generateKey(salt: string, password: string) {
   sA.writeUInt32LE(nA.length * 8, 0)
 
   const pubkey = Buffer.concat([sA, eA, nA]).toString('hex')
-  // generate pem from private key
-  let pkcs8: ArrayBuffer | null = await window.crypto.subtle.exportKey(
-    'pkcs8',
-    key.privateKey,
-  )
-  const exportedAsString = ab2str(pkcs8)
-  const exportedAsBase64 = window.btoa(exportedAsString)
-  const pemExported = `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`
-  pkcs8 = null
-  const strongPass = forge.pkcs5.pbkdf2(password, salt, 2 ** 16, 16)
-  const rsaKey = forge.pki.privateKeyFromPem(pemExported)
-  const pem = forge.pki.encryptRsaPrivateKey(rsaKey, strongPass, {
-    algorithm: 'aes256',
-  })
-  console.log('[master key pem', pem)
+
+  let pem: string | null = null
+  if (password) {
+    // generate pem from private key
+    let pkcs8: ArrayBuffer | null = await window.crypto.subtle.exportKey(
+      'pkcs8',
+      key.privateKey,
+    )
+    const exportedAsString = ab2str(pkcs8)
+    const exportedAsBase64 = window.btoa(exportedAsString)
+    const pemExported = `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`
+    pkcs8 = null
+
+    // encrypt key with password
+    // const start = new Date().getTime();
+    const strongPass = forge.pkcs5.pbkdf2(password, salt, 2 ** 16, 16)
+    // const end = new Date().getTime();
+    // alert(`[kdf time] ${(end - start) / 1000}`);
+
+    const rsaKey = forge.pki.privateKeyFromPem(pemExported)
+    pem = forge.pki.encryptRsaPrivateKey(rsaKey, strongPass, {
+      algorithm: 'aes256',
+    })
+    console.log('[master key pem', pem)
+  }
+
   return { key, pubkey, pem }
 }
 
@@ -170,11 +195,16 @@ export async function generateKey(salt: string, password: string) {
  * @param signstr unipass sign data
  */
 export function getDataFromSignString(signstr: string): UnipassData {
-  signstr = signstr.replace('0x', '')
+  signstr = signstr.replace('0x01', '')
   const masterkey = signstr.substr(0, 528)
+  console.log('masterkey', masterkey, masterkey.length)
   const authorization = signstr.substring(528, 1040)
-  const localKey = signstr.substring(1040, 1586)
-  return { masterkey, authorization, localKey }
+  console.log('authorization', authorization, authorization.length)
+  const localKey = signstr.substring(1040, 1568)
+  console.log('localKey', localKey, localKey.length)
+  const sig = signstr.substring(1568, signstr.length)
+  console.log('sig', sig, sig.length)
+  return { masterkey, authorization, localKey, sig }
 }
 /**
  * this keyPass will push to server

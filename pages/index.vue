@@ -1,7 +1,7 @@
 <template>
   <div id="page-index">
     <div class="title">NFT GIFT</div>
-    <el-button type="primary" round @click="bindLogin">
+    <el-button type="primary" round :loading="loading" @click="bindLogin">
       连接 Unipass
     </el-button>
   </div>
@@ -18,16 +18,18 @@ import PWCore, {
 
 export default {
   data() {
-    return {}
+    return {
+      loading: true,
+    }
   },
   mounted() {
     this.init()
   },
   methods: {
     init() {
+      this.loading = false
       const provider = Sea.localStorage('provider')
       if (provider) {
-        this.$store.state.provider = provider
         this.$router.push('/mine')
       }
     },
@@ -48,7 +50,6 @@ export default {
       const provider = PWCore.provider
       if (provider && provider._address) {
         Sea.localStorage('provider', provider)
-        this.$store.state.provider = provider
         this.$router.push('/mine')
       } else {
         this.$message.warning('登录不成功')

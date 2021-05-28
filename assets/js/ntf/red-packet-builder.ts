@@ -43,7 +43,6 @@ export class RedPacketBuilder extends Builder {
       rawTx.inputs[i].since = this.since
     }
     const tx = new Transaction(rawTx, [this.witnessArgs])
-
     this.fee = Builder.calcFee(tx, this.feeRate)
     // this.fee = new Amount('10000', AmountUnit.shannon);
     const changeCell = tx.raw.outputs.pop() as Cell

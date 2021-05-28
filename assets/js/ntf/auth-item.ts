@@ -14,28 +14,22 @@ export type LocalAuthInfo = AuthItem[]
 
 export function getSecondaryAuth(
   localPubkey: string,
-  localAuthInfo: LocalAuthInfo,
+  authItemsHex: string,
+  sig: string,
 ): AuthData {
-  console.log('localPubkey2', localPubkey)
-
-  const authItemsBuffer = serializeLocalAuth(localAuthInfo)
-
-  const authItemsHex = `0x${authItemsBuffer.toString('hex')}`
   // todo unipass sign authItemsHex
-  const sig = ''
-
   const authSig = Buffer.concat([
     Buffer.from(localPubkey.replace('0x', ''), 'hex'),
     Buffer.from(sig.replace('0x', ''), 'hex'),
   ])
-
   return {
     authSig: `0x${authSig.toString('hex')}`,
     authInfo: authItemsHex,
   }
 }
 
-function serializeLocalAuth(localAuth: LocalAuthInfo) {
+export function serializeLocalAuth(localAuth: LocalAuthInfo) {
+  console.log(localAuth.length)
   const size = localAuth.length
   const sizeBuffer = Buffer.alloc(4)
   sizeBuffer.writeUInt32LE(size, 0)
@@ -61,6 +55,7 @@ function serializeAuthItem(authItem: AuthItem): Buffer {
 
 function serializeOutpoints(outpoints: OutPoint[]) {
   let buffer
+  // eslint-disable-next-line camelcase
   const outpoint_size = outpoints.length
   const sizeBuffer = Buffer.alloc(4)
   sizeBuffer.writeUInt32LE(outpoint_size, 0)
@@ -77,6 +72,7 @@ function serializeOutpoints(outpoints: OutPoint[]) {
 
 function serializeOutpoint(outpoint: OutPoint) {
   const { txHash, index } = outpoint
+  console.log({ txHash, index })
   const hashBuffer = Buffer.from(txHash.replace('0x', ''), 'hex')
   const indexBuffer = Buffer.alloc(4)
   indexBuffer.writeUInt32LE(Number(index), 0)

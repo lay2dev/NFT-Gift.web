@@ -1,11 +1,14 @@
 <template>
   <div id="page-share">
     <back />
-    <div class="red-box">
-      <el-image :src="require('~/assets/img/top-bg.png')"></el-image>
+    <div id="red-box">
+      <img class="top-bg" src="~/assets/img/top-bg.png" />
       <div class="t1">NFT 红包</div>
       <div class="t2">- 领取 NFT，尝试新玩法 -</div>
-      <div class="qrcode-box"></div>
+      <div class="qrcode-box">
+        <img class="rectangle" src="~/assets/img/red-rectangle.png" alt="" />
+        <div class="qrcode"></div>
+      </div>
       <div class="t3">长按领取至钱包</div>
       <div class="t4">输入红包口令，获得专属于你的 NFT</div>
     </div>
@@ -14,11 +17,18 @@
   </div>
 </template>
 <script>
+// https://segmentfault.com/a/1190000011478657
+import html2canvas from 'html2canvas'
 export default {
   data() {
     return {
       password: '',
     }
+  },
+  mounted() {
+    html2canvas(document.querySelector('#red-box')).then((canvas) => {
+      document.body.appendChild(canvas)
+    })
   },
 }
 </script>
@@ -32,7 +42,7 @@ export default {
   justify-content: center;
   align-items: center;
 
-  .red-box {
+  #red-box {
     background: var(--red);
     width: 320px;
     height: 467px;
@@ -40,6 +50,11 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    .top-bg {
+      width: 320px;
+      height: 111.51px;
+    }
 
     .t1 {
       margin-top: 32px;
@@ -54,15 +69,32 @@ export default {
     }
 
     .qrcode-box {
-      margin-top: 32px;
+      position: relative;
+      margin-top: 24px;
+      padding: 9px;
       width: 94px;
       height: 94px;
-      box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);
-      border: 2px dashed #ffe2b0;
+
+      .rectangle {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      .qrcode {
+        // background: white;
+        width: 100%;
+        height: 100%;
+        // box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);
+        // border: 2px dashed #ffe2b0;
+      }
     }
 
     .t3 {
-      margin-top: 8px;
       color: rgb(250, 250, 250);
     }
 

@@ -118,8 +118,14 @@ export default {
       const redPacket = []
       const localAuth = []
       for (const item of nfts) {
-        const { pubkey, pem } = await generateKey('generateKey', this.password)
-        console.log('[token_outpoint]', item.token_outpoint)
+        const { key, pubkey, pem } = await generateKey(
+          'generateKey',
+          this.password,
+        )
+        console.log('[private_key]', key.privateKey)
+        console.log('[private_key_pubkey]', pubkey)
+        console.log('[private_key_getPubkeyHash]', getPubkeyHash(pubkey))
+
         const outpoints = [
           {
             index: `0x${item.token_outpoint.index.toString(16)}`,
@@ -253,7 +259,12 @@ export default {
           'generateKey',
           this.password,
         )
-        console.log('[key]', key)
+        console.log('[private_key]', key)
+        console.log('[private_key_pubkey]', data.keyPubkey)
+        console.log(
+          '[private_key_getPubkeyHash]',
+          getPubkeyHash(data.keyPubkey),
+        )
         console.log(
           '[localAuth-index]',
           data.authorization,
@@ -263,6 +274,11 @@ export default {
         console.log(
           '[deserializeLocalAuth]',
           deserializeLocalAuth(data.localAuthInfo),
+        )
+        console.log('[deserializeLocalAuth_Pubkey]', data.keyPubkey)
+        console.log(
+          '[deserializeLocalAuth_PubkeyHash]',
+          getPubkeyHash(data.keyPubkey),
         )
         // todo transfer
         const tx = await redPacketTransfer(

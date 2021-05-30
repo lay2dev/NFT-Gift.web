@@ -2,7 +2,7 @@
   <div id="page-mine">
     <header>
       <img src="~/assets/img/logo.png" alt="logo" class="logo" />
-      <div class="account">iwangyang@qq.com</div>
+      <div class="account">{{ account }}</div>
       <img
         src="~/assets/img/exit_to_app.svg"
         alt="exit"
@@ -73,6 +73,14 @@ export default {
       },
       provider: null,
     }
+  },
+  computed: {
+    account() {
+      if (this.provider) {
+        return this.provider._email
+      }
+      return ''
+    },
   },
   mounted() {
     const provider = Sea.localStorage('provider')

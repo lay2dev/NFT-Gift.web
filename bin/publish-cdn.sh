@@ -13,17 +13,17 @@ TARGET="$SSH_USER@$SSH_DOMAIN"
 echo "target is $TARGET"
 
 
-yarn build
+# yarn build
 # 打包
 tar -czf dist.tgz dist
 # 删除
-ssh -t -p 22 $TARGET "cd /var/www/$SSH_DOMAIN && rm -rf ../$SSH_DOMAIN/*"
+ssh -t -p 22 $TARGET "cd /var/www/$SSH_DOMAIN/NFT-Gift.web && rm -rf ./dist/*"
 # 上传到目录
-scp dist.tgz $TARGET:/var/www/$SSH_DOMAIN/
+scp dist.tgz $TARGET:/var/www/$SSH_DOMAIN/NFT-Gift.web
 # 解压
-ssh -t -p 22 $TARGET "cd /var/www/$SSH_DOMAIN && tar -zxf dist.tgz; rm dist.tgz"
+ssh -t -p 22 $TARGET "cd /var/www/$SSH_DOMAIN/NFT-Gift.web && tar -zxf dist.tgz; rm dist.tgz"
 # 覆盖
-ssh -t -p 22 $TARGET "cd /var/www/$SSH_DOMAIN &&mv dist/* ../$SSH_DOMAIN/"
+ssh -t -p 22 $TARGET "cd /var/www/$SSH_DOMAIN/NFT-Gift.web &&mv dist/* ../$SSH_DOMAIN/NFT-Gift.web"
 # 删除
 rm dist.tgz
 # 上传cdn

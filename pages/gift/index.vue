@@ -2,8 +2,8 @@
   <div id="page-gift">
     <div class="email">{{ provider && provider._email }}</div>
     <img class="top-bg" src="~/assets/img/top-bg.png" />
-    <template v-if="status === 'sucess'">
-      <div class="sucess">
+    <template v-if="status === 'success'">
+      <div class="success">
         <div class="t1">恭喜你</div>
         <div class="t2">成功领取到一个NFT</div>
       </div>
@@ -207,7 +207,7 @@ export default {
   flex-direction: column;
   align-items: center;
 
-  .sucess, .fail {
+  .success, .fail {
     color: #ffe2b0;
     letter-spacing: 6px;
     padding-left: 6px;

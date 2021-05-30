@@ -21,10 +21,11 @@ export default {
   },
   methods: {
     init() {
-      this.loading = false
       const provider = Sea.localStorage('provider')
       if (provider) {
         this.$router.push('/mine')
+      } else {
+        this.loading = false
       }
     },
     async bindLogin() {

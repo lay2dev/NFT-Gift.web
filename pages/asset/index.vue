@@ -84,8 +84,8 @@ import {
   getKeyPassword,
   getPubkeyHash,
   generateKey,
-} from '@/assets/js/ntf/utils'
-import { getSecondaryAuth, serializeLocalAuth } from '@/assets/js/ntf/auth-item'
+} from '@/assets/js/nft/utils'
+import { getSecondaryAuth, serializeLocalAuth } from '@/assets/js/nft/auth-item'
 
 export default {
   data() {
@@ -114,7 +114,7 @@ export default {
     async bindSend() {
       this.loading = true
       const { redPacket, authItemsHex } = await this.createRedPacketData({
-        password: this.form.password || 'default',
+        password: this.form.password || 'unipass',
         number: this.form.number,
       })
       const sign = await this.bindSign({
@@ -122,7 +122,7 @@ export default {
       })
       if (sign.authorization) {
         const { short } = await this.getShortData({
-          password: getKeyPassword(this.form.password),
+          password: getKeyPassword(this.form.password || 'unipass'),
           authorization: sign.authorization,
           masterKeyPubkey: sign.masterkey,
           localKeyPubkey: sign.localKey,

@@ -44,13 +44,13 @@ import {
   getPubkeyHash,
   generateKey,
   decryptMasterKey,
-} from './ntf/utils'
+} from '@/assets/test/js/nft/utils'
 import {
   getSecondaryAuth,
   serializeLocalAuth,
   deserializeLocalAuth,
-} from './ntf/auth-item'
-import { redPacketTransfer } from './ntf/transfer'
+} from '@/assets/test/js/nft/auth-item'
+import { redPacketTransfer } from '@/assets/test/js/nft/transfer'
 
 export default {
   data() {

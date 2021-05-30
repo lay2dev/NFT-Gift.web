@@ -1,5 +1,5 @@
 <template>
-  <div id="page-share">
+  <div id="page-gift">
     <div class="email">{{ provider && provider._email }}</div>
     <img class="top-bg" src="~/assets/img/top-bg.png" />
     <template v-if="status === 'sucess'">
@@ -19,10 +19,12 @@
         <div class="t1">抱歉</div>
         <div class="t2">NFT红包已经被抢完了</div>
       </div>
-      <div class="balance">
-        <img :src="require('~/assets/img/ze-balance-pay.svg')" />
-        <div>打开钱包</div>
-      </div>
+      <router-link to="/mine">
+        <div class="balance">
+          <img :src="require('~/assets/img/ze-balance-pay.svg')" />
+          <div>打开钱包</div>
+        </div>
+      </router-link>
     </template>
     <template v-else>
       <div class="get">
@@ -31,7 +33,7 @@
         <div class="password">
           <el-input v-model="password" placeholder="输口令，领NFT"></el-input>
         </div>
-        <div class="receive-box" @click="bindGet">
+        <div class="receive-box" @click="bindGet(password)">
           <div class="receive">立 即 领 取</div>
         </div>
       </div>
@@ -45,8 +47,8 @@ import {
   getKeyPassword,
   decryptMasterKey,
   getAddressByPubkey,
-} from '@/assets/js/ntf/utils'
-import { redPacketTransfer } from '@/assets/js/ntf/transfer'
+} from '@/assets/js/nft/utils'
+import { redPacketTransfer } from '@/assets/js/nft/transfer'
 
 export default {
   validate({ params }) {
@@ -60,28 +62,34 @@ export default {
     }
   },
   mounted() {
+    this.init()
     const provider = Sea.localStorage('provider')
     if (provider) {
       this.provider = provider
     }
   },
   methods: {
-    bindGet() {
+    init() {
+      this.$nextTick(() => {
+        this.getStatus({
+          address: 'do_not_need_address',
+          password: getKeyPassword('do_not_need_password'),
+        })
+      })
+    },
+    bindGet(password) {
       if (!this.provider) {
         this.bindLogin()
         return
       }
-      const id = this.$route.params.id
-      const password = this.password || 'default'
       this.getRedPacketData({
-        id,
         address: this.provider._address.addressString,
-        password: getKeyPassword(password),
+        password: getKeyPassword(password || 'unipass'),
       })
     },
-    async getRedPacketData({ id, address, password }) {
-      let res
-      res = await Sea.Ajax({
+    async getStatus({ address, password }) {
+      const id = this.$route.params.id
+      const res = await Sea.Ajax({
         url: `/ntf/${id}`,
         method: 'get',
         data: {
@@ -89,6 +97,16 @@ export default {
           address,
         },
       })
+      if (res.status === -1) {
+        this.status = 'fail'
+      } else if (res.status === -2) {
+        this.status = 'fail'
+      }
+      return res
+    },
+    async getRedPacketData({ address, password }) {
+      let res
+      res = await this.getStatus({ address, password })
       if (res.success) {
         const resData = res.data
         const fromAddress = getAddressByPubkey(resData.masterKeyPubkey)
@@ -132,13 +150,18 @@ export default {
           })
           if (res === 'ok') {
             this.status = 'success'
-            return
+          } else {
+            this.$message.error('状态有误')
           }
+        } else {
+          this.$message.error('交易 Hash 不存在')
         }
-        // this.status = 'fail'
-        this.$message.error('未知错误')
-      } else {
+      } else if (res.status === 0) {
         this.$message.error('红包口令错误')
+      } else if (res.status === -1) {
+        this.status = 'fail'
+      } else if (res.status === -2) {
+        this.$message.error('分享地址无效')
       }
     },
     async bindLogin() {
@@ -165,7 +188,9 @@ export default {
 }
 </script>
 <style lang="stylus">
-#page-share {
+#page-gift {
+  margin: 0 auto;
+  max-width: 475px;
   position: relative;
 
   .email {

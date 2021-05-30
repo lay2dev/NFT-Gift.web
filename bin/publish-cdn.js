@@ -1,32 +1,38 @@
+/* eslint-disable */
 // https://blog.csdn.net/zuggs_/article/details/84768489
 const fs = require('fs')
 const OSS = require('ali-oss')
+// const envparser = require('../config/envparser');
+// Object.assign(process.env, envparser());
+
+console.log('KEY', process.env.OSS_ACCESS_KEY_ID)
+console.log('SECRET', process.env.OSS_ACCESS_KEY_SECRET)
+console.log('BUCKET', process.env.OSS_BUCKET)
+console.log('BUCKET', process.env.OSS_PATH)
+
 const client = new OSS({
   // 地域节点
-  region: 'oss-cn-beijing',
-  accessKeyId: 'LTAI5tHWVgHfiTJjJweu1dPx',
-  accessKeySecret: 'JEwWaMb0CT9E4bTesidFW9vnQFMTZk',
+  region: process.env.OSS_REGION,
+  accessKeyId: process.env.OSS_ACCESS_KEY_ID,
+  accessKeySecret: process.env.OSS_ACCESS_KEY_SECRET,
   // 域名
-  bucket: 'sea-team',
+  bucket: process.env.OSS_BUCKET,
 })
 // 上传文件 src = 本地路径 dist = 云端路径
 const uploadFile = (src, dist) => {
   client
     .put(dist, src)
     .then((res) => {
-      // eslint-disable-next-line no-console
       console.log('上传成功', res.name)
     })
     .catch(() => {
-      // eslint-disable-next-line no-console
       console.log('上传失败', src)
     })
 }
 // 上传目录 src = 本地路径, dist 云端目录
 const uploaDirectory = (src, dist) => {
   if (fs.existsSync(src) === false) {
-    // eslint-disable-next-line no-console
-    console.log('请先打包 dict')
+    console.log('请先打包 dist')
     return
   }
   const docs = fs.readdirSync(src)
@@ -62,14 +68,14 @@ const deleteDirectory = async (prefix) => {
 
   list.objects = list.objects || []
   const result = await Promise.all(list.objects.map((v) => deleteFile(v.name)))
-  // eslint-disable-next-line no-console
   console.log('删除完成', result)
 }
 
 const main = async () => {
   // 删除
-  await deleteDirectory('')
+  await deleteDirectory(process.env.OSS_PATH)
   // 上传
-  uploaDirectory(process.cwd() + '/dist', '')
+  uploaDirectory(process.cwd() + '/dist', process.env.OSS_PATH)
 }
 main()
+/* eslint-enable */

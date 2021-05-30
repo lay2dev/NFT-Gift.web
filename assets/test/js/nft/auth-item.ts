@@ -29,7 +29,6 @@ export function getSecondaryAuth(
 }
 
 export function serializeLocalAuth(localAuth: LocalAuthInfo) {
-  console.log(localAuth.length)
   const size = localAuth.length
   const sizeBuffer = Buffer.alloc(4)
   sizeBuffer.writeUInt32LE(size, 0)
@@ -72,7 +71,6 @@ function serializeOutpoints(outpoints: OutPoint[]) {
 
 function serializeOutpoint(outpoint: OutPoint) {
   const { txHash, index } = outpoint
-  console.log({ txHash, index })
   const hashBuffer = Buffer.from(txHash.replace('0x', ''), 'hex')
   const indexBuffer = Buffer.alloc(4)
   indexBuffer.writeUInt32LE(Number(index), 0)
@@ -149,7 +147,6 @@ function deserializeOutpoint(buffer: Buffer): {
   outpoint: OutPoint
   length: number
 } {
-  console.log('deserializeOutpoint')
   const txHash = '0x' + buffer.slice(0, 32).toString('hex')
   const index = '0x' + buffer.slice(32, 36).toString('hex')
 

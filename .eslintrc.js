@@ -16,6 +16,7 @@ module.exports = {
     'import/no-unresolved': 'off',
     'no-callback-literal': 0,
     'max-len': 0,
+    'no-console': 'off',
     semi: 'off',
   },
   globals: {

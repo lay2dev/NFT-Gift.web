@@ -8,7 +8,7 @@ export default {
   data() {
     return {}
   },
-  created() {
+  mounted() {
     this.$confirm('404 找不到该页面', {
       center: true,
       roundButton: true,

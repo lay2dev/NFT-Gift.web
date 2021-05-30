@@ -21,6 +21,7 @@ export class RedPacketBuilder extends Builder {
     super(options.feeRate, options.collector, options.witnessArgs)
   }
 
+  // eslint-disable-next-line
   async build(fee: Amount = Amount.ZERO): Promise<Transaction> {
     const inputCells: Cell[] = []
     const outputCells: Cell[] = []
@@ -48,7 +49,6 @@ export class RedPacketBuilder extends Builder {
     const changeCell = tx.raw.outputs.pop() as Cell
     changeCell.capacity = changeCell.capacity.sub(this.fee)
     tx.raw.outputs.push(changeCell)
-    console.log(JSON.stringify(tx), 'rectifyTx')
     return tx
   }
 

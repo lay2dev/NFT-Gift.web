@@ -13,7 +13,7 @@ TARGET="$SSH_USER@$SSH_DOMAIN"
 echo "target is $TARGET"
 
 
-# yarn build
+yarn build
 # 打包
 tar -czf dist.tgz dist
 # 删除

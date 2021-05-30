@@ -24,9 +24,6 @@
 import QRCode from 'qrcode'
 import html2canvas from 'html2canvas'
 export default {
-  validate({ params }) {
-    return Boolean(params.id)
-  },
   data() {
     return {
       QRCode: '',
@@ -36,7 +33,7 @@ export default {
     }
   },
   mounted() {
-    this.shareUrl = `${window.location.origin}/gift/${this.$route.params.id}`
+    this.shareUrl = `${window.location.origin}/gift?id=${this.$route.query.id}`
     this.initQRCode()
   },
   methods: {

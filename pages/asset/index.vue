@@ -131,7 +131,7 @@ export default {
           redPacket,
         })
         if (short) {
-          this.$router.push(`/share/${short}`)
+          this.$router.push(`/share?id=${short}`)
         } else {
           this.$message.error('请求失败')
         }

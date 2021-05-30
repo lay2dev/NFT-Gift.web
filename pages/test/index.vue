@@ -212,7 +212,7 @@ export default {
       if (res.short) this.short = res.short
       console.log('res', res, this.short)
       // todo router
-      this.shortUrl = window.location.origin + '/share/' + this.short
+      this.shortUrl = window.location.origin + '/share?id=' + this.short
     },
 
     testPassword() {

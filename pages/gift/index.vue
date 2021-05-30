@@ -51,9 +51,6 @@ import {
 import { redPacketTransfer } from '@/assets/js/nft/transfer'
 
 export default {
-  validate({ params }) {
-    return Boolean(params.id)
-  },
   data() {
     return {
       status: '',
@@ -88,7 +85,7 @@ export default {
       })
     },
     async getStatus({ address, password }) {
-      const id = this.$route.params.id
+      const id = this.$route.query.id
       const res = await Sea.Ajax({
         url: `/ntf/${id}`,
         method: 'get',

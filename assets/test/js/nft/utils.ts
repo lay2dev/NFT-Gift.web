@@ -18,9 +18,9 @@ interface UnipassData {
   sig: string
 }
 
-export const UNIPASS_TYPE_ID = process.env.NUXT_ENV_UNIPASS_TYPE_ID
-export const NODE_URL = process.env.NUXT_ENV_NODE_URL
-export const INDEXER_URL = process.env.NUXT_ENV_INDEXER_URL
+export const UNIPASS_TYPE_ID = process.env.NUXT_ENV_UNIPASS_TYPE_ID as string
+export const NODE_URL = process.env.NUXT_ENV_NODE_URL as string
+export const INDEXER_URL = process.env.NUXT_ENV_INDEXER_URL as string
 export const rsaDep = new CellDep(
   DepType.code,
   new OutPoint(

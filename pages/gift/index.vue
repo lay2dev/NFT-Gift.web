@@ -98,7 +98,7 @@ export default {
     async getStatus({ address, password }) {
       const id = this.$route.query.id
       const res = await Sea.Ajax({
-        url: `/ntf/${id}`,
+        url: `/nft/${id}`,
         method: 'get',
         data: {
           password,
@@ -146,20 +146,20 @@ export default {
           data.outpoints,
         )
         if (tx) {
-          const host = process.env.NUXT_ENV_GOLDEN
           res = await Sea.Ajax({
-            url: `${host}/api/explorer/v1/red_envelope_transactions`,
+            url: `/nft/tx`,
             method: 'post',
             data: {
-              tx_hash: tx,
-              from_address: fromAddress,
-              to_address: toAddress,
+              txHash: tx,
+              fromAddress,
+              toAddress,
+              id: resData.id,
             },
           })
-          if (res === 'ok') {
+          if (res.success) {
             this.status = 'success'
           } else {
-            this.$message.error('状态有误')
+            this.$message.error('分享地址无效')
           }
         } else {
           this.$message.error('交易 Hash 不存在')

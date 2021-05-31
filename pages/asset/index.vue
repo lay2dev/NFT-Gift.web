@@ -195,7 +195,7 @@ export default {
     },
     async getShortData(data) {
       const res = await Sea.Ajax({
-        url: '/ntf',
+        url: '/nft',
         method: 'post',
         data,
       })

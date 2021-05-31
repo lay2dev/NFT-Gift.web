@@ -553,6 +553,7 @@
         method: (request.method || 'GET').toUpperCase(),
         url: request.url || '',
         data: request.data || {},
+        dataType: request.dataType || 'json',
         query: request.query || {},
         header: request.header || {},
         callback: request.callback,
@@ -597,9 +598,15 @@
           r.timeout = req.timeout
         }
         r.open(req.method, req.url, true)
-        // default json
-        if (req.method !== 'GET' && !req.header['Content-Type']) {
-          req.header['Content-Type'] = 'application/json'
+        // content type
+        if (req.dataType === 'json') {
+          if (req.method !== 'GET' && !req.header['Content-Type']) {
+            req.header['Content-Type'] = 'application/json'
+          }
+        } else if (req.dataType === 'form') {
+          if (req.method !== 'GET' && !req.header['Content-Type']) {
+            req.header['Content-Type'] = 'multipart/form-data'
+          }
         }
         for (const key in req.header) {
           r.setRequestHeader(key, req.header[key])
@@ -632,8 +639,19 @@
           if (typeof req.data === 'string') {
             r.send(req.data)
           }
-          // default json
-          r.send(JSON.stringify(req.data))
+          let data = req.data
+          if (req.dataType === 'form') {
+            if (this.type(data) !== 'formdata') {
+              const formData = new FormData()
+              for (const key of Object.keys(data)) {
+                formData.append(key, data[key])
+              }
+              data = formData
+            }
+          } else {
+            data = JSON.stringify(req.data)
+          }
+          r.send(data)
         }
       })
     },

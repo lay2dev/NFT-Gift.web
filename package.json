@@ -6,7 +6,7 @@
     "start": "nuxt --open",
     "build": "nuxt generate",
     "preview": "node preview.js",
-    "publish": "cross-env NODE_ENV=prod sh bin/publish-cdn.sh",
+    "publish": "cross-env NODE_ENV=test sh bin/publish-cdn.sh",
     "lint": "eslint --fix --ext \".js,.vue\" --ignore-path .gitignore .",
     "yarn": "yarn"
   },

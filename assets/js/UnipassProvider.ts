@@ -48,7 +48,7 @@ export default class UnipassProvider extends Provider {
   }
 
   constructor(
-    private readonly UNIPASS_BASE = process.env.NUXT_ENV_UNIPASS_URL,
+    private readonly UNIPASS_BASE = process.env.NUXT_ENV_UNIPASS_URL as string,
   ) {
     super(Platform.ckb)
   }

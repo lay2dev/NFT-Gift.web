@@ -18,10 +18,9 @@ interface UnipassData {
   sig: string
 }
 
-export const UNIPASS_TYPE_ID =
-  '0x124a60cd799e1fbca664196de46b3f7f0ecb7138133dcaea4893c51df5b02be6'
-export const NODE_URL = 'https://testnet.ckb.dev'
-export const INDEXER_URL = 'https://testnet.ckb.dev/indexer'
+export const UNIPASS_TYPE_ID = process.env.NUXT_ENV_UNIPASS_TYPE_ID as string
+export const NODE_URL = process.env.NUXT_ENV_NODE_URL as string
+export const INDEXER_URL = process.env.NUXT_ENV_INDEXER_URL as string
 export const rsaDep = new CellDep(
   DepType.code,
   new OutPoint(

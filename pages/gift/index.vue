@@ -7,12 +7,10 @@
         <div class="t1">恭喜你</div>
         <div class="t2">成功领取到一个NFT</div>
       </div>
-      <router-link to="/mine">
-        <div class="balance">
-          <img :src="require('~/assets/img/ze-balance-pay.svg')" />
-          <div>打开钱包</div>
-        </div>
-      </router-link>
+      <div class="balance" @click="bindSuccess">
+        <img :src="require('~/assets/img/ze-balance-pay.svg')" />
+        <div>打开钱包</div>
+      </div>
     </template>
     <template v-else-if="status === 'fail'">
       <div class="fail">
@@ -76,6 +74,15 @@ export default {
     }
   },
   methods: {
+    bindSuccess() {
+      this.$alert(
+        '领取 NFT 红包需链上确认交易，您需要等待1-2分钟后，才能在钱包内查看到领取的 NFT 资产。',
+      )
+        .then(() => {
+          this.$router.push('/mine')
+        })
+        .catch(() => {})
+    },
     init() {
       this.$nextTick(() => {
         this.getStatus({

@@ -146,7 +146,7 @@ export default {
           data.outpoints,
         )
         if (tx) {
-          const host = process.env.NUXT_ENV_JINSE
+          const host = process.env.NUXT_ENV_GOLDEN
           res = await Sea.Ajax({
             url: `${host}/api/explorer/v1/red_envelope_transactions`,
             method: 'post',

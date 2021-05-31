@@ -127,7 +127,7 @@ export default {
       return result
     },
     getList(page) {
-      const host = process.env.NUXT_ENV_JINSE
+      const host = process.env.NUXT_ENV_GOLDEN
       const address = this.provider._address.addressString
       return this.Sea.Ajax({
         url: `${host}/api/explorer/v1/holder_tokens/${address}`,

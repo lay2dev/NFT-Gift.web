@@ -47,7 +47,9 @@ export default class UnipassProvider extends Provider {
     return this._recovery
   }
 
-  constructor(private readonly UNIPASS_BASE = 'https://unipass.me') {
+  constructor(
+    private readonly UNIPASS_BASE = process.env.NUXT_ENV_UNIPASS_URL,
+  ) {
     super(Platform.ckb)
   }
 

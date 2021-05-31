@@ -99,6 +99,11 @@ export default {
       loading: false,
     }
   },
+  computed: {
+    giftPassword() {
+      return this.form.password || 'unipass'
+    },
+  },
   created() {
     const nft = this.$store.state.nft
     if (nft && nft.i_have) {
@@ -114,7 +119,7 @@ export default {
     async bindSend() {
       this.loading = true
       const { redPacket, authItemsHex } = await this.createRedPacketData({
-        password: this.form.password || 'unipass',
+        password: this.giftPassword,
         number: this.form.number,
       })
       const sign = await this.bindSign({
@@ -122,7 +127,7 @@ export default {
       })
       if (sign.authorization) {
         const { short } = await this.getShortData({
-          password: getKeyPassword(this.form.password || 'unipass'),
+          password: getKeyPassword(this.giftPassword),
           authorization: sign.authorization,
           masterKeyPubkey: sign.masterkey,
           localKeyPubkey: sign.localKey,

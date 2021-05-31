@@ -1,5 +1,5 @@
 <template>
-  <div id="page-gift">
+  <div id="page-gift" v-loading="loading">
     <div class="email">{{ provider && provider._email }}</div>
     <img class="top-bg" src="~/assets/img/top-bg.png" />
     <template v-if="status === 'success'">
@@ -31,9 +31,13 @@
         <div class="t1">您有一个待领取的</div>
         <div class="t2">NFT 红包</div>
         <div class="password">
-          <el-input v-model="password" placeholder="输口令，领NFT"></el-input>
+          <el-input
+            v-model="password"
+            placeholder="输口令，领NFT"
+            @keyup.enter="bindGet"
+          ></el-input>
         </div>
-        <div class="receive-box" @click="bindGet(password)">
+        <div class="receive-box" @click="bindGet">
           <div class="receive">立 即 领 取</div>
         </div>
       </div>
@@ -56,7 +60,13 @@ export default {
       status: '',
       password: '',
       provider: null,
+      loading: false,
     }
+  },
+  computed: {
+    giftPassword() {
+      return this.password || 'unipass'
+    },
   },
   mounted() {
     this.init()
@@ -74,14 +84,15 @@ export default {
         })
       })
     },
-    bindGet(password) {
+    bindGet() {
+      this.loading = true
       if (!this.provider) {
         this.bindLogin()
         return
       }
       this.getRedPacketData({
         address: this.provider._address.addressString,
-        password: getKeyPassword(password || 'unipass'),
+        password: getKeyPassword(this.giftPassword),
       })
     },
     async getStatus({ address, password }) {
@@ -122,7 +133,7 @@ export default {
         const key = await decryptMasterKey(
           data.encrypt,
           'generateKey',
-          this.password,
+          this.giftPassword,
         )
         const tx = await redPacketTransfer(
           data.masterKeyPubkey,
@@ -160,6 +171,7 @@ export default {
       } else if (res.status === -2) {
         this.$message.error('分享地址无效')
       }
+      this.loading = false
     },
     async bindLogin() {
       const url = {
@@ -180,6 +192,7 @@ export default {
       } else {
         this.$message.warning('登录不成功')
       }
+      this.loading = false
     },
   },
 }

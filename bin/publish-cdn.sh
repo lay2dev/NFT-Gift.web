@@ -1,6 +1,3 @@
-# web 前端
-# web 前端 编译并上传
-# 编译
 
 echo "NODE_ENV = ${NODE_ENV}"
 

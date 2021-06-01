@@ -68,6 +68,8 @@ export default {
   },
   mounted() {
     this.init()
+    PWCore.chainId =
+      process.env.NUXT_ENV_CHAIN_ID === '0' ? ChainID.ckb : ChainID.ckb_testnet
     const provider = Sea.localStorage('provider')
     if (provider) {
       this.provider = provider
@@ -182,9 +184,12 @@ export default {
     },
     async bindLogin() {
       const url = {
-        NODE_URL: 'https://testnet.ckb.dev',
-        INDEXER_URL: 'https://testnet.ckb.dev/indexer',
-        CHAIN_ID: ChainID.ckb_testnet,
+        NODE_URL: process.env.NUXT_ENV_NODE_URL,
+        INDEXER_URL: process.env.NUXT_ENV_INDEXER_URL,
+        CHAIN_ID:
+          process.env.NUXT_ENV_CHAIN_ID === '0'
+            ? ChainID.ckb
+            : ChainID.ckb_testnet,
       }
       await new PWCore(url.NODE_URL).init(
         new UnipassProvider(process.env.NUXT_ENV_UNIPASS_URL),

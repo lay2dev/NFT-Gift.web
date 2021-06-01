@@ -23,31 +23,19 @@ export const NODE_URL = process.env.NUXT_ENV_NODE_URL as string
 export const INDEXER_URL = process.env.NUXT_ENV_INDEXER_URL as string
 export const rsaDep = new CellDep(
   DepType.code,
-  new OutPoint(
-    '0xd346695aa3293a84e9f985448668e9692892c959e7e83d6d8042e59c08b8cf5c',
-    '0x0',
-  ),
+  new OutPoint(process.env.NUXT_ENV_RSA_TXHASH as string, '0x0'),
 )
 export const acpDep = new CellDep(
   DepType.code,
-  new OutPoint(
-    '0x04a1ac7fe15e454741d3c5c9a409efb9a967714ad2f530870514417978a9f655',
-    '0x0',
-  ),
+  new OutPoint(process.env.NUXT_ENV_ACP_TXHASH as string, '0x0'),
 )
 export const redPacketDep = new CellDep(
   DepType.code,
-  new OutPoint(
-    '0x7f9e3c1a2fc90411eb90fc2363101f6bd7b33875c3535117db5e52cd8a78b313',
-    '0x0',
-  ),
+  new OutPoint(process.env.NUXT_ENV_TOKEN_SCRIPT_TXHASH as string, '0x0'),
 )
 export const unipassDep = new CellDep(
   DepType.code,
-  new OutPoint(
-    '0x86a2b5e12372b88bf4c288e99626c016d00a3aad37fe34781bca3ff3842373d0',
-    '0x0',
-  ),
+  new OutPoint(process.env.NUXT_ENV_UNIPASS_TXHASH as string, '0x0'),
 )
 export function getPubkeyHash(pubkey: string) {
   const blake2b: Hasher = new Blake2bHasher()

@@ -41,15 +41,7 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/typescript
     '@nuxt/typescript-build',
-    [
-      '@nuxtjs/dotenv',
-      {
-        filename:
-          process.env.NODE_ENV === 'development'
-            ? '.env'
-            : `.env.${process.env.NODE_ENV}`,
-      },
-    ],
+    '@nuxtjs/dotenv',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules

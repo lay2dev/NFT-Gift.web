@@ -17,7 +17,7 @@ export class RedPacketProvider extends Provider {
     this.masterAuth =
       masterPubkey.replace('0x', '') + this.masterAuth.replace('0x', '')
   }
-
+  // eslint-disable-next-line
   async init(): Promise<Provider> {
     return this
   }
@@ -46,7 +46,7 @@ export class RedPacketProvider extends Provider {
     console.log('ret', ret)
     return ret
   }
-
+  // eslint-disable-next-line
   async close() {
     console.log('do nothing')
   }

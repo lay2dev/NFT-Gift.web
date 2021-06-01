@@ -179,9 +179,9 @@ export default {
       }
     },
     async bindSign({ message }) {
-      const data = await new UnipassProvider(
-        process.env.NUXT_ENV_UNIPASS_URL,
-      ).sign(message)
+      const data = await new UnipassProvider(process.env.UNIPASS_URL).sign(
+        message,
+      )
       const sign = getDataFromSignString(data)
       const { masterkey, authorization, localKey, sig } = sign
       const { authSig, authInfo } = getSecondaryAuth(localKey, message, sig)

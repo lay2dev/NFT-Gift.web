@@ -17,25 +17,24 @@ interface UnipassData {
   localKey: string
   sig: string
 }
-
-export const UNIPASS_TYPE_ID = process.env.NUXT_ENV_UNIPASS_TYPE_ID as string
-export const NODE_URL = process.env.NUXT_ENV_NODE_URL as string
-export const INDEXER_URL = process.env.NUXT_ENV_INDEXER_URL as string
+export const UNIPASS_TYPE_ID = process.env.UNIPASS_TYPE_ID as string
+export const NODE_URL = process.env.CKB_NODE_URL as string
+export const INDEXER_URL = process.env.CKB_INDEXER_URL as string
 export const rsaDep = new CellDep(
   DepType.code,
-  new OutPoint(process.env.NUXT_ENV_RSA_TXHASH as string, '0x0'),
+  new OutPoint(process.env.RSA_TXHASH as string, '0x0'),
 )
 export const acpDep = new CellDep(
   DepType.code,
-  new OutPoint(process.env.NUXT_ENV_ACP_TXHASH as string, '0x0'),
+  new OutPoint(process.env.ACP_TXHASH as string, '0x0'),
 )
 export const redPacketDep = new CellDep(
   DepType.code,
-  new OutPoint(process.env.NUXT_ENV_TOKEN_SCRIPT_TXHASH as string, '0x0'),
+  new OutPoint(process.env.TXHASH_TOKEN_SCRIPT as string, '0x0'),
 )
 export const unipassDep = new CellDep(
   DepType.code,
-  new OutPoint(process.env.NUXT_ENV_UNIPASS_TXHASH as string, '0x0'),
+  new OutPoint(process.env.UNIPASS_TXHASH as string, '0x0'),
 )
 export function getPubkeyHash(pubkey: string) {
   const blake2b: Hasher = new Blake2bHasher()
@@ -56,7 +55,7 @@ export function getAddressByPubkey(pubkey: string): string {
     .serializeJson()
     .slice(0, 42)
   const script = new Script(
-    process.env.NUXT_ENV_UNIPASS_TYPE_ID as string,
+    process.env.UNIPASS_TYPE_ID as string,
     hashHex,
     HashType.type,
   )

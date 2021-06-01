@@ -48,7 +48,7 @@ export default class UnipassProvider extends Provider {
   }
 
   constructor(
-    private readonly UNIPASS_BASE = process.env.NUXT_ENV_UNIPASS_URL as string,
+    private readonly UNIPASS_BASE = process.env.UNIPASS_URL as string,
   ) {
     super(Platform.ckb)
   }
@@ -231,7 +231,7 @@ function pubkeyToAddress(pubkey: string): string {
   // const isTest = localStorage.getItem('test')
   // const script: Script
   const script = new Script(
-    process.env.NUXT_ENV_UNIPASS_TYPE_ID as string,
+    process.env.UNIPASS_TYPE_ID as string,
     hashHex,
     HashType.type,
   )

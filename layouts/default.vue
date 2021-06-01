@@ -6,7 +6,7 @@
 <script>
 export default {
   mounted() {
-    Sea.Ajax.HOST = process.env.NUXT_ENV_NFT
+    Sea.Ajax.HOST = process.env.NFT_GIFT
     // 默认参数
     // Sea.Ajax.default = function () {}
     // Ajax 请求失败返回值 统一处理

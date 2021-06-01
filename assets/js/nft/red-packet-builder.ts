@@ -21,6 +21,7 @@ export class RedPacketBuilder extends Builder {
     super(options.feeRate, options.collector, options.witnessArgs)
   }
 
+  // eslint-disable-next-line
   async build(fee: Amount = Amount.ZERO): Promise<Transaction> {
     const inputCells: Cell[] = []
     const outputCells: Cell[] = []

@@ -30,15 +30,13 @@ export default {
     },
     async bindLogin() {
       const url = {
-        NODE_URL: process.env.NUXT_ENV_NODE_URL,
-        INDEXER_URL: process.env.NUXT_ENV_INDEXER_URL,
+        NODE_URL: process.env.CKB_NODE_URL,
+        INDEXER_URL: process.env.CKB_INDEXER_URL,
         CHAIN_ID:
-          process.env.NUXT_ENV_CHAIN_ID === '0'
-            ? ChainID.ckb
-            : ChainID.ckb_testnet,
+          process.env.CKB_CHAIN_ID === '0' ? ChainID.ckb : ChainID.ckb_testnet,
       }
       await new PWCore(url.NODE_URL).init(
-        new UnipassProvider(process.env.NUXT_ENV_UNIPASS_URL),
+        new UnipassProvider(process.env.UNIPASS_URL),
         new IndexerCollector(url.INDEXER_URL),
         url.CHAIN_ID,
       )

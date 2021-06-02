@@ -56,6 +56,10 @@
           </div>
         </template>
       </div>
+      <div v-if="nftList.lenght === 0" class="not-found">
+        <img src="~/assets/img/not_found.svg" />
+        <div>你的资产宝箱里空空如也</div>
+      </div>
     </main>
   </div>
 </template>
@@ -175,6 +179,8 @@ export default {
 
     .exit {
       margin-left: auto;
+      width: 24px;
+      height: 24px;
     }
   }
 
@@ -263,6 +269,13 @@ export default {
       .nft:active, .nft:hover {
         background: #eee;
       }
+    }
+
+    .not-found {
+      text-align: center;
+      font-weight: 300;
+      font-size: 16px;
+      margin: 10px;
     }
   }
 }

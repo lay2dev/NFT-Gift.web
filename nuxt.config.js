@@ -70,14 +70,6 @@ export default {
   build: {
     transpile: [/^element-ui/],
     publicPath: process.env.OSS_PUBLIC_PATH,
-    // terser: {
-    //   // https://github.com/terser/terser#compress-options
-    //   terserOptions: {
-    //     compress: {
-    //       drop_console: process.env.NODE_ENV === 'dev',
-    //     },
-    //   },
-    // },
   },
   env: {
     environment: process.env.NODE_ENV,

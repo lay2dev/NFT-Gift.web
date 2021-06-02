@@ -1,7 +1,14 @@
 <template>
   <div id="page-index">
-    <div class="title">NFT GIFT</div>
-    <el-button type="primary" round :loading="loading" @click="bindLogin">
+    <div class="title">NFT Gift</div>
+    <img class="illustration" src="~/assets/img/dolphins_in_the_ocean.svg" />
+    <el-button
+      class="connect"
+      type="primary"
+      round
+      :loading="loading"
+      @click="bindLogin"
+    >
       连接 Unipass
     </el-button>
   </div>
@@ -63,7 +70,18 @@ export default {
   padding-bottom: 100px;
   margin: 0 40px;
 
-  .el-button {
+  .title {
+    font-weight: 300;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .index-illustration {
+    width: 80vw;
+  }
+
+  .connect {
+    margin-top: 20px;
     width: 100%;
   }
 }

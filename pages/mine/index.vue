@@ -83,8 +83,8 @@ export default {
     },
   },
   mounted() {
-    const provider = Sea.localStorage('provider')
-    if (provider && provider._address) {
+    const provider = Sea.checkLogin()
+    if (provider) {
       this.provider = provider
       this.init()
     } else {
@@ -98,7 +98,7 @@ export default {
       if (res.token_list) {
         const tokenList = await this.initList(res)
         this.tokenList = Sea.deepCopy(tokenList)
-        const arr = this.Sea.set(tokenList, 'class_uuid')
+        const arr = Sea.set(tokenList, 'class_uuid')
         for (const e of tokenList) {
           const id = e.class_uuid
           if (this.nftDict[id]) {
@@ -129,7 +129,7 @@ export default {
     getList(page) {
       const host = process.env.GOLDEN_LEGEND
       const address = this.provider._address.addressString
-      return this.Sea.Ajax({
+      return Sea.Ajax({
         url: `${host}/api/explorer/v1/holder_tokens/${address}`,
         data: {
           page,

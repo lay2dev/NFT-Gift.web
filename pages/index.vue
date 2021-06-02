@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     init() {
-      const provider = Sea.localStorage('provider')
+      const provider = Sea.checkLogin()
       if (provider) {
         this.$router.push('/mine')
       } else {
@@ -42,6 +42,7 @@ export default {
       )
       const provider = PWCore.provider
       if (provider && provider._address) {
+        provider._time = Date.now()
         Sea.localStorage('provider', provider)
         this.$router.push('/mine')
       } else {

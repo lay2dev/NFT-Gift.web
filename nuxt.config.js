@@ -19,8 +19,7 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       {
         ref: 'stylesheet',
-        href:
-          'https://cdn.jsdelivr.net/npm/normalize.css@latest/normalize.min.css',
+        href: 'https://cdn.jsdelivr.net/npm/normalize.css@latest/normalize.min.css',
       },
     ],
     script: [
@@ -32,7 +31,7 @@ export default {
   css: ['@assets/css/main.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['@/plugins/element-ui', '@/plugins/main'],
+  plugins: ['@/plugins/element-ui', '@/plugins/main', '@/plugins/bigsea'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,

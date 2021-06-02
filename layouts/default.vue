@@ -6,15 +6,13 @@
 <script>
 export default {
   mounted() {
-    Sea.Ajax.HOST = process.env.NFT_GIFT
-    // 默认参数
+    // Ajax default param
     // Sea.Ajax.default = function () {}
-    // Ajax 请求失败返回值 统一处理
+    // Ajax fail
     Sea.Ajax.fail = (r) => {
       this.$message.error(`请求失败 ${r.statusText}`)
     }
   },
-  methods: {},
 }
 </script>
 

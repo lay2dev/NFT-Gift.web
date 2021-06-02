@@ -196,6 +196,7 @@ export default {
       )
       const provider = PWCore.provider
       if (provider && provider._address) {
+        provider._time = Date.now()
         Sea.localStorage('provider', provider)
         this.$message.info('登录成功')
         this.provider = provider

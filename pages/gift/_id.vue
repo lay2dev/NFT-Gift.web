@@ -1,5 +1,5 @@
 <template>
-  <div id="page-gift" v-loading="loading">
+  <div id="page-gift">
     <div class="email">{{ provider && provider._email }}</div>
     <img class="top-bg" src="~/assets/img/top-bg.png" />
     <template v-if="status === 'success'">
@@ -36,7 +36,7 @@
           ></el-input>
         </div>
         <div class="receive-box" @click="bindGet">
-          <div class="receive">立 即 领 取</div>
+          <el-button class="receive" :loading="loading">立 即 领 取</el-button>
         </div>
       </div>
     </template>
@@ -68,12 +68,7 @@ export default {
   },
   mounted() {
     this.init()
-    PWCore.chainId =
-      process.env.CKB_CHAIN_ID === '0' ? ChainID.ckb : ChainID.ckb_testnet
-    const provider = Sea.localStorage('provider')
-    if (provider) {
-      this.provider = provider
-    }
+    this.bindLogin()
   },
   methods: {
     bindSuccess() {
@@ -105,7 +100,7 @@ export default {
       })
     },
     async getStatus({ address, password }) {
-      const id = this.$route.query.id
+      const id = this.$route.params.id || 'null'
       const res = await Sea.Ajax({
         url: `/nft/${id}`,
         method: 'get',
@@ -183,6 +178,14 @@ export default {
       this.loading = false
     },
     async bindLogin() {
+      let provider
+      provider = Sea.localStorage('provider')
+      if (provider) {
+        this.provider = provider
+        return
+      }
+      // login
+      this.loading = true
       const url = {
         NODE_URL: process.env.CKB_NODE_URL,
         INDEXER_URL: process.env.CKB_INDEXER_URL,
@@ -194,7 +197,7 @@ export default {
         new IndexerCollector(url.INDEXER_URL),
         url.CHAIN_ID,
       )
-      const provider = PWCore.provider
+      provider = PWCore.provider
       if (provider && provider._address) {
         provider._time = Date.now()
         Sea.localStorage('provider', provider)
@@ -297,6 +300,7 @@ export default {
         border: 2px solid #FFE2B0;
         border-radius: 2px;
         color: #FFE2B0;
+        background: transparent;
         font-size: 18px;
       }
 

@@ -33,7 +33,7 @@ export default {
     }
   },
   mounted() {
-    this.shareUrl = `${window.location.origin}/gift?id=${this.$route.query.id}`
+    this.shareUrl = `${window.location.origin}/gift/${this.$route.params.id}`
     this.initQRCode()
   },
   methods: {

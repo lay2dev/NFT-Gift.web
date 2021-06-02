@@ -189,6 +189,7 @@ export default {
         >.left {
           display: flex;
           align-items: center;
+          margin-right: 6px;
 
           .nft-image {
             background: #eee;
@@ -217,6 +218,7 @@ export default {
                 width: 18px;
                 height: 18px;
                 border-radius: 2px;
+                flex-shrink: 0;
               }
 
               .user-name {

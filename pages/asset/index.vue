@@ -136,7 +136,7 @@ export default {
           redPacket,
         })
         if (short) {
-          this.$router.push(`/share?id=${short}`)
+          this.$router.push(`/share/${short}`)
         } else {
           this.$message.error('请求失败')
         }
@@ -200,7 +200,6 @@ export default {
         data,
       })
       return res
-      // this.shortUrl = window.location.origin + '/share/' + res.short
     },
   },
 }

@@ -43,8 +43,6 @@
   </div>
 </template>
 <script>
-import UnipassProvider from '@/assets/js/UnipassProvider.ts'
-import PWCore, { ChainID, IndexerCollector } from '@lay2/pw-core'
 import {
   getKeyPassword,
   decryptMasterKey,
@@ -178,30 +176,9 @@ export default {
       this.loading = false
     },
     async bindLogin() {
-      let provider
-      provider = Sea.localStorage('provider')
-      if (provider) {
-        this.provider = provider
-        return
-      }
-      // login
       this.loading = true
-      const url = {
-        NODE_URL: process.env.CKB_NODE_URL,
-        INDEXER_URL: process.env.CKB_INDEXER_URL,
-        CHAIN_ID:
-          process.env.CKB_CHAIN_ID === '0' ? ChainID.ckb : ChainID.ckb_testnet,
-      }
-      await new PWCore(url.NODE_URL).init(
-        new UnipassProvider(process.env.UNIPASS_URL),
-        new IndexerCollector(url.INDEXER_URL),
-        url.CHAIN_ID,
-      )
-      provider = PWCore.provider
-      if (provider && provider._address) {
-        provider._time = Date.now()
-        Sea.localStorage('provider', provider)
-        this.$message.info('登录成功')
+      const provider = await Sea.bindLogin()
+      if (provider) {
         this.provider = provider
       } else {
         this.$message.warning('登录不成功')

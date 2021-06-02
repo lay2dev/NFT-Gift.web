@@ -178,6 +178,7 @@ export default {
     }
 
     .exit {
+      cursor: pointer;
       margin-left: auto;
       width: 24px;
       height: 24px;
@@ -187,6 +188,7 @@ export default {
   >main {
     .nft-list {
       .nft {
+        cursor: pointer;
         padding: 16px 22px;
         display: flex;
         align-items: center;

@@ -49,7 +49,7 @@
                 </div>
                 <div class="right">
                   <div class="total">
-                    {{ nftDict[e.class_uuid] }}
+                    {{ e.children && e.children.length }}
                   </div>
                   <div class="state" :class="e.tx_state">
                     {{ stateDict[e.tx_state] }}
@@ -72,12 +72,12 @@
                 @change="handleCheckedCitiesChange"
               >
                 <el-checkbox
-                  v-for="city in cities"
-                  :key="city"
+                  v-for="nft in e.children"
+                  :key="nft.n_token_id"
                   class="nft-one"
-                  :label="city"
+                  :label="nft.n_token_id"
                 >
-                  #{{ city }}
+                  #{{ nft.n_token_id }}
                 </el-checkbox>
               </el-checkbox-group>
             </div>
@@ -101,7 +101,6 @@ export default {
       isIndeterminate: true,
       // nft
       nftList: [],
-      nftDict: {},
       tokenList: [],
       stateDict: {
         pending: '接收中',
@@ -144,15 +143,18 @@ export default {
       const res = await this.getList(1)
       if (res.token_list) {
         const tokenList = await this.initList(res)
-        this.tokenList = Sea.deepCopy(tokenList)
-        const arr = Sea.set(tokenList, 'class_uuid')
-        for (const e of tokenList) {
-          const id = e.class_uuid
-          if (this.nftDict[id]) {
-            this.nftDict[id] += 1
-          } else {
-            this.nftDict[id] = 1
-          }
+        const list = Sea.set(tokenList, 'class_uuid')
+        const arr = []
+        for (const token of list) {
+          const children = tokenList
+            .filter((e) => e.class_uuid === token.class_uuid)
+            .sort((a, b) => {
+              return a.n_token_id - b.n_token_id
+            })
+          arr.push({
+            ...token,
+            children,
+          })
         }
         this.nftList = arr
       }
@@ -185,11 +187,11 @@ export default {
       })
     },
     bindNFT(nft) {
-      nft.i_have = this.nftDict[nft.class_uuid]
-      const nfts = this.tokenList.filter((e) => e.class_uuid === nft.class_uuid)
-      this.$store.state.nfts = nfts
-      this.$store.state.nft = nft
-      this.$router.push('/asset')
+      // nft.i_have = this.nftDict[nft.class_uuid]
+      // const nfts = this.tokenList.filter((e) => e.class_uuid === nft.class_uuid)
+      // this.$store.state.nfts = nfts
+      // this.$store.state.nft = nft
+      // this.$router.push('/asset')
     },
     bindExit() {
       Sea.localStorage('provider', '')

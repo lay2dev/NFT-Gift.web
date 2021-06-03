@@ -19,7 +19,7 @@ import locale from 'element-ui/lib/locale/lang/zh-CN'
 // } from 'element-ui'
 
 // 自定义主题
-import '@/assets/css/element-variables.scss'
+import '~/assets/css/element-variables.scss'
 Vue.use(Element, { locale })
 
 // Vue.use(Button)

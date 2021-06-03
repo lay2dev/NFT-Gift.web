@@ -1,7 +1,7 @@
-import '@/assets/js/bigsea'
+import '~/assets/js/bigsea'
 import dayjs from 'dayjs'
-import UnipassProvider from '@/assets/js/UnipassProvider.ts'
 import PWCore, { ChainID, IndexerCollector } from '@lay2/pw-core'
+import UnipassProvider from '~/assets/js/UnipassProvider.ts'
 
 // global variable utils Sea
 Sea.Ajax.HOST = process.env.NFT_GIFT

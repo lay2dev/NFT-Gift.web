@@ -8,8 +8,8 @@ import {
   Provider,
   Script,
 } from '@lay2/pw-core'
-import { getAddressByPubkey } from '@/assets/js/nft/utils'
-// import { getAddressByPubkey } from '@/assets/js/nft/utils'
+import { getAddressByPubkey } from '~/assets/js/nft/utils'
+// import { getAddressByPubkey } from '~/assets/js/nft/utils'
 type UP_ACT =
   | 'UP-READY'
   | 'UP-LOGIN'

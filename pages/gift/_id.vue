@@ -47,8 +47,8 @@ import {
   getKeyPassword,
   decryptMasterKey,
   getAddressByPubkey,
-} from '@/assets/js/nft/utils'
-import { redPacketTransfer } from '@/assets/js/nft/transfer'
+} from '~/assets/js/nft/utils'
+import { redPacketTransfer } from '~/assets/js/nft/transfer'
 
 export default {
   data() {

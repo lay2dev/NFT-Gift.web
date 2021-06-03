@@ -1,6 +1,6 @@
 import Vue from 'vue'
-import Back from '@/components/back.vue'
 import Clipboard from 'v-clipboard'
+import Back from '~/components/back.vue'
 // directive
 // copy
 Vue.use(Clipboard)

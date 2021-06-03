@@ -106,7 +106,7 @@
   </div>
 </template>
 <script>
-import Asset from '@/components/asset.vue'
+import Asset from '~/components/mine-asset.vue'
 export default {
   components: {
     Asset,

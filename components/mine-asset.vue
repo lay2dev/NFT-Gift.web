@@ -79,14 +79,14 @@
   </div>
 </template>
 <script>
-import UnipassProvider from '@/assets/js/UnipassProvider.ts'
+import UnipassProvider from '~/assets/js/UnipassProvider.ts'
 import {
   getDataFromSignString,
   getKeyPassword,
   getPubkeyHash,
   generateKey,
-} from '@/assets/js/nft/utils'
-import { getSecondaryAuth, serializeLocalAuth } from '@/assets/js/nft/auth-item'
+} from '~/assets/js/nft/utils'
+import { getSecondaryAuth, serializeLocalAuth } from '~/assets/js/nft/auth-item'
 
 export default {
   props: {

@@ -11,51 +11,79 @@
       />
     </header>
     <main>
-      <div class="nft-list">
+      <el-collapse class="nft-list">
         <template v-for="(e, i) in nftList">
-          <div :key="i" class="nft" @click="bindNFT(e)">
-            <div class="left">
-              <el-image
-                class="nft-image"
-                :src="e.class_bg_image_url"
-                alt="bg_image_url"
-                fit="contain"
-                lazy
-                :preview-src-list="[e.class_bg_image_url]"
-              />
-              <div class="info">
-                <div class="name">
-                  {{ e.class_name }}
-                </div>
-                <div class="user">
+          <el-collapse-item :key="i">
+            <template slot="title">
+              <div :key="i" class="nft">
+                <div class="left" @click="bindNFT(e)">
                   <el-image
-                    class="user-avator"
-                    :src="e.issuer_avatar_url"
-                    alt="user-avator"
-                    fit="cover"
+                    class="nft-image"
+                    :src="e.class_bg_image_url"
+                    alt="bg_image_url"
+                    fit="contain"
                     lazy
-                  >
-                    <template #error>
-                      <div class="el-image__error" />
-                    </template>
-                  </el-image>
-                  <div class="user-name">
-                    {{ e.issuer_name }}
+                    :preview-src-list="[e.class_bg_image_url]"
+                  />
+                  <div class="info">
+                    <div class="name">
+                      {{ e.class_name }}
+                    </div>
+                    <div class="user">
+                      <el-image
+                        class="user-avator"
+                        :src="e.issuer_avatar_url"
+                        alt="user-avator"
+                        fit="cover"
+                        lazy
+                      >
+                        <template #error>
+                          <div class="el-image__error" />
+                        </template>
+                      </el-image>
+                      <div class="user-name">
+                        {{ e.issuer_name }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="right">
+                  <div class="total">
+                    {{ nftDict[e.class_uuid] }}
+                  </div>
+                  <div class="state" :class="e.tx_state">
+                    {{ stateDict[e.tx_state] }}
                   </div>
                 </div>
               </div>
+            </template>
+            <div class="nft-all">
+              <el-checkbox
+                v-model="checkAll"
+                :indeterminate="isIndeterminate"
+                @change="handleCheckAllChange"
+              >
+                全选
+              </el-checkbox>
             </div>
-            <div class="right">
-              <div class="total">
-                {{ nftDict[e.class_uuid] }}
-              </div>
-              <div class="state" :class="e.tx_state">
-                {{ stateDict[e.tx_state] }}
-              </div>
+            <div class="nft-box">
+              <el-checkbox-group
+                v-model="checkedCities"
+                @change="handleCheckedCitiesChange"
+              >
+                <el-checkbox
+                  v-for="city in cities"
+                  :key="city"
+                  class="nft-one"
+                  :label="city"
+                >
+                  #{{ city }}
+                </el-checkbox>
+              </el-checkbox-group>
             </div>
-          </div>
+          </el-collapse-item>
         </template>
-      </div>
+      </el-collapse>
       <div v-if="nftList.lenght === 0" class="not-found">
         <img src="~/assets/img/not_found.svg" />
         <div>你的资产宝箱里空空如也</div>
@@ -67,6 +95,11 @@
 export default {
   data() {
     return {
+      checkAll: false,
+      checkedCities: ['2', '3'],
+      cities: ['2', '3', '6', '12', '99', '22', '33', '119'],
+      isIndeterminate: true,
+      // nft
       nftList: [],
       nftDict: {},
       tokenList: [],
@@ -96,6 +129,16 @@ export default {
     }
   },
   methods: {
+    handleCheckAllChange(val) {
+      this.checkedCities = val ? this.cities : []
+      this.isIndeterminate = false
+    },
+    handleCheckedCitiesChange(value) {
+      const checkedCount = value.length
+      this.checkAll = checkedCount === this.cities.length
+      this.isIndeterminate =
+        checkedCount > 0 && checkedCount < this.cities.length
+    },
     async init() {
       // first page
       const res = await this.getList(1)
@@ -187,14 +230,38 @@ export default {
 
   >main {
     .nft-list {
+      border: 0;
+
+      .el-collapse-item__header {
+        height: 100%;
+        line-height: 100%;
+        cursor: auto;
+        border-bottom: 1px solid #F4F4F4;
+        padding-right: 12px;
+      }
+
+      .el-collapse-item__wrap {
+        border: 0;
+      }
+
+      .el-collapse-item__content {
+        padding: 0;
+      }
+
+      .el-collapse-item__arrow {
+        color: #c5c5c5;
+        font-weight: bold;
+      }
+
       .nft {
-        cursor: pointer;
-        padding: 16px 22px;
+        width: 100%;
+        padding: 16px 8px 16px 22px;
         display: flex;
         align-items: center;
         justify-content: space-between;
 
         >.left {
+          cursor: pointer;
           display: flex;
           align-items: center;
           margin-right: 6px;
@@ -215,6 +282,7 @@ export default {
             .name {
               color: rgba(16, 16, 16, 100);
               font-size: 16px;
+              line-height: 16px;
             }
 
             .user {
@@ -268,8 +336,43 @@ export default {
         }
       }
 
-      .nft:active, .nft:hover {
-        background: #eee;
+      .nft-all {
+        padding: 8px 22px 0;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .nft-box {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 0 22px;
+
+        .nft-one {
+          margin-bottom: 14px;
+          border-radius: 5px;
+          background: #E6E6E6;
+          margin-right: 24px;
+          width: 50px;
+          height: 26px;
+          line-height: 26px;
+          text-align: center;
+
+          .el-checkbox__input {
+            display: none;
+          }
+
+          .el-checkbox__label {
+            padding-left: 0;
+          }
+        }
+
+        .nft-one.is-checked {
+          background: var(--primary);
+
+          .el-checkbox__input.is-checked + .el-checkbox__label {
+            color: #FFF;
+          }
+        }
       }
     }
 

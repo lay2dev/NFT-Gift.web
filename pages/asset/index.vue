@@ -26,7 +26,7 @@
             <div class="user-total">拥有 {{ nft.i_have }}</div>
           </div>
         </header>
-        <main>
+        <!-- <main>
           <el-button
             type="primary"
             icon="el-icon-shopping-bag-1"
@@ -34,7 +34,7 @@
           >
             赠送
           </el-button>
-        </main>
+        </main> -->
       </div>
     </div>
     <el-dialog

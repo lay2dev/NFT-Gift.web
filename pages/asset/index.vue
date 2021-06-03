@@ -23,7 +23,7 @@
                 </template>
               </el-image>
             </div>
-            <div class="user-total">拥有 {{ nft.i_have }}</div>
+            <div class="user-total">拥有 {{ nft.children.length }}</div>
           </div>
         </header>
         <!-- <main>
@@ -46,14 +46,16 @@
       <el-form :model="form">
         <div class="i-have">
           您当前拥有
-          <span :style="{ color: 'var(--primary)' }">{{ nft.i_have }}</span>
+          <span :style="{ color: 'var(--primary)' }">
+            {{ nft.children.length }}
+          </span>
           个
         </div>
         <el-form-item label="赠送数量">
           <el-input-number
             v-model="form.number"
             :min="1"
-            :max="nft.i_have"
+            :max="nft.children.length"
             step-strictly
           ></el-input-number>
         </el-form-item>
@@ -106,7 +108,7 @@ export default {
   },
   created() {
     const nft = this.$store.state.nft
-    if (nft && nft.i_have) {
+    if (nft) {
       this.nft = nft
     } else {
       this.$router.replace('/mine')
@@ -237,7 +239,7 @@ export default {
       background: rgb(250, 250, 250);
       width: 100%;
       border-radius: 25px 25px 0px 0px;
-      box-shadow: rgb(0 0 0 / 6%) 0px 4px 2px;
+      box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.14);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -292,7 +294,7 @@ export default {
         height: 20vh;
         background: white;
         border-radius: 35px 35px 0px 0px;
-        box-shadow: rgb(0 0 0 / 6%) 0px 6px 2px;
+        box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.14);
         display: flex;
         justify-content: center;
         align-items: center;

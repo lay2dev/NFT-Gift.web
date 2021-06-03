@@ -23,7 +23,6 @@
                     alt="bg_image_url"
                     fit="contain"
                     lazy
-                    :preview-src-list="[e.class_bg_image_url]"
                   />
                   <div class="info">
                     <div class="name">
@@ -89,17 +88,17 @@
         <div>你的资产宝箱里空空如也</div>
       </div>
     </main>
+    <div v-show="showCheckBox" class="check-box">
+      <el-button class="gift">发红包</el-button>
+      <div>已选择 {{ nftChecked.length }}</div>
+    </div>
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      checkAll: false,
-      checkedCities: ['2', '3'],
-      cities: ['2', '3', '6', '12', '99', '22', '33', '119'],
-      isIndeterminate: true,
-      // nft
+      nftChecked: [],
       nftList: [],
       tokenList: [],
       stateDict: {
@@ -108,6 +107,7 @@ export default {
         committed: '',
       },
       provider: null,
+      showCheckBox: false,
     }
   },
   computed: {
@@ -217,9 +217,8 @@ export default {
           }
         }
       }
-      // if (checked.length > 0) {
-      // }
-      console.log('🌊', checked)
+      this.showCheckBox = checked.length > 0
+      this.nftChecked = checked
     },
   },
 }
@@ -407,6 +406,27 @@ export default {
       font-weight: 300;
       font-size: 16px;
       margin: 10px;
+    }
+  }
+
+  .check-box {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 35px 35px 0px 0px;
+    box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.24);
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+
+    .gift {
+      border-color: #FFE2B0;
+      color: #FFE2B0;
+      background: #F35543;
+      margin-right: 20px;
     }
   }
 }

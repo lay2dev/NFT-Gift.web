@@ -193,6 +193,11 @@ export default {
   margin: 0 auto;
   max-width: 475px;
   position: relative;
+  background: #F35543;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   .email {
     position: absolute;
@@ -204,12 +209,6 @@ export default {
   .top-bg {
     width: 100%;
   }
-
-  background: #F35543;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 
   .success, .fail {
     color: #ffe2b0;

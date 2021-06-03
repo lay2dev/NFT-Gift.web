@@ -59,17 +59,17 @@
             </template>
             <div class="nft-all">
               <el-checkbox
-                v-model="checkAll"
-                :indeterminate="isIndeterminate"
-                @change="handleCheckAllChange"
+                v-model="e.checkAll"
+                :indeterminate="e.isIndeterminate"
+                @change="bindCheckAll($event, i)"
               >
                 全选
               </el-checkbox>
             </div>
             <div class="nft-box">
               <el-checkbox-group
-                v-model="checkedCities"
-                @change="handleCheckedCitiesChange"
+                v-model="e.checked"
+                @change="bindCheckChange($event, i)"
               >
                 <el-checkbox
                   v-for="nft in e.children"
@@ -128,16 +128,6 @@ export default {
     }
   },
   methods: {
-    handleCheckAllChange(val) {
-      this.checkedCities = val ? this.cities : []
-      this.isIndeterminate = false
-    },
-    handleCheckedCitiesChange(value) {
-      const checkedCount = value.length
-      this.checkAll = checkedCount === this.cities.length
-      this.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.cities.length
-    },
     async init() {
       // first page
       const res = await this.getList(1)
@@ -154,6 +144,9 @@ export default {
           arr.push({
             ...token,
             children,
+            isIndeterminate: false,
+            checkAll: false,
+            checked: [],
           })
         }
         this.nftList = arr
@@ -187,15 +180,46 @@ export default {
       })
     },
     bindNFT(nft) {
-      // nft.i_have = this.nftDict[nft.class_uuid]
-      // const nfts = this.tokenList.filter((e) => e.class_uuid === nft.class_uuid)
-      // this.$store.state.nfts = nfts
-      // this.$store.state.nft = nft
-      // this.$router.push('/asset')
+      this.$store.state.nft = nft
+      this.$router.push('/asset')
     },
     bindExit() {
       Sea.localStorage('provider', '')
       this.$router.replace('/')
+    },
+    bindCheckAll(checkAll, i) {
+      const all = this.nftList[i].children.map((e) => e.n_token_id)
+      this.nftList[i].checked = checkAll ? all : []
+      // checkAll
+      this.nftList[i].checkAll = checkAll
+      // isIndeterminate
+      this.nftList[i].isIndeterminate = false
+      // checkList
+      this.checkList()
+    },
+    bindCheckChange(value, i) {
+      const l = value.length
+      const all = this.nftList[i].children.length
+      // checkAll
+      this.nftList[i].checkAll = l === all
+      // isIndeterminate
+      this.nftList[i].isIndeterminate = l > 0 && l < all
+      // checkList
+      this.checkList()
+    },
+    checkList() {
+      const list = this.nftList
+      const checked = []
+      for (const item of list) {
+        for (const e of item.children) {
+          if (item.checked.includes(e.n_token_id)) {
+            checked.push(e)
+          }
+        }
+      }
+      // if (checked.length > 0) {
+      // }
+      console.log('🌊', checked)
     },
   },
 }

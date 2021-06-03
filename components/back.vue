@@ -3,9 +3,26 @@
     id="component-back"
     src="~/assets/img/back.svg"
     alt="back"
-    @click="$router.back()"
+    @click="bindBack"
   />
 </template>
+<script>
+export default {
+  props: {
+    stop: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  methods: {
+    bindBack() {
+      if (!this.stop) {
+        $router.back()
+      }
+    },
+  },
+}
+</script>
 <style>
 #component-back {
   cursor: pointer;

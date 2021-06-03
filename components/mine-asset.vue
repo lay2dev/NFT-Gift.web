@@ -1,5 +1,6 @@
 <template>
-  <div id="page-asset">
+  <div id="mine-asset">
+    <back stop @click.native="$emit('close')" />
     <div class="image-box">
       <el-image :src="nft.class_bg_image_url" fit="contain" alt="image" />
     </div>
@@ -207,7 +208,7 @@ export default {
 }
 </script>
 <style lang="stylus">
-#page-asset {
+#mine-asset {
   background: #eee;
   min-height: 100vh;
   display: flex;

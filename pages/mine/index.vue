@@ -11,6 +11,14 @@
       />
     </header>
     <main>
+      <div class="nft-title">
+        <div class="title">NFT 资产</div>
+        <img
+          class="icon"
+          src="~/assets/img/ze-orders.svg"
+          @click="$message('正在开发')"
+        />
+      </div>
       <el-collapse class="nft-list">
         <template v-for="(e, i) in nftList">
           <el-collapse-item :key="i" :class="{ checked: e.checked.length > 0 }">
@@ -88,13 +96,19 @@
         <div>你的资产宝箱里空空如也</div>
       </div>
     </main>
-    <div v-show="showCheckBox" class="check-box">
-      <el-button class="gift" @click="showGift = true">发红包</el-button>
-      <div>已选择 {{ nftChecked.length }}</div>
-      <i class="el-icon-close" @click="bindCheckBoxClose"></i>
-    </div>
-    <el-dialog :visible.sync="showAsset" fullscreen class="dialog-asset">
-      <asset :nft="nft" />
+    <transition name="el-zoom-in-bottom">
+      <div v-show="showCheckBox" class="check-box">
+        <el-button class="gift" @click="showGift = true">发红包</el-button>
+        <i class="el-icon-close" @click="bindCheckBoxClose"></i>
+      </div>
+    </transition>
+    <el-dialog
+      :visible.sync="showAsset"
+      :show-close="false"
+      fullscreen
+      class="dialog-asset"
+    >
+      <asset :nft="nftItem" @close="showAsset = false" />
     </el-dialog>
     <el-dialog
       :visible.sync="showGift"
@@ -113,7 +127,7 @@ export default {
   },
   data() {
     return {
-      nft: {
+      nftItem: {
         children: [],
       },
       nftChecked: [],
@@ -127,7 +141,7 @@ export default {
       provider: null,
       showCheckBox: false,
       showAsset: false,
-      showGift: true,
+      showGift: false,
     }
   },
   computed: {
@@ -215,7 +229,7 @@ export default {
       })
     },
     bindNFT(nft) {
-      this.nft = nft
+      this.nftItem = nft
       this.showAsset = true
     },
     bindExit() {
@@ -289,6 +303,23 @@ export default {
   }
 
   >main {
+    .nft-title {
+      display: flex;
+      padding: 16px 22px 8px;
+      justify-content: space-between;
+      align-items: center;
+
+      .title {
+        font-size: 16px;
+      }
+
+      .icon {
+        cursor: pointer;
+        height: 20px;
+        width: 20px;
+      }
+    }
+
     .nft-list {
       border: 0;
       margin-bottom: 80px;
@@ -462,19 +493,18 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px 0;
+    height: 80px;
 
     .gift {
       border-color: #FFE2B0;
       color: #FFE2B0;
       background: #F35543;
-      margin-right: 20px;
     }
 
     .el-icon-close {
       position: absolute;
-      top: 12px;
-      right: 12px;
+      top: 16px;
+      right: 16px;
       font-size: 20px;
     }
   }
@@ -482,13 +512,6 @@ export default {
   .dialog-asset {
     .el-dialog__header {
       padding: 0;
-
-      .el-dialog__headerbtn {
-        font-size: 24px;
-        font-weight: 900;
-        top: 8px;
-        right: 8px;
-      }
     }
 
     .el-dialog__body {

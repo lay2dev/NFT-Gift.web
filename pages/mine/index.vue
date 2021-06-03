@@ -13,10 +13,10 @@
     <main>
       <el-collapse class="nft-list">
         <template v-for="(e, i) in nftList">
-          <el-collapse-item :key="i">
+          <el-collapse-item :key="i" :class="{ checked: e.checked.length > 0 }">
             <template slot="title">
               <div :key="i" class="nft">
-                <div class="left" @click="bindNFT(e)">
+                <div class="left" @click.stop="bindNFT(e)">
                   <el-image
                     class="nft-image"
                     :src="e.class_bg_image_url"
@@ -89,15 +89,33 @@
       </div>
     </main>
     <div v-show="showCheckBox" class="check-box">
-      <el-button class="gift">发红包</el-button>
+      <el-button class="gift" @click="showGift = true">发红包</el-button>
       <div>已选择 {{ nftChecked.length }}</div>
+      <i class="el-icon-close" @click="bindCheckBoxClose"></i>
     </div>
+    <el-dialog :visible.sync="showAsset" fullscreen class="dialog-asset">
+      <asset :nft="nft" />
+    </el-dialog>
+    <el-dialog
+      :visible.sync="showGift"
+      class="dialog-send"
+      title="创建 NFT 红包"
+      width="90%"
+    >
+    </el-dialog>
   </div>
 </template>
 <script>
+import Asset from '@/components/asset.vue'
 export default {
+  components: {
+    Asset,
+  },
   data() {
     return {
+      nft: {
+        children: [],
+      },
       nftChecked: [],
       nftList: [],
       tokenList: [],
@@ -108,6 +126,8 @@ export default {
       },
       provider: null,
       showCheckBox: false,
+      showAsset: false,
+      showGift: true,
     }
   },
   computed: {
@@ -128,6 +148,21 @@ export default {
     }
   },
   methods: {
+    bindCheckBoxClose() {
+      this.$confirm('退出后将清空当前的选择记录', '确定退出？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      })
+        .then(() => {
+          for (let i = 0; i < this.nftList.length; i++) {
+            this.nftList[i].checked = []
+            this.nftList[i].isIndeterminate = false
+            this.nftList[i].checkAll = false
+          }
+          this.checkList()
+        })
+        .catch(() => {})
+    },
     async init() {
       // first page
       const res = await this.getList(1)
@@ -180,8 +215,8 @@ export default {
       })
     },
     bindNFT(nft) {
-      this.$store.state.nft = nft
-      this.$router.push('/asset')
+      this.nft = nft
+      this.showAsset = true
     },
     bindExit() {
       Sea.localStorage('provider', '')
@@ -256,6 +291,13 @@ export default {
   >main {
     .nft-list {
       border: 0;
+      margin-bottom: 80px;
+
+      .checked {
+        .el-collapse-item__header {
+          border-bottom-color: var(--primary);
+        }
+      }
 
       .el-collapse-item__header {
         height: 100%;
@@ -427,6 +469,30 @@ export default {
       color: #FFE2B0;
       background: #F35543;
       margin-right: 20px;
+    }
+
+    .el-icon-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 20px;
+    }
+  }
+
+  .dialog-asset {
+    .el-dialog__header {
+      padding: 0;
+
+      .el-dialog__headerbtn {
+        font-size: 24px;
+        font-weight: 900;
+        top: 8px;
+        right: 8px;
+      }
+    }
+
+    .el-dialog__body {
+      padding: 0;
     }
   }
 }

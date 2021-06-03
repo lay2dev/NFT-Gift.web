@@ -1,6 +1,5 @@
 <template>
   <div id="page-asset">
-    <back />
     <div class="image-box">
       <el-image :src="nft.class_bg_image_url" fit="contain" alt="image" />
     </div>
@@ -90,6 +89,16 @@ import {
 import { getSecondaryAuth, serializeLocalAuth } from '@/assets/js/nft/auth-item'
 
 export default {
+  props: {
+    nft: {
+      type: Object,
+      default: () => {
+        return {
+          children: [],
+        }
+      },
+    },
+  },
   data() {
     return {
       form: {
@@ -97,7 +106,6 @@ export default {
         password: '',
       },
       showSend: false,
-      nft: {},
       loading: false,
     }
   },
@@ -105,14 +113,6 @@ export default {
     giftPassword() {
       return this.form.password || 'unipass'
     },
-  },
-  created() {
-    const nft = this.$store.state.nft
-    if (nft) {
-      this.nft = nft
-    } else {
-      this.$router.replace('/mine')
-    }
   },
   methods: {
     bindHandsel() {

@@ -119,7 +119,7 @@ export default {
       res = await this.getStatus({ address, password })
       if (res.success) {
         const resData = res.data
-        const fromAddress = getAddressByPubkey(resData.masterKeyPubkey)
+        // const fromAddress = getAddressByPubkey(resData.masterKeyPubkey)
         const toAddress = this.provider._address.addressString
         const data = {
           authorization: resData.authorization, //

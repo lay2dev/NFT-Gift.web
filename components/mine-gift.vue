@@ -149,6 +149,8 @@ export default {
     overflow-y: auto;
 
     .nft {
+      padding-top: 6px;
+
       .nft-title {
         display: flex;
         justify-content: space-between;
@@ -172,7 +174,7 @@ export default {
 
       .nft-box {
         margin-top: 14px;
-        margin-bottom: 14px;
+        margin-bottom: 6px;
         display: flex;
         flex-wrap: wrap;
 
@@ -181,6 +183,10 @@ export default {
           margin-bottom: 8px;
         }
       }
+    }
+
+    .nft + .nft {
+      border-top: 1px solid #f4f4f4;
     }
   }
 

@@ -1,32 +1,38 @@
 <template>
-  <div id="mine-asset">
-    <back stop @click.native="$emit('close')" />
-    <div class="image-box">
-      <el-image :src="nft.class_bg_image_url" fit="contain" alt="image" />
-    </div>
-    <div class="info-box">
-      <div class="info">
-        <header>
-          <div class="name">{{ nft.class_name }}</div>
-          <div class="description">{{ nft.class_description }}</div>
-          <div class="user">
-            <div class="user-name">
-              <span>{{ nft.issuer_name }}</span>
-              <el-image
-                class="user-avator"
-                :src="nft.issuer_avatar_url"
-                alt="user-avator"
-                fit="cover"
-              >
-                <template #error>
-                  <div class="el-image__error"></div>
-                </template>
-              </el-image>
+  <el-dialog
+    :visible.sync="showDialog"
+    :show-close="false"
+    fullscreen
+    class="dialog-asset"
+  >
+    <div id="mine-asset">
+      <back stop @click.native="showDialog = false" />
+      <div class="image-box">
+        <el-image :src="nft.class_bg_image_url" fit="contain" alt="image" />
+      </div>
+      <div class="info-box">
+        <div class="info">
+          <header>
+            <div class="name">{{ nft.class_name }}</div>
+            <div class="description">{{ nft.class_description }}</div>
+            <div class="user">
+              <div class="user-name">
+                <span>{{ nft.issuer_name }}</span>
+                <el-image
+                  class="user-avator"
+                  :src="nft.issuer_avatar_url"
+                  alt="user-avator"
+                  fit="cover"
+                >
+                  <template #error>
+                    <div class="el-image__error"></div>
+                  </template>
+                </el-image>
+              </div>
+              <div class="user-total">拥有 {{ nft.children.length }}</div>
             </div>
-            <div class="user-total">拥有 {{ nft.children.length }}</div>
-          </div>
-        </header>
-        <!-- <main>
+          </header>
+          <!-- <main>
           <el-button
             type="primary"
             icon="el-icon-shopping-bag-1"
@@ -35,49 +41,50 @@
             赠送
           </el-button>
         </main> -->
-      </div>
-    </div>
-    <el-dialog
-      :visible.sync="showSend"
-      class="dialog-send"
-      title="创建 NFT 红包"
-      width="300px"
-    >
-      <el-form :model="form">
-        <div class="i-have">
-          您当前拥有
-          <span :style="{ color: 'var(--primary)' }">
-            {{ nft.children.length }}
-          </span>
-          个
         </div>
-        <el-form-item label="赠送数量">
-          <el-input-number
-            v-model="form.number"
-            :min="1"
-            :max="nft.children.length"
-            step-strictly
-          ></el-input-number>
-        </el-form-item>
-        <el-form-item label="红包口令">
-          <el-input
-            v-model.trim="form.password"
-            maxlength="16"
-            show-word-limit
-            placeholder="抢NFT红包，玩加密新社交"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="showSend = false">取消</el-button>
-          <el-button type="primary" :loading="loading" @click="bindSend">
-            下一步
-          </el-button>
-        </span>
-      </template>
-    </el-dialog>
-  </div>
+      </div>
+      <el-dialog
+        :visible.sync="showSend"
+        class="dialog-send"
+        title="创建 NFT 红包"
+        width="300px"
+      >
+        <el-form :model="form">
+          <div class="i-have">
+            您当前拥有
+            <span :style="{ color: 'var(--primary)' }">
+              {{ nft.children.length }}
+            </span>
+            个
+          </div>
+          <el-form-item label="赠送数量">
+            <el-input-number
+              v-model="form.number"
+              :min="1"
+              :max="nft.children.length"
+              step-strictly
+            ></el-input-number>
+          </el-form-item>
+          <el-form-item label="红包口令">
+            <el-input
+              v-model.trim="form.password"
+              maxlength="16"
+              show-word-limit
+              placeholder="抢NFT红包，玩加密新社交"
+            ></el-input>
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="showSend = false">取消</el-button>
+            <el-button type="primary" :loading="loading" @click="bindSend">
+              下一步
+            </el-button>
+          </span>
+        </template>
+      </el-dialog>
+    </div>
+  </el-dialog>
 </template>
 <script>
 import UnipassProvider from '~/assets/js/UnipassProvider.ts'
@@ -91,6 +98,7 @@ import { getSecondaryAuth, serializeLocalAuth } from '~/assets/js/nft/auth-item'
 
 export default {
   props: {
+    show: Boolean,
     nft: {
       type: Object,
       default: () => {
@@ -111,6 +119,14 @@ export default {
     }
   },
   computed: {
+    showDialog: {
+      get() {
+        return this.$props.show
+      },
+      set(val) {
+        this.$emit('update:show', val)
+      },
+    },
     giftPassword() {
       return this.form.password || 'unipass'
     },

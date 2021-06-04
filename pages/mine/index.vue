@@ -102,28 +102,17 @@
         <i class="el-icon-close" @click="bindCheckBoxClose"></i>
       </div>
     </transition>
-    <el-dialog
-      :visible.sync="showAsset"
-      :show-close="false"
-      fullscreen
-      class="dialog-asset"
-    >
-      <asset :nft="nftItem" @close="showAsset = false" />
-    </el-dialog>
-    <el-dialog
-      :visible.sync="showGift"
-      class="dialog-send"
-      title="创建 NFT 红包"
-      width="90%"
-    >
-    </el-dialog>
+    <mine-asset :show.sync="showAsset" :nft="nftItem" />
+    <mine-gift :show.sync="showGift" />
   </div>
 </template>
 <script>
-import Asset from '~/components/mine-asset.vue'
+import MineGift from '~/components/mine-gift.vue'
+import MineAsset from '~/components/mine-asset.vue'
 export default {
   components: {
-    Asset,
+    MineAsset,
+    MineGift,
   },
   data() {
     return {
@@ -502,6 +491,7 @@ export default {
     }
 
     .el-icon-close {
+      cursor: pointer;
       position: absolute;
       top: 16px;
       right: 16px;

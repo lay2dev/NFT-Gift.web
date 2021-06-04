@@ -2,6 +2,13 @@ import '~/assets/js/bigsea'
 import dayjs from 'dayjs'
 import PWCore, { ChainID, IndexerCollector } from '@lay2/pw-core'
 import UnipassProvider from '~/assets/js/UnipassProvider.ts'
+import {
+  getDataFromSignString,
+  getKeyPassword,
+  getPubkeyHash,
+  generateKey,
+} from '~/assets/js/nft/utils'
+import { getSecondaryAuth, serializeLocalAuth } from '~/assets/js/nft/auth-item'
 
 // global variable utils Sea
 Sea.Ajax.HOST = process.env.NFT_GIFT
@@ -43,4 +50,67 @@ Sea.bindLogin = async () => {
     return provider
   }
   return null
+}
+// sign
+const _redPacketCreate = async ({ password, nfts, address }) => {
+  const redPacket = []
+  const localAuth = []
+  for (const item of nfts) {
+    const { pubkey, pem } = await generateKey('generateKey', password)
+    const outpoints = [
+      {
+        index: item.outPoint.index.toString(16),
+        txHash: item.outPoint.txHash,
+      },
+    ]
+    redPacket.push({
+      encrypt: pem,
+      keyPubkey: pubkey,
+      outpoints: JSON.stringify(outpoints),
+      outpointSize: nfts.length,
+      fromAddress: address,
+      args: item.args,
+    })
+    localAuth.push({
+      pubkeyHash: getPubkeyHash(pubkey),
+      outpoints,
+    })
+  }
+  const authItemsBuffer = serializeLocalAuth(localAuth)
+  const authItemsHex = `0x${authItemsBuffer.toString('hex')}`
+  return {
+    redPacket,
+    authItemsHex,
+  }
+}
+const _redPacketSign = async (message) => {
+  const data = await new UnipassProvider(process.env.UNIPASS_URL).sign(message)
+  const sign = getDataFromSignString(data)
+  const { masterkey, authorization, localKey, sig } = sign
+  const { authSig, authInfo } = getSecondaryAuth(localKey, message, sig)
+  return {
+    masterkey,
+    authorization,
+    localKey,
+    authSig,
+    authInfo,
+  }
+}
+Sea.bindSign = async ({ nfts, password, address }) => {
+  const { redPacket, authItemsHex } = await _redPacketCreate({
+    password,
+    nfts,
+    address,
+  })
+  const sign = await _redPacketSign(authItemsHex)
+  return {
+    authorization: sign.authorization,
+    masterKeyPubkey: sign.masterkey,
+    localKeyPubkey: sign.localKey,
+    localKeySig: sign.authSig,
+    localAuthInfo: sign.authInfo,
+    redPacket,
+    password: getKeyPassword(password),
+    fromAddress: address,
+  }
 }

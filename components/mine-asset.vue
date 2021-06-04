@@ -48,59 +48,10 @@
         </main> -->
         </div>
       </div>
-      <el-dialog
-        :visible.sync="showSend"
-        class="dialog-send"
-        title="创建 NFT 红包"
-        width="300px"
-      >
-        <el-form :model="form">
-          <div class="i-have">
-            您当前拥有
-            <span :style="{ color: 'var(--primary)' }">
-              {{ nft.children.length }}
-            </span>
-            个
-          </div>
-          <el-form-item label="赠送数量">
-            <el-input-number
-              v-model="form.number"
-              :min="1"
-              :max="nft.children.length"
-              step-strictly
-            ></el-input-number>
-          </el-form-item>
-          <el-form-item label="红包口令">
-            <el-input
-              v-model.trim="form.password"
-              maxlength="16"
-              show-word-limit
-              placeholder="抢NFT红包，玩加密新社交"
-            ></el-input>
-          </el-form-item>
-        </el-form>
-        <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="showSend = false">取消</el-button>
-            <el-button type="primary" :loading="loading" @click="bindSend">
-              下一步
-            </el-button>
-          </span>
-        </template>
-      </el-dialog>
     </div>
   </el-dialog>
 </template>
 <script>
-import UnipassProvider from '~/assets/js/UnipassProvider.ts'
-import {
-  getDataFromSignString,
-  getKeyPassword,
-  getPubkeyHash,
-  generateKey,
-} from '~/assets/js/nft/utils'
-import { getSecondaryAuth, serializeLocalAuth } from '~/assets/js/nft/auth-item'
-
 export default {
   props: {
     show: Boolean,
@@ -114,14 +65,7 @@ export default {
     },
   },
   data() {
-    return {
-      form: {
-        number: 1,
-        password: '',
-      },
-      showSend: false,
-      loading: false,
-    }
+    return {}
   },
   computed: {
     showDialog: {
@@ -132,99 +76,9 @@ export default {
         this.$emit('update:show', val)
       },
     },
-    giftPassword() {
-      return this.form.password || 'unipass'
-    },
   },
   methods: {
-    bindHandsel() {
-      this.showSend = true
-    },
-    async bindSend() {
-      this.loading = true
-      const { redPacket, authItemsHex } = await this.createRedPacketData({
-        password: this.giftPassword,
-        number: this.form.number,
-      })
-      const sign = await this.bindSign({
-        message: authItemsHex,
-      })
-      if (sign.authorization) {
-        const { short } = await this.getShortData({
-          password: getKeyPassword(this.giftPassword),
-          authorization: sign.authorization,
-          masterKeyPubkey: sign.masterkey,
-          localKeyPubkey: sign.localKey,
-          localKeySig: sign.authSig,
-          localAuthInfo: sign.authInfo,
-          redPacket,
-        })
-        if (short) {
-          this.$router.push(`/share/${short}`)
-        } else {
-          this.$message.error('请求失败')
-        }
-      }
-      this.loading = false
-    },
-    async createRedPacketData({ password, number }) {
-      const nfts = this.$store.state.nfts.slice(0, number)
-      const redPacket = []
-      const localAuth = []
-      for (const item of nfts) {
-        const { pubkey, pem } = await generateKey('generateKey', password)
-        const outpoints = [
-          {
-            index: `0x${item.token_outpoint.index.toString(16)}`,
-            txHash: item.token_outpoint.tx_hash,
-          },
-        ]
-        redPacket.push({
-          encrypt: pem,
-          keyPubkey: pubkey,
-          outpoints: JSON.stringify(outpoints),
-          outpointSize: number,
-        })
-        localAuth.push({
-          pubkeyHash: getPubkeyHash(pubkey),
-          outpoints: [
-            {
-              index: `0x${item.token_outpoint.index.toString(16)}`,
-              txHash: item.token_outpoint.tx_hash,
-            },
-          ],
-        })
-      }
-      const authItemsBuffer = serializeLocalAuth(localAuth)
-      const authItemsHex = `0x${authItemsBuffer.toString('hex')}`
-      return {
-        redPacket,
-        authItemsHex,
-      }
-    },
-    async bindSign({ message }) {
-      const data = await new UnipassProvider(process.env.UNIPASS_URL).sign(
-        message,
-      )
-      const sign = getDataFromSignString(data)
-      const { masterkey, authorization, localKey, sig } = sign
-      const { authSig, authInfo } = getSecondaryAuth(localKey, message, sig)
-      return {
-        masterkey,
-        authorization,
-        localKey,
-        authSig,
-        authInfo,
-      }
-    },
-    async getShortData(data) {
-      const res = await Sea.Ajax({
-        url: '/nft',
-        method: 'post',
-        data,
-      })
-      return res
-    },
+    bindHandsel() {},
   },
 }
 </script>

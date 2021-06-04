@@ -41,7 +41,12 @@
       </div>
       <div class="button">
         <el-button @click="showDialog = false">取消</el-button>
-        <el-button type="primary" :disabled="total === 0" @click="bindNext">
+        <el-button
+          type="primary"
+          :disabled="total === 0"
+          :loading="loading"
+          @click="bindNext"
+        >
           下一步
         </el-button>
       </div>
@@ -58,11 +63,16 @@ export default {
         return []
       },
     },
+    provider: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
       list: [],
       redPassword: '',
+      loading: false,
     }
   },
   computed: {
@@ -81,6 +91,9 @@ export default {
       }
       return n
     },
+    password() {
+      return this.redPassword || 'unipass'
+    },
   },
   watch: {
     showDialog(nv) {
@@ -94,13 +107,29 @@ export default {
     init() {
       this.list = this.$parent.initList(this.nfts)
     },
-    bindNext() {
-      const arr = []
+    async bindNext() {
+      this.loading = true
+      const nfts = []
       for (const item of this.list) {
-        arr.push(...item.children)
+        nfts.push(...item.children)
       }
-      console.log('nfts', arr)
-      console.log('redPassword', this.redPassword)
+      const sign = await Sea.bindSign({
+        nfts,
+        password: this.password,
+        address: this.provider._address.addressString,
+      })
+      if (sign.authorization) {
+        const res = await Sea.Ajax({
+          url: '/nft',
+          method: 'post',
+          data: sign,
+        })
+        if (res.short) {
+          this.$router.push(`/share/${res.short}`)
+        } else {
+          this.$message.error('请求失败')
+        }
+      }
     },
   },
 }

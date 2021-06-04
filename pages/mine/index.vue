@@ -103,7 +103,7 @@
       </div>
     </transition>
     <mine-asset :show.sync="showAsset" :nft="nftItem" />
-    <mine-gift :show.sync="showGift" />
+    <mine-gift :show.sync="showGift" :nfts="nftChecked" />
   </div>
 </template>
 <script>
@@ -130,7 +130,7 @@ export default {
       provider: null,
       showCheckBox: false,
       showAsset: false,
-      showGift: false,
+      showGift: true,
     }
   },
   computed: {

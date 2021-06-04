@@ -8,19 +8,19 @@
     <div id="mine-asset">
       <back stop @click.native="showDialog = false" />
       <div class="image-box">
-        <el-image :src="nft.class_bg_image_url" fit="contain" alt="image" />
+        <el-image :src="nft.renderer" fit="contain" alt="image" />
       </div>
       <div class="info-box">
         <div class="info">
           <header>
-            <div class="name">{{ nft.class_name }}</div>
-            <div class="description">{{ nft.class_description }}</div>
+            <div class="name">{{ nft.name }}</div>
+            <div class="description">{{ nft.description }}</div>
             <div class="user">
               <div class="user-name">
-                <span>{{ nft.issuer_name }}</span>
+                <span>{{ nft.issuerName }}</span>
                 <el-image
                   class="user-avator"
-                  :src="nft.issuer_avatar_url"
+                  :src="nft.issuerAvatarUrl"
                   alt="user-avator"
                   fit="cover"
                 >
@@ -29,7 +29,12 @@
                   </template>
                 </el-image>
               </div>
-              <div class="user-total">拥有 {{ nft.children.length }}</div>
+              <div class="user-total">
+                <div>拥有 {{ nft.children.length }}</div>
+                <!-- <div>共有 {{ nft.total === 0 ? '无限' : nft.total }}</div>
+                <div>已分发 {{ nft.issued }}</div>
+                <div>当前 #{{ nft.tokenId }}</div> -->
+              </div>
             </div>
           </header>
           <!-- <main>
@@ -300,6 +305,7 @@ export default {
           }
 
           .user-total {
+            text-align: right;
             font-size: 14px;
             color: #aaa;
           }

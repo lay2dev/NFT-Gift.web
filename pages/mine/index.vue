@@ -19,7 +19,7 @@
           @click="$message('正在开发')"
         />
       </div>
-      <el-collapse class="nft-list">
+      <el-collapse v-model="activeList" v-loading="loading" class="nft-list">
         <template v-for="(e, i) in nftList">
           <el-collapse-item :key="i" :class="{ checked: e.checked.length > 0 }">
             <template slot="title">
@@ -27,19 +27,19 @@
                 <div class="left" @click.stop="bindNFT(e)">
                   <el-image
                     class="nft-image"
-                    :src="e.class_bg_image_url"
+                    :src="e.renderer"
                     alt="bg_image_url"
                     fit="contain"
                     lazy
                   />
                   <div class="info">
                     <div class="name">
-                      {{ e.class_name }}
+                      {{ e.name }}
                     </div>
                     <div class="user">
                       <el-image
                         class="user-avator"
-                        :src="e.issuer_avatar_url"
+                        :src="e.issuerAvatarUrl"
                         alt="user-avator"
                         fit="cover"
                         lazy
@@ -49,7 +49,7 @@
                         </template>
                       </el-image>
                       <div class="user-name">
-                        {{ e.issuer_name }}
+                        {{ e.issuerName }}
                       </div>
                     </div>
                   </div>
@@ -58,8 +58,8 @@
                   <div class="total">
                     {{ e.children && e.children.length }}
                   </div>
-                  <div class="state" :class="e.tx_state">
-                    {{ stateDict[e.tx_state] }}
+                  <div class="state" :class="e.txState">
+                    {{ stateDict[e.txState] }}
                   </div>
                 </div>
               </div>
@@ -80,11 +80,11 @@
               >
                 <el-checkbox
                   v-for="nft in e.children"
-                  :key="nft.n_token_id"
+                  :key="nft.tokenId"
                   class="nft-one"
-                  :label="nft.n_token_id"
+                  :label="nft.tokenId"
                 >
-                  #{{ nft.n_token_id }}
+                  #{{ nft.tokenId }}
                 </el-checkbox>
               </el-checkbox-group>
             </div>
@@ -116,12 +116,14 @@ export default {
   },
   data() {
     return {
+      loading: false,
       nftItem: {
         children: [],
       },
       nftChecked: [],
       nftList: [],
       tokenList: [],
+      activeList: [],
       stateDict: {
         pending: '接收中',
         submitting: '确认中',
@@ -162,22 +164,30 @@ export default {
             this.nftList[i].isIndeterminate = false
             this.nftList[i].checkAll = false
           }
+          this.activeList = []
           this.checkList()
         })
         .catch(() => {})
     },
     async init() {
       // first page
-      const res = await this.getList(1)
-      if (res.token_list) {
-        const tokenList = await this.initList(res)
-        const list = Sea.set(tokenList, 'class_uuid')
+      this.loading = true
+      const res = await Sea.Ajax({
+        url: '/ckb',
+        data: {
+          address: this.provider._address.addressString,
+        },
+      })
+      this.loading = false
+      if (Array.isArray(res)) {
+        const tokenList = res
+        const list = Sea.set(tokenList, 'classId')
         const arr = []
         for (const token of list) {
           const children = tokenList
-            .filter((e) => e.class_uuid === token.class_uuid)
+            .filter((e) => e.classId && e.classId === token.classId)
             .sort((a, b) => {
-              return a.n_token_id - b.n_token_id
+              return a.tokenId - b.tokenId
             })
           arr.push({
             ...token,
@@ -206,17 +216,6 @@ export default {
       }
       return result
     },
-    getList(page) {
-      const host = process.env.GOLDEN_LEGEND
-      const address = this.provider._address.addressString
-      return Sea.Ajax({
-        url: `${host}/api/explorer/v1/holder_tokens/${address}`,
-        data: {
-          page,
-          include_submitting: true,
-        },
-      })
-    },
     bindNFT(nft) {
       this.nftItem = nft
       this.showAsset = true
@@ -226,7 +225,7 @@ export default {
       this.$router.replace('/')
     },
     bindCheckAll(checkAll, i) {
-      const all = this.nftList[i].children.map((e) => e.n_token_id)
+      const all = this.nftList[i].children.map((e) => e.tokenId)
       this.nftList[i].checked = checkAll ? all : []
       // checkAll
       this.nftList[i].checkAll = checkAll
@@ -250,7 +249,7 @@ export default {
       const checked = []
       for (const item of list) {
         for (const e of item.children) {
-          if (item.checked.includes(e.n_token_id)) {
+          if (item.checked.includes(e.tokenId)) {
             checked.push(e)
           }
         }
@@ -310,6 +309,7 @@ export default {
     }
 
     .nft-list {
+      min-height: 300px;
       border: 0;
       margin-bottom: 80px;
 

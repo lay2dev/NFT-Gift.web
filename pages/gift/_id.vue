@@ -147,24 +147,22 @@ export default {
           address,
           data.outpoints,
         )
+        res = await Sea.Ajax({
+          url: `/nft/tx`,
+          method: 'post',
+          data: {
+            txHash: tx || '0x',
+            // fromAddress,
+            toAddress,
+            id: resData.id,
+          },
+        })
+        console.log('tx', tx)
         if (tx) {
-          res = await Sea.Ajax({
-            url: `/nft/tx`,
-            method: 'post',
-            data: {
-              txHash: tx,
-              fromAddress,
-              toAddress,
-              id: resData.id,
-            },
-          })
-          if (res.success) {
-            this.status = 'success'
-          } else {
-            this.$message.error('分享地址无效')
-          }
+          this.status = 'success'
         } else {
-          this.$message.error('交易 Hash 不存在')
+          this.status = 'fail'
+          this.$message.error('交易无效')
         }
       } else if (res.status === 0) {
         this.$message.error('红包口令错误')

@@ -30,7 +30,7 @@ export const acpDep = new CellDep(
 )
 export const redPacketDep = new CellDep(
   DepType.code,
-  new OutPoint(process.env.TXHASH_TOKEN_SCRIPT as string, '0x0'),
+  new OutPoint(process.env.TOKEN_SCRIPT_TXHASH as string, '0x0'),
 )
 export const unipassDep = new CellDep(
   DepType.code,

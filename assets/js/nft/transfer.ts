@@ -79,7 +79,7 @@ export async function redPacketTransfer(
     const txhash = await pwcore.sendTransaction(builder, signer)
     console.log('txhash', txhash)
     return txhash
-  } catch (e) {
-    console.log(e)
+  } catch (err) {
+    console.log(err)
   }
 }

@@ -52,7 +52,7 @@ Sea.bindLogin = async () => {
   return null
 }
 // sign
-const _redPacketCreate = async ({ password, nfts, address }) => {
+const _redPacketCreate = async ({ password, nfts }) => {
   const redPacket = []
   const localAuth = []
   for (const item of nfts) {
@@ -68,7 +68,6 @@ const _redPacketCreate = async ({ password, nfts, address }) => {
       keyPubkey: pubkey,
       outpoints: JSON.stringify(outpoints),
       outpointSize: nfts.length,
-      fromAddress: address,
       args: item.args,
     })
     localAuth.push({
@@ -100,7 +99,6 @@ Sea.bindSign = async ({ nfts, password, address }) => {
   const { redPacket, authItemsHex } = await _redPacketCreate({
     password,
     nfts,
-    address,
   })
   const sign = await _redPacketSign(authItemsHex)
   return {

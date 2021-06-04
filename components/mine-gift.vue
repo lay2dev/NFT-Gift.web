@@ -4,35 +4,46 @@
     class="dialog-gift"
     title="创建 NFT 红包"
     width="90%"
+    top="5vh"
   >
     <div id="mine-gift">
       <div class="gift-title">塞 NFT 进红包</div>
       <div class="nfts">
-        <div class="nft">
-          <div class="nft-title">NFT Launch Live</div>
-          <div class="nft-box">
-            <div class="nft-one">#2</div>
-            <div class="nft-one">#3</div>
-            <div class="nft-one">#6</div>
-            <div class="nft-one">#12</div>
-          </div>
-        </div>
-        <div class="nft">
-          <div class="nft-title">雷兔伙伴</div>
-          <div class="nft-box">
-            <div class="nft-one">#5</div>
-          </div>
+        <div v-for="(e, i) in list" :key="i" class="nft">
+          <template v-if="e.children && e.children.length">
+            <div class="nft-title">
+              <div class="title">{{ e.name }}</div>
+              <i class="el-icon-close" @click="e.children = []"></i>
+            </div>
+            <div class="nft-box">
+              <el-tag
+                v-for="(nft, i2) in e.children"
+                :key="nft.tokenId"
+                class="nft-one"
+                closable
+                @close="e.children.splice(i2, 1)"
+              >
+                #{{ nft.tokenId }}
+              </el-tag>
+            </div>
+          </template>
         </div>
       </div>
-      <div class="total">总计：5个</div>
+      <div class="total">总计：{{ total }} 个</div>
       <div class="passowrd">
         <div class="title">红包口令</div>
-        <el-input class="input"></el-input>
+        <el-input
+          v-model="redPassword"
+          class="input"
+          placeholder="抢NFT红包，玩加密新社交"
+        ></el-input>
         <div class="tip">注：每个红包一个地址仅可领取一次</div>
       </div>
       <div class="button">
-        <el-button>取消</el-button>
-        <el-button type="primary">下一步</el-button>
+        <el-button @click="showDialog = false">取消</el-button>
+        <el-button type="primary" :disabled="total === 0" @click="bindNext">
+          下一步
+        </el-button>
       </div>
     </div>
   </el-dialog>
@@ -48,6 +59,12 @@ export default {
       },
     },
   },
+  data() {
+    return {
+      list: [],
+      redPassword: '',
+    }
+  },
   computed: {
     showDialog: {
       get() {
@@ -57,6 +74,13 @@ export default {
         this.$emit('update:show', val)
       },
     },
+    total() {
+      let n = 0
+      for (const item of this.list) {
+        n += item.children.length
+      }
+      return n
+    },
   },
   watch: {
     showDialog(nv) {
@@ -65,9 +89,18 @@ export default {
       }
     },
   },
+
   methods: {
     init() {
-      console.log('🌊', this.nfts)
+      this.list = this.$parent.initList(this.nfts)
+    },
+    bindNext() {
+      const arr = []
+      for (const item of this.list) {
+        arr.push(...item.children)
+      }
+      console.log('nfts', arr)
+      console.log('redPassword', this.redPassword)
     },
   },
 }
@@ -75,7 +108,7 @@ export default {
 <style lang="stylus">
 #mine-gift {
   .gift-title {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .nfts {
@@ -83,12 +116,29 @@ export default {
     border-top: 1px dashed #bbb;
     border-bottom: 1px dashed #bbb;
     padding: 10px 0;
+    max-height: 32vh;
+    overflow-y: auto;
 
     .nft {
       .nft-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         font-weight: 400;
         font-size: 16px;
         color: #101010;
+
+        .el-icon-close {
+          cursor: pointer;
+          margin: 0 6px;
+          padding: 2px;
+        }
+
+        .el-icon-close:hover {
+          background: var(--primary);
+          border-radius: 50%;
+          color: #fff;
+        }
       }
 
       .nft-box {
@@ -98,7 +148,8 @@ export default {
         flex-wrap: wrap;
 
         .nft-one {
-          margin-right: 10px;
+          margin-right: 14px;
+          margin-bottom: 8px;
         }
       }
     }
@@ -112,7 +163,7 @@ export default {
   .passowrd {
     .title {
       margin-top: 32px;
-      font-size: 18px;
+      font-size: 16px;
     }
 
     .input {

@@ -19,7 +19,11 @@
           @click="$message('正在开发')"
         />
       </div>
-      <el-collapse v-model="activeList" v-loading="loading" class="nft-list">
+      <div v-if="nftList.length === 0" v-loading="loading" class="not-found">
+        <img src="~/assets/img/not_found.svg" />
+        <div>你的资产宝箱里空空如也</div>
+      </div>
+      <el-collapse v-else v-model="activeList" class="nft-list">
         <template v-for="(e, i) in nftList">
           <el-collapse-item :key="i" :class="{ checked: e.checked.length > 0 }">
             <template slot="title">
@@ -91,10 +95,6 @@
           </el-collapse-item>
         </template>
       </el-collapse>
-      <div v-if="nftList.lenght === 0" class="not-found">
-        <img src="~/assets/img/not_found.svg" />
-        <div>你的资产宝箱里空空如也</div>
-      </div>
     </main>
     <transition name="el-zoom-in-bottom">
       <div v-show="showCheckBox" class="check-box">
@@ -132,7 +132,7 @@ export default {
       provider: null,
       showCheckBox: false,
       showAsset: false,
-      showGift: true,
+      showGift: false,
     }
   },
   computed: {
@@ -180,41 +180,28 @@ export default {
       })
       this.loading = false
       if (Array.isArray(res)) {
-        const tokenList = res
-        const list = Sea.set(tokenList, 'classId')
-        const arr = []
-        for (const token of list) {
-          const children = tokenList
-            .filter((e) => e.classId && e.classId === token.classId)
-            .sort((a, b) => {
-              return a.tokenId - b.tokenId
-            })
-          arr.push({
-            ...token,
-            children,
-            isIndeterminate: false,
-            checkAll: false,
-            checked: [],
-          })
-        }
-        this.nftList = arr
+        this.nftList = this.initList(res)
       }
     },
-    async initList(res) {
-      // be left over pages
-      const maxPage = res.meta.max_page
-      const promise = []
-      for (let i = 2; i <= maxPage; i++) {
-        promise.push(this.getList(i))
+    initList(res) {
+      const tokenList = res
+      const list = Sea.set(tokenList, 'classId')
+      const arr = []
+      for (const token of list) {
+        const children = tokenList
+          .filter((e) => e.classId && e.classId === token.classId)
+          .sort((a, b) => {
+            return a.tokenId - b.tokenId
+          })
+        arr.push({
+          ...token,
+          children,
+          isIndeterminate: false,
+          checkAll: false,
+          checked: [],
+        })
       }
-      const resArr = await Promise.all(promise)
-      const result = [...res.token_list]
-      for (const item of resArr) {
-        for (const nft of item.token_list) {
-          result.push(nft)
-        }
-      }
-      return result
+      return arr
     },
     bindNFT(nft) {
       this.nftItem = nft
@@ -309,7 +296,6 @@ export default {
     }
 
     .nft-list {
-      min-height: 300px;
       border: 0;
       margin-bottom: 80px;
 

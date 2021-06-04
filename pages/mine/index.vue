@@ -185,11 +185,13 @@ export default {
     },
     initList(res) {
       const tokenList = res
-      const list = Sea.set(tokenList, 'classId')
+      const list = Sea.set(tokenList, 'classTypeArgs')
       const arr = []
       for (const token of list) {
         const children = tokenList
-          .filter((e) => e.classId && e.classId === token.classId)
+          .filter(
+            (e) => e.classTypeArgs && e.classTypeArgs === token.classTypeArgs,
+          )
           .sort((a, b) => {
             return a.tokenId - b.tokenId
           })

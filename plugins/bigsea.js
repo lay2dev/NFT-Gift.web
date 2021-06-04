@@ -68,7 +68,7 @@ const _redPacketCreate = async ({ password, nfts }) => {
       keyPubkey: pubkey,
       outpoints: JSON.stringify(outpoints),
       outpointSize: nfts.length,
-      args: item.args,
+      nftTypeArgs: item.nftTypeArgs,
     })
     localAuth.push({
       pubkeyHash: getPubkeyHash(pubkey),

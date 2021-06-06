@@ -1,7 +1,5 @@
 <template>
-  <div class="SeaTeam">
-    <Nuxt />
-  </div>
+  <Nuxt />
 </template>
 <script>
 export default {

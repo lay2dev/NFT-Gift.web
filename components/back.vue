@@ -17,7 +17,7 @@ export default {
   methods: {
     bindBack() {
       if (!this.stop) {
-        $router.back()
+        this.$router.back()
       }
     },
   },

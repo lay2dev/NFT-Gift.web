@@ -13,11 +13,9 @@
     <main>
       <div class="nft-title">
         <div class="title">NFT 资产</div>
-        <img
-          class="icon"
-          src="~/assets/img/ze-orders.svg"
-          @click="$message('正在开发')"
-        />
+        <router-link to="/record">
+          <img class="icon" src="~/assets/img/ze-orders.svg" />
+        </router-link>
       </div>
       <div v-if="nftList.length === 0" v-loading="loading" class="not-found">
         <img src="~/assets/img/not_found.svg" />

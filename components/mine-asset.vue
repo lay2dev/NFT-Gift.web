@@ -4,6 +4,7 @@
     :show-close="false"
     fullscreen
     class="dialog-asset"
+    :modal="false"
   >
     <div id="mine-asset">
       <back stop @click.native="showDialog = false" />

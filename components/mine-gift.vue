@@ -102,7 +102,6 @@ export default {
       }
     },
   },
-
   methods: {
     init() {
       this.list = this.$parent.initList(this.nfts)
@@ -125,11 +124,13 @@ export default {
           data: sign,
         })
         if (res.short) {
+          this.showDialog = false
           this.$router.push(`/share/${res.short}`)
         } else {
           this.$message.error('请求失败')
         }
       }
+      this.loading = false
     },
   },
 }

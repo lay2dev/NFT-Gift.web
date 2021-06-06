@@ -96,10 +96,7 @@ const _redPacketSign = async (message) => {
   }
 }
 Sea.bindSign = async ({ nfts, password, address }) => {
-  const { redPacket, authItemsHex } = await _redPacketCreate({
-    password,
-    nfts,
-  })
+  const { redPacket, authItemsHex } = await _redPacketCreate({ password, nfts })
   const sign = await _redPacketSign(authItemsHex)
   return {
     authorization: sign.authorization,

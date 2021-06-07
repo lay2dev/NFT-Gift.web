@@ -1,20 +1,27 @@
 <template>
   <div id="page-record">
     <back />
-    <record-nfts
-      :loading.sync="loading"
-      :nfts.sync="nftsCreate"
-      @cancel="bindCancel"
-    />
-    <record-nfts :nfts.sync="nftsOther" />
+    <div class="title"></div>
+    <pull-refresh :next="init">
+      <record-nfts
+        :loading.sync="loading"
+        :nfts.sync="nftsCreate"
+        @cancel="bindCancel"
+      />
+      <div class="line"></div>
+      <record-nfts class="history" :nfts.sync="nftsOther" />
+    </pull-refresh>
   </div>
 </template>
 
 <script>
-import RecordNfts from '@/components/record-nfts.vue'
+import RecordNfts from '~/components/record-nfts.vue'
+import PullRefresh from '~/components/pull-refresh.vue'
+
 export default {
   components: {
     RecordNfts,
+    PullRefresh,
   },
   data() {
     return {
@@ -41,12 +48,14 @@ export default {
         method: 'post',
         data: {
           address: this.address,
-          limit: 20,
+          limit: 1000,
           page: 0,
         },
       })
-      this.nftsCreate = res.data.filter((e) => e.txState === 'create')
-      this.nftsOther = res.data.filter((e) => e.txState !== 'create')
+      //
+      const filter = ['create', 'init', 'pending']
+      this.nftsCreate = res.data.filter((e) => filter.includes(e.txState))
+      this.nftsOther = res.data.filter((e) => !filter.includes(e.txState))
       this.loading = false
     },
     async bindCancel(nft) {
@@ -72,5 +81,20 @@ export default {
 
 <style lang="stylus">
 #page-record {
+  > .title {
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    height: 60px;
+  }
+
+  > .line {
+    height: 1px;
+    background: var(--info);
+  }
+
+  .record-nfts.history {
+    padding-top: 16px;
+  }
 }
 </style>

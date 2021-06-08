@@ -201,3 +201,28 @@ export function getKeyPassword(password: string) {
   const keyPass = hmac.digest().toHex()
   return keyPass
 }
+
+export function getNumber(min: number, max: number) {
+  const rang = max - min
+  return min + Math.round(Math.random() * rang)
+}
+
+export function getPacketRandomList(
+  packetNumber: number,
+  nftList: string[],
+): string[][] {
+  const packe: string[][] = []
+  for (let index = 0; index < packetNumber; index++) {
+    if (index === packetNumber - 1) {
+      packe[index] = nftList as string[]
+    } else {
+      const surplusPacket = packetNumber - index
+      const surplusNft = nftList.length
+      const limit = surplusNft - surplusPacket
+      const randomNumber = getNumber(1, limit) || 1
+      packe[index] = nftList.slice(0, randomNumber)
+      nftList = nftList.slice(randomNumber)
+    }
+  }
+  return packe
+}

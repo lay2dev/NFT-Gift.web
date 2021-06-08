@@ -43,11 +43,7 @@
   </div>
 </template>
 <script>
-import {
-  getKeyPassword,
-  decryptMasterKey,
-  getAddressByPubkey,
-} from '~/assets/js/nft/utils'
+import { getKeyPassword, decryptMasterKey } from '~/assets/js/nft/utils'
 import { redPacketTransfer } from '~/assets/js/nft/transfer'
 
 export default {
@@ -74,7 +70,7 @@ export default {
         '领取 NFT 红包需链上确认交易，您需要等待1-2分钟后，才能在钱包内查看到领取的 NFT 资产。',
       )
         .then(() => {
-          this.$router.push('/mine')
+          this.$router.push('/record')
         })
         .catch(() => {})
     },
@@ -119,7 +115,6 @@ export default {
       res = await this.getStatus({ address, password })
       if (res.success) {
         const resData = res.data
-        // const fromAddress = getAddressByPubkey(resData.masterKeyPubkey)
         const toAddress = this.provider._address.addressString
         const data = {
           authorization: resData.authorization, //
@@ -152,7 +147,6 @@ export default {
           method: 'post',
           data: {
             txHash: tx || '0x',
-            // fromAddress,
             toAddress,
             id: resData.id,
           },

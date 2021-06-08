@@ -27,9 +27,11 @@
     "nuxt": "^2.15.6",
     "qrcode": "^1.4.4",
     "sass-loader": "10.1.1",
+    "socket.io-client": "^4.1.2",
     "stylus": "^0.54.8",
     "stylus-loader": "4.3.3",
-    "v-clipboard": "^2.2.3"
+    "v-clipboard": "^2.2.3",
+    "vue-socket.io": "^3.0.10"
   },
   "devDependencies": {
     "@nuxt/types": "^2.15.3",

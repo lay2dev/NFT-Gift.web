@@ -40,6 +40,23 @@ export default {
       this.$router.replace('/')
     }
   },
+  sockets: {
+    connect() {
+      console.log('sockets-connect-')
+      this.$socket.emit('login', { type: 'address', value: this.address })
+    },
+    newTx(data) {
+      console.log('sockets-newTx-')
+      // todo 刷新
+      console.log(data)
+    },
+    disconnect() {
+      console.log('sockets-disconnect：', '已经断开 socket 链接')
+    },
+    reconnect() {
+      this.$socket.emit('connect')
+    },
+  },
   methods: {
     async init() {
       this.loading = true

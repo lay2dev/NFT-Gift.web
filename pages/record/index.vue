@@ -42,7 +42,7 @@ export default {
   },
   sockets: {
     connect() {
-      console.log('sockets-connect-')
+      console.log('sockets', 'connect')
       this.$socket.emit('login', { type: 'address', value: this.address })
     },
     newTx(data) {

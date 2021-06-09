@@ -36,8 +36,11 @@ export default {
   methods: {
     test() {
       console.log(this.nftNumber < this.packetNumber)
-      if (parseInt(this.nftNumber) < parseInt(this.packetNumber)) return
-      const ntfDatas = '0'.repeat(this.nftNumber).split('')
+      // if (parseInt(this.nftNumber) < parseInt(this.packetNumber)) return
+      const ntfDatas = []
+      for (let i = 0; i < this.nftNumber; i++) {
+        ntfDatas[i] = i + ''
+      }
       this.packeData = getPacketRandomList(this.packetNumber, ntfDatas)
     },
   },

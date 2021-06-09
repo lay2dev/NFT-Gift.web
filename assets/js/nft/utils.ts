@@ -211,15 +211,17 @@ export function getPacketRandomList(
   packetNumber: number,
   nftList: string[],
 ): string[][] {
+  if (nftList.length < packetNumber) throw new Error('nft number not enough')
   const packe: string[][] = []
   for (let index = 0; index < packetNumber; index++) {
     if (index === packetNumber - 1) {
       packe[index] = nftList as string[]
     } else {
-      const surplusPacket = packetNumber - index
+      const surplusPacket = packetNumber - index - 1
       const surplusNft = nftList.length
       const limit = surplusNft - surplusPacket
       const randomNumber = getNumber(1, limit) || 1
+      nftList = nftList.sort(() => Math.random() - 0.5)
       packe[index] = nftList.slice(0, randomNumber)
       nftList = nftList.slice(randomNumber)
     }

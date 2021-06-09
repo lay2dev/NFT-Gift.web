@@ -69,10 +69,10 @@ export default {
           page: 0,
         },
       })
-      //
       const filter = ['create', 'init', 'pending']
-      this.nftsCreate = res.data.filter((e) => filter.includes(e.txState))
-      this.nftsOther = res.data.filter((e) => !filter.includes(e.txState))
+      const arr = res.accept
+      this.nftsCreate = arr.filter((e) => filter.includes(e.txState))
+      this.nftsOther = arr.filter((e) => !filter.includes(e.txState))
       this.loading = false
     },
     async bindCancel(nft) {

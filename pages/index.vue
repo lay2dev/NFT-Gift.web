@@ -27,7 +27,7 @@ export default {
     init() {
       const provider = Sea.checkLogin()
       if (provider) {
-        this.$router.push('/mine')
+        this.$router.replace('/create')
       }
       this.loading = false
     },
@@ -35,9 +35,9 @@ export default {
       this.loading = true
       const provider = await Sea.bindLogin()
       if (provider) {
-        this.$router.push('/mine')
+        this.$router.push('/create')
       } else {
-        this.$message.warning('登录不成功')
+        this.$message.replace('登录不成功')
       }
       this.loading = false
     },

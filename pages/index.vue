@@ -28,7 +28,7 @@ export default {
     console.log(this.address, this.$route.query)
     if (this.address) {
       Sea.SaveDataByUrl(this.address, this.email)
-      this.$router.push('/mine')
+      this.$router.push('/create')
     }
   },
   mounted() {

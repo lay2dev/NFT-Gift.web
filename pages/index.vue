@@ -18,6 +18,17 @@ export default {
   data() {
     return {
       loading: true,
+      address: '',
+      email: '',
+    }
+  },
+  created() {
+    this.address = this.$route.query.address
+    this.email = this.$route.query.email
+    console.log(this.address, this.$route.query)
+    if (this.address) {
+      Sea.SaveDataByUrl(this.address, this.email)
+      this.$router.push('/mine')
     }
   },
   mounted() {
@@ -25,9 +36,13 @@ export default {
   },
   methods: {
     init() {
-      const provider = Sea.checkLogin()
-      if (provider) {
+      if (this.address) {
         this.$router.replace('/create')
+      } else {
+        const provider = Sea.checkLogin()
+        if (provider) {
+          this.$router.replace('/create')
+        }
       }
       this.loading = false
     },

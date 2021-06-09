@@ -1,6 +1,6 @@
 import '~/assets/js/bigsea'
 import dayjs from 'dayjs'
-import PWCore, { ChainID, IndexerCollector } from '@lay2/pw-core'
+import PWCore, { Address, ChainID, IndexerCollector } from '@lay2/pw-core'
 import { getPacketRandomList } from 'assets/js/nft/utils'
 import UnipassProvider from '~/assets/js/UnipassProvider.ts'
 import {
@@ -50,6 +50,16 @@ Sea.bindLogin = async () => {
     Sea.localStorage('provider', provider)
     return provider
   }
+  return null
+}
+
+Sea.SaveDataByUrl = (address, _email) => {
+  const provider = new UnipassProvider()
+  provider._time = Date.now()
+  provider._address = new Address(address)
+  // _email
+  provider._email = _email
+  Sea.localStorage('provider', provider)
   return null
 }
 // sign

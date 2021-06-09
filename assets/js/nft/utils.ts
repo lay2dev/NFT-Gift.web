@@ -50,7 +50,6 @@ export function getPubkeyHash(pubkey: string) {
  * @param pubkey
  */
 export function getAddressByPubkey(pubkey: string): string {
-  console.log('[pubkey]', pubkey, pubkey.length)
   const pubKeyBuffer = Buffer.from(pubkey.replace('0x', ''), 'hex')
   const hashHex = new Blake2bHasher()
     .update(pubKeyBuffer.buffer)
@@ -63,7 +62,6 @@ export function getAddressByPubkey(pubkey: string): string {
     HashType.type,
   )
   const address = script.toAddress(getDefaultPrefix()).toCKBAddress()
-  console.log(address)
   return address
 }
 /**
@@ -173,7 +171,6 @@ export async function generateKey(salt: string, password?: string) {
     pem = forge.pki.encryptRsaPrivateKey(rsaKey, strongPass, {
       algorithm: 'aes256',
     })
-    console.log('[master key pem', pem)
   }
 
   return { key, pubkey, pem }
@@ -209,13 +206,13 @@ export function getNumber(min: number, max: number) {
 
 export function getPacketRandomList(
   packetNumber: number,
-  nftList: string[],
-): string[][] {
+  nftList: any[],
+): any[][] {
   if (nftList.length < packetNumber) throw new Error('nft number not enough')
-  const packe: string[][] = []
+  const packe: any[][] = []
   for (let index = 0; index < packetNumber; index++) {
     if (index === packetNumber - 1) {
-      packe[index] = nftList as string[]
+      packe[index] = nftList
     } else {
       const surplusPacket = packetNumber - index - 1
       const surplusNft = nftList.length

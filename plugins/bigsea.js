@@ -1,6 +1,7 @@
 import '~/assets/js/bigsea'
 import dayjs from 'dayjs'
 import PWCore, { ChainID, IndexerCollector } from '@lay2/pw-core'
+import { getPacketRandomList } from 'assets/js/nft/utils'
 import UnipassProvider from '~/assets/js/UnipassProvider.ts'
 import {
   getDataFromSignString,
@@ -52,26 +53,33 @@ Sea.bindLogin = async () => {
   return null
 }
 // sign
-const _redPacketCreate = async ({ password, nfts }) => {
+const _redPacketCreate = async ({ password, nfts, redPackeNumber }) => {
   const redPacket = []
   const localAuth = []
-  for (const item of nfts) {
+  const newNfts = getPacketRandomList(redPackeNumber, nfts)
+  const same = redPackeNumber === nfts.length
+  const keyData = await generateKey('generateKey', password)
+  for (const itemNFTs of newNfts) {
+    const outpoints = []
+    const nftTypeArgs = []
     const { pubkey, pem } = await generateKey('generateKey', password)
-    const outpoints = [
-      {
+    for (const item of itemNFTs) {
+      outpoints.push({
         index: item.outPoint.index.toString(16),
         txHash: item.outPoint.txHash,
-      },
-    ]
-    redPacket.push({
-      encrypt: pem,
-      keyPubkey: pubkey,
+      })
+      nftTypeArgs.push(item.nftTypeArgs)
+    }
+    const data = {
+      encrypt: same ? keyData.pem : pem,
+      keyPubkey: same ? keyData.pubkey : pubkey,
       outpoints: JSON.stringify(outpoints),
-      outpointSize: nfts.length,
-      nftTypeArgs: item.nftTypeArgs,
-    })
+      outpointSize: itemNFTs.length,
+      nftTypeArgs: nftTypeArgs.join(','),
+    }
+    redPacket.push(data)
     localAuth.push({
-      pubkeyHash: getPubkeyHash(pubkey),
+      pubkeyHash: getPubkeyHash(same ? keyData.pubkey : pubkey),
       outpoints,
     })
   }
@@ -95,8 +103,12 @@ const _redPacketSign = async (message) => {
     authInfo,
   }
 }
-Sea.bindSign = async ({ nfts, password, address }) => {
-  const { redPacket, authItemsHex } = await _redPacketCreate({ password, nfts })
+Sea.bindSign = async ({ nfts, password, address, redPackeNumber }) => {
+  const { redPacket, authItemsHex } = await _redPacketCreate({
+    password,
+    nfts,
+    redPackeNumber,
+  })
   const sign = await _redPacketSign(authItemsHex)
   return {
     authorization: sign.authorization,

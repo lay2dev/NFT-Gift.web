@@ -1,8 +1,12 @@
 <template>
   <div id="page-record">
-    <back />
+    <back>
+      <span v-if="activeList.length > 3" @click="activeList = []">
+        全部折叠
+      </span>
+    </back>
     <div class="page-title">红包记录</div>
-    <el-collapse v-model="activeList" class="records">
+    <el-collapse v-model="activeList" v-loading="loading" class="records">
       <el-collapse-item
         v-for="(e, i) in records"
         :key="i"
@@ -26,51 +30,108 @@
           </div>
           <div class="state">{{ StatusDictBig[e.status] }}</div>
         </div>
-        <div class="record-box">
-          <div class="left">
-            <div class="line">
-              <span>
-                红包状态：<span class="black">{{
-                  StatusDictBig[e.status]
-                }}</span>
-              </span>
-            </div>
-            <div class="line">
-              <span>
-                未被领取：<span class="red"
-                  >{{ e.packetNum - e.picked }} 个红包
-                </span>
-              </span>
-            </div>
-            <div class="line">
-              <span>
-                已被领取：<span>{{ e.picked }} 个红包</span>
-              </span>
-            </div>
-            <div class="line">
-              发起时间：<span>{{
-                dayjs(e.createdAt).format('YYYY年M月D日 HH:mm')
-              }}</span>
-            </div>
+        <div class="record-box" :class="e.direction">
+          <div class="status">
+            <template v-if="e.direction === 'in'">
+              <div class="left">
+                <div class="line">
+                  <span>
+                    红包状态：<span class="black">{{
+                      StatusDictBig[e.status]
+                    }}</span>
+                  </span>
+                </div>
+                <div class="line">
+                  发起时间：<span>{{
+                    dayjs(e.createdAt).format('YYYY年M月D日 HH:mm')
+                  }}</span>
+                </div>
+              </div>
+              <div class="right">
+                <template v-if="e.status === 'committed'">
+                  <div class="btn">
+                    <el-button
+                      size="mini"
+                      icon="el-icon-search"
+                      @click="bindOpen(e)"
+                    >
+                      浏览器中查看交易
+                    </el-button>
+                  </div>
+                </template>
+              </div>
+            </template>
+            <template v-else>
+              <div class="left">
+                <div class="line">
+                  <span>
+                    红包状态：<span class="black">{{
+                      StatusDictBig[e.status]
+                    }}</span>
+                  </span>
+                </div>
+                <div class="line">
+                  <span>
+                    未被领取：<span class="red"
+                      >{{ e.packetNum - e.picked }} 个红包
+                    </span>
+                  </span>
+                </div>
+                <div class="line">
+                  <span>
+                    已被领取：<span>{{ e.picked }} 个红包</span>
+                  </span>
+                </div>
+                <div class="line">
+                  发起时间：<span>{{
+                    dayjs(e.createdAt).format('YYYY年M月D日 HH:mm')
+                  }}</span>
+                </div>
+              </div>
+              <div class="right">
+                <div class="btn">
+                  <el-button
+                    size="mini"
+                    icon="el-icon-share"
+                    @click="bindShare(e)"
+                  >
+                    分享
+                  </el-button>
+                </div>
+                <div class="btn">
+                  <el-button
+                    size="mini"
+                    icon="el-icon-refresh-left"
+                    @click="bindCancel(e)"
+                  >
+                    撤回
+                  </el-button>
+                </div>
+              </div>
+            </template>
           </div>
-          <div class="right">
-            <div class="btn">
-              <el-button
-                size="mini"
-                icon="el-icon-share"
-                @click="bindShare(nft)"
+
+          <div v-if="e.packets" class="pactets">
+            <div
+              v-for="(packet, index) in e.packets"
+              :key="index"
+              class="packet"
+            >
+              <div class="nfts">
+                <div v-for="nft in packet.nfts" :key="nft.tokenId" class="nft">
+                  <img :src="nft.renderer" alt="renderer" />
+                  <div class="nft-title" :title="nft.name">
+                    {{ nft.name }}
+                  </div>
+                  <div class="token-id">#{{ nft.tokenId }}</div>
+                </div>
+              </div>
+              <div
+                class="packet-state"
+                :class="{ red: packet.status === 'create' }"
               >
-                分享
-              </el-button>
-            </div>
-            <div class="btn">
-              <el-button
-                size="mini"
-                icon="el-icon-refresh-left"
-                @click="bindCancel(nft)"
-              >
-                撤回
-              </el-button>
+                {{ statusDictSmall[packet.status] }}
+              </div>
             </div>
           </div>
         </div>
@@ -88,7 +149,7 @@ export default {
       loading: false,
       address: '',
       records: [],
-      activeList: [0, 1, 2],
+      activeList: [],
       StatusDictBig: {
         create: '创建红包',
         init: '领取中',
@@ -98,7 +159,7 @@ export default {
         fail: '领取失败',
       },
       statusDictSmall: {
-        create: '创建红包',
+        create: '未领取',
         init: '领取中',
         pending: '确认中',
         committed: '领取完成',
@@ -118,6 +179,11 @@ export default {
   },
   methods: {
     dayjs,
+    bindOpen(e) {
+      const packet = e.packets[0]
+      const host = process.env.NERVOS_EXPLORER
+      Sea.open(`${host}${packet.txHash}`)
+    },
     async init() {
       this.loading = true
       const res = await Sea.Ajax({
@@ -129,20 +195,19 @@ export default {
           page: 0,
         },
       })
-      console.log('🌊', JSON.parse(JSON.stringify(res[0])))
       this.records = res
       this.loading = false
     },
-    bindShare(nft) {
-      this.$router.push(`/share/${nft.shortkey}`)
+    bindShare(e) {
+      this.$router.push(`/share/${e.short}`)
     },
-    async bindCancel(nft) {
+    async bindCancel(e) {
       this.loading = true
       const res = await Sea.Ajax({
         url: '/nft/cancel',
         method: 'post',
         data: {
-          id: nft.id,
+          id: e.id,
           fromAddress: this.address,
         },
       })
@@ -150,7 +215,8 @@ export default {
         await this.init()
         this.$message.success('撤销成功')
       } else {
-        this.$message.success('撤销失败')
+        this.loading = false
+        this.$message.error('撤销失败')
       }
     },
   },
@@ -255,7 +321,7 @@ export default {
         }
 
         .state {
-          // min-width: 54px;
+          min-width: 54px;
           margin-left: 6px;
           margin-right: 6px;
           color: #999;
@@ -265,33 +331,98 @@ export default {
       .record-box {
         margin-top: 8px;
         min-height: 20px;
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-        padding: 0 10px;
-        color: #AAA;
 
-        .left {
-          .line {
-            margin-bottom: 8px;
+        .red {
+          color: #FF8577 !important;
+        }
 
-            .red {
-              color: #FF8577;
+        .black {
+          color: #000 !important;
+        }
+
+        .status {
+          display: flex;
+          width: 100%;
+          justify-content: space-between;
+          padding: 0 10px;
+          color: #AAA;
+
+          .left {
+            .line {
+              margin-bottom: 8px;
             }
+          }
 
-            .black {
-              color: #000;
+          .right {
+            display: flex;
+            flex-direction: column;
+
+            .btn {
+              margin-bottom: 4px;
             }
           }
         }
 
-        .right {
-          display: flex;
-          flex-direction: column;
+        .pactets {
+          border-top: 1px solid #C8C8C8;
 
-          .btn {
-            margin-bottom: 4px;
+          .packet {
+            border-bottom: 1px solid #C8C8C8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px;
+
+            .nfts {
+              display: flex;
+              flex-direction: column;
+              margin-bottom: 8px;
+
+              .nft {
+                margin-top: 8px;
+                display: flex;
+                align-items: center;
+
+                img {
+                  width: 24px;
+                  height: 24px;
+                  border-radius: 4px;
+                  object-fit: cover;
+                }
+
+                .nft-title {
+                  width: 164px;
+                  padding: 0 5px;
+                  overflow: hidden;
+                  white-space: nowrap;
+                  text-overflow: ellipsis;
+                }
+
+                .token-id {
+                  background: #E6E6E6;
+                  min-width: 50px;
+                  height: 24px;
+                  text-align: center;
+                  line-height: 24px;
+                  border-radius: 5px;
+                }
+              }
+            }
+
+            .packet-state {
+              color: #aaa;
+            }
           }
+        }
+      }
+
+      .record-box.in {
+        .pactets {
+          border: 0;
+        }
+
+        .packet {
+          border: 0;
         }
       }
     }

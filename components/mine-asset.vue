@@ -7,7 +7,7 @@
     :modal="false"
   >
     <div id="mine-asset">
-      <back stop @click.native="showDialog = false" />
+      <back stop @click="showDialog = false" />
       <div class="image-box">
         <el-image :src="nft.renderer" fit="contain" alt="image" />
       </div>

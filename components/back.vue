@@ -1,11 +1,8 @@
 <template>
   <div id="component-back">
-    <img
-      class="left"
-      src="~/assets/img/back.svg"
-      alt="back"
-      @click="bindBack"
-    />
+    <div class="left" @click="$emit('click')">
+      <img src="~/assets/img/back.svg" alt="back" @click="bindBack" />
+    </div>
     <div class="right">
       <slot />
     </div>
@@ -30,7 +27,7 @@ export default {
 </script>
 <style lang="stylus">
 #component-back {
-  > img.left {
+  > .left {
     cursor: pointer;
     position: fixed;
     top: 8px;
@@ -38,6 +35,14 @@ export default {
     width: 35px;
     height: 35px;
     z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 17px;
+      height: 17px;
+    }
   }
 
   > div.right {

@@ -151,6 +151,32 @@ export default {
       }
       this.$message.success('校验完成，正在开发')
       console.log('🌊', this.nftChecked)
+      this.bindNext()
+    },
+    async bindNext() {
+      console.log('[create-bindNext] start')
+      const nfts = this.nftChecked
+      const provider = await Sea.bindLogin()
+      const sign = await Sea.bindSign({
+        nfts,
+        password: this.password,
+        address: provider._address.addressString,
+        redPackeNumber: this.number,
+      })
+      console.log('[create-bindNext] sign', sign)
+      if (sign.authorization) {
+        const res = await Sea.Ajax({
+          url: '/nft',
+          method: 'post',
+          data: sign,
+        })
+        if (res.short) {
+          this.showDialog = false
+          this.$router.push(`/share/${res.short}`)
+        } else {
+          this.$message.error('请求失败')
+        }
+      }
     },
   },
 }

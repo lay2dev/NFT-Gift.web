@@ -220,7 +220,7 @@ export default {
         url: '/nft/cancel',
         method: 'post',
         data: {
-          id: packet.id,
+          id: packet.packetId,
           fromAddress: this.address,
         },
       })

@@ -17,7 +17,7 @@
         <div class="t1">抱歉</div>
         <div class="t2">NFT红包已经被抢完了</div>
       </div>
-      <router-link to="/mine">
+      <router-link to="/record">
         <div class="balance">
           <img :src="require('~/assets/img/ze-balance-pay.svg')" />
           <div>打开钱包</div>
@@ -66,13 +66,7 @@ export default {
   },
   methods: {
     bindSuccess() {
-      this.$alert(
-        '领取 NFT 红包需链上确认交易，您需要等待1-2分钟后，才能在钱包内查看到领取的 NFT 资产。',
-      )
-        .then(() => {
-          this.$router.push('/record')
-        })
-        .catch(() => {})
+      this.$router.push('/record')
     },
     init() {
       this.$nextTick(() => {

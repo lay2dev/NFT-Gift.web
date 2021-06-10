@@ -59,6 +59,7 @@
             </div>
           </template>
         </div>
+        <div class="nft-total">NFT总计：{{ nftChecked.length }} 个</div>
       </div>
       <div v-else class="box select" @click="showSelect = true">
         <img src="~/assets/img/create_giftcard.svg" alt="create_giftcard" />
@@ -149,8 +150,6 @@ export default {
         this.$refs.password.focus()
         return
       }
-      this.$message.success('校验完成，正在开发')
-      console.log('🌊', this.nftChecked)
       this.bindNext()
     },
     async bindNext() {
@@ -378,6 +377,13 @@ export default {
             }
           }
         }
+      }
+
+      .nft-total {
+        margin-top: 10px;
+        align-self: flex-end;
+        color: #F35543;
+        font-size: 14px;
       }
     }
 

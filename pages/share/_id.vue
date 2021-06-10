@@ -4,13 +4,14 @@
     <div id="red-box" ref="red-box" v-loading="loading">
       <img class="top-bg" src="~/assets/img/top-bg.png" />
       <div class="t1">NFT 红包</div>
-      <div class="t2">- 领取 NFT，尝试新玩法 -</div>
-      <div class="qrcode-box">
-        <img class="rectangle" src="~/assets/img/red-rectangle.png" alt="" />
+      <div class="t2">- 输入口令，抢 NFT 红包 -</div>
+      <div v-if="password" class="password">「{{ password }}」</div>
+      <div class="qrcode-box" :class="{ password: password }">
+        <!-- <img class="rectangle" src="~/assets/img/red-rectangle.png" alt="" /> -->
         <img v-if="QRCode" class="qrcode" :src="QRCode" alt="qrcode" />
       </div>
       <div class="t3">长按领取至钱包</div>
-      <div class="t4">输入红包口令，获得专属于你的 NFT</div>
+      <div class="t4">抢 NFT 红包，玩加密新社交</div>
       <img v-if="png" class="share" :src="png" alt="share" />
     </div>
     <div class="red-tip">长按图片分享给朋友</div>
@@ -30,6 +31,7 @@ export default {
       png: '',
       loading: true,
       shareUrl: '',
+      password: this.$route.query.p || '',
     }
   },
   mounted() {
@@ -38,20 +40,29 @@ export default {
   },
   methods: {
     bindShare() {
-      const v = `打开链接，输入口令，抢NFT红包，玩转加密新社交，${this.shareUrl}`
+      let v = `打开链接，输入口令，抢NFT红包，玩转加密新社交，${this.shareUrl}`
+      if (this.password) {
+        v += `\n红包口令：${this.password}`
+      }
       this.$clipboard(v)
-      this.$alert(`已复制分享链接，快去粘贴<br>${this.shareUrl}`, '复制成功', {
-        showConfirmButton: false,
-        closeOnClickModal: true,
-        closeOnPressEscape: true,
-        dangerouslyUseHTMLString: true,
-        type: 'info',
-      }).catch(() => {})
+      const password = this.password ? `<br>红包口令：${this.password}` : ''
+      this.$alert(
+        `已复制分享链接，快去粘贴<br>${this.shareUrl}${password}`,
+        '复制成功',
+        {
+          showConfirmButton: false,
+          closeOnClickModal: true,
+          closeOnPressEscape: true,
+          dangerouslyUseHTMLString: true,
+          type: 'info',
+        },
+      ).catch(() => {})
     },
     async initQRCode() {
       // https://www.npmjs.com/package/qrcode#example-1
       const url = await QRCode.toDataURL(this.shareUrl, {
         type: 'image/png',
+        width: 260,
         margin: 1,
         color: {
           dark: '#F35543FF',
@@ -119,23 +130,30 @@ export default {
     }
 
     .t1 {
-      margin-top: 32px;
+      margin-top: 8px;
       font-size: 24px;
       color: rgb(250, 250, 250);
     }
 
     .t2 {
       margin-top: 12px;
-      font-size: 14px;
       color: var(--yellow);
+    }
+
+    .password {
+      margin-top: 8px;
+      font-weight: bold;
+      color: #fff;
+      font-size: 20px;
     }
 
     .qrcode-box {
       position: relative;
-      margin-top: 24px;
-      padding: 9px;
+      margin-top: 31px;
+      padding: 8px;
       width: 150px;
       height: 150px;
+      border: 2px solid var(--yellow);
 
       .rectangle {
         width: 100%;
@@ -155,13 +173,18 @@ export default {
       }
     }
 
+    .qrcode-box.password {
+      margin-top: 12px;
+    }
+
     .t3 {
-      color: rgb(250, 250, 250);
+      margin-top: 4px;
+      color: #ffbbbb;
     }
 
     .t4 {
       margin-top: auto;
-      margin-bottom: 30px;
+      margin-bottom: 31px;
       color: var(--yellow);
     }
   }

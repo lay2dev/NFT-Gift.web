@@ -74,7 +74,7 @@ export default {
         init: '领取中',
         pending: '确认中',
         committed: '领取完成',
-        cancel: '已撤销',
+        cancel: '已撤回',
         fail: '领取失败',
       },
     }

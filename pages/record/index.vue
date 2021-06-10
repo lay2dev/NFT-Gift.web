@@ -35,7 +35,8 @@ export default {
     const provider = await Sea.bindLogin()
     if (provider) {
       this.address = provider._address.addressString
-      this.init()
+      // this.init()
+      this.$message('正在开发')
     } else {
       this.$router.replace('/')
     }
@@ -65,7 +66,7 @@ export default {
         method: 'post',
         data: {
           address: this.address,
-          limit: 1000,
+          limit: 20,
           page: 0,
         },
       })

@@ -153,10 +153,8 @@ export default {
   },
   methods: {
     bindRight() {
-      if (this.nftChecked.length > 0) {
-        this.showDialog = false
-        this.$emit('select', this.nftChecked)
-      }
+      this.showDialog = false
+      this.$emit('select', this.nftList, this.nftChecked)
     },
     bindCheckBoxClose() {
       this.$confirm('退出后将清空当前的选择记录', '确定退出？', {
@@ -286,37 +284,8 @@ export default {
       border: 0;
       margin-bottom: 50px;
 
-      .checked {
-        .el-collapse-item__header {
-          border-bottom-color: var(--primary);
-        }
-      }
-
-      .el-collapse-item__header {
-        height: 100%;
-        line-height: 100%;
-        cursor: auto;
-        border: 0;
-        padding-right: 12px;
-      }
-
-      .el-collapse-item__wrap {
-        border: 0;
-      }
-
-      .el-collapse-item__content {
-        padding: 0;
-      }
-
-      .el-collapse-item__arrow {
-        color: #c5c5c5;
-        font-weight: bold;
-      }
-
       .nft {
         .nft-info {
-          display: flex;
-          align-items: center;
           width: 100%;
           padding: 16px 8px 16px 22px;
           cursor: pointer;
@@ -335,6 +304,7 @@ export default {
           }
 
           .info {
+            margin-top: 4px;
             margin-left: 10px;
 
             .name {

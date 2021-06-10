@@ -20,6 +20,45 @@
           </div>
           <i class="el-icon-arrow-right"></i>
         </div>
+        <div class="nft-list">
+          <template v-for="(e, i) in nfts">
+            <div v-if="e.checked.length" :key="i" class="nft">
+              <div class="nft-info">
+                <el-image
+                  class="nft-image"
+                  :src="e.renderer"
+                  alt="bg_image_url"
+                  fit="cover"
+                  lazy
+                />
+                <div class="info">
+                  <div class="name">
+                    {{ e.name }}
+                  </div>
+                  <div class="user">
+                    <div class="user-name">
+                      {{ e.issuerName }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="nft-box">
+                <el-checkbox-group v-model="e.checked">
+                  <template v-for="nft in e.children">
+                    <el-checkbox
+                      v-if="e.checked.includes(nft.tokenId)"
+                      :key="nft.tokenId"
+                      class="nft-one"
+                      :label="nft.tokenId"
+                    >
+                      #{{ nft.tokenId }}
+                    </el-checkbox>
+                  </template>
+                </el-checkbox-group>
+              </div>
+            </div>
+          </template>
+        </div>
       </div>
       <div v-else class="box select" @click="showSelect = true">
         <img src="~/assets/img/create_giftcard.svg" alt="create_giftcard" />
@@ -35,13 +74,27 @@
           <i class="el-icon-question"></i>
         </div>
         <div class="right">
-          <input v-model.number="number" placeholder="填写个数" />
+          <input
+            ref="number"
+            v-model="number"
+            type="tel"
+            placeholder="填写个数"
+            @input="bindNumber"
+            @focus="$refs.number.select()"
+            @blur="bindNumberBlur"
+          />
           <span>个</span>
         </div>
       </div>
       <div class="box password">
         <span>红包口令</span>
-        <input v-model="password" type="text" />
+        <input
+          ref="password"
+          v-model="password"
+          type="text"
+          placeholder="恭喜发财"
+          @focus="$refs.password.select()"
+        />
         <div class="tip">对方输入口令，即可领取红包</div>
       </div>
       <el-button class="btn-create" @click="bindCreate">
@@ -58,102 +111,46 @@ export default {
   data() {
     return {
       number: '',
-      password: '恭喜发财',
+      password: '',
       showSelect: false,
-      nfts: [
-        {
-          outPoint: {
-            txHash:
-              '0x9ab0b9ef6a8e7f85daf75f10abceb37d3c57f7ef5e34e8d0c4c2248ea0d5710e',
-            index: '0x2',
-          },
-          txState: 'committed',
-          nftTypeArgs:
-            '0xcbdd0b6b31c77f63b51f776f1a58a8924ae6fa7c0000000600000001',
-          classTypeArgs: '0xcbdd0b6b31c77f63b51f776f1a58a8924ae6fa7c00000006',
-          total: 0,
-          issued: 13,
-          name: '史迪仔',
-          description: '',
-          renderer:
-            'https://goldenlegend.oss-cn-hangzhou.aliyuncs.com/production/f5285fd8-56bf-4ddc-a001-e80b80bd1493.jpeg',
-          issuerName: 'stitch',
-          issuerAvatarUrl:
-            'https://images.669pic.com/element_min_new_pic/74/45/47/87/35527c466c113c635dac7ffe63844024.png',
-          tokenId: 1,
-        },
-        {
-          outPoint: {
-            txHash:
-              '0x927da791ee057b31922fb0b3ba464cd5b68b0fba9644f97d6d8e7e22dc48223d',
-            index: '0x3',
-          },
-          txState: 'committed',
-          nftTypeArgs:
-            '0xcbdd0b6b31c77f63b51f776f1a58a8924ae6fa7c0000000700000002',
-          classTypeArgs: '0xcbdd0b6b31c77f63b51f776f1a58a8924ae6fa7c00000007',
-          total: 0,
-          issued: 20,
-          name: '皮卡丘',
-          description: '',
-          renderer:
-            'https://goldenlegend.oss-cn-hangzhou.aliyuncs.com/production/e36b3301-b888-4dfb-8fad-85a07fb18b3f.jpg',
-          issuerName: 'stitch',
-          issuerAvatarUrl:
-            'https://images.669pic.com/element_min_new_pic/74/45/47/87/35527c466c113c635dac7ffe63844024.png',
-          tokenId: 2,
-        },
-        {
-          outPoint: {
-            txHash:
-              '0x927da791ee057b31922fb0b3ba464cd5b68b0fba9644f97d6d8e7e22dc48223d',
-            index: '0x4',
-          },
-          txState: 'committed',
-          nftTypeArgs:
-            '0xcbdd0b6b31c77f63b51f776f1a58a8924ae6fa7c0000000700000003',
-          classTypeArgs: '0xcbdd0b6b31c77f63b51f776f1a58a8924ae6fa7c00000007',
-          total: 0,
-          issued: 20,
-          name: '皮卡丘',
-          description: '',
-          renderer:
-            'https://goldenlegend.oss-cn-hangzhou.aliyuncs.com/production/e36b3301-b888-4dfb-8fad-85a07fb18b3f.jpg',
-          issuerName: 'stitch',
-          issuerAvatarUrl:
-            'https://images.669pic.com/element_min_new_pic/74/45/47/87/35527c466c113c635dac7ffe63844024.png',
-          tokenId: 3,
-        },
-        {
-          outPoint: {
-            txHash:
-              '0x927da791ee057b31922fb0b3ba464cd5b68b0fba9644f97d6d8e7e22dc48223d',
-            index: '0x5',
-          },
-          txState: 'committed',
-          nftTypeArgs:
-            '0xcbdd0b6b31c77f63b51f776f1a58a8924ae6fa7c0000000700000004',
-          classTypeArgs: '0xcbdd0b6b31c77f63b51f776f1a58a8924ae6fa7c00000007',
-          total: 0,
-          issued: 20,
-          name: '皮卡丘',
-          description: '',
-          renderer:
-            'https://goldenlegend.oss-cn-hangzhou.aliyuncs.com/production/e36b3301-b888-4dfb-8fad-85a07fb18b3f.jpg',
-          issuerName: 'stitch',
-          issuerAvatarUrl:
-            'https://images.669pic.com/element_min_new_pic/74/45/47/87/35527c466c113c635dac7ffe63844024.png',
-          tokenId: 4,
-        },
-      ],
+      nfts: [],
+      nftChecked: [],
     }
   },
   methods: {
-    bindSelect(nfts) {
+    bindNumber(event) {
+      this.number = event.target.value.replace(/[^\d]/g, '')
+    },
+    bindNumberBlur(event) {
+      const v = Number(event.target.value)
+      const l = this.nftChecked.length
+      if (v > l) {
+        this.number = l
+        this.$message.warning('不能超过 NFT 总数')
+      }
+    },
+    bindSelect(nfts, checked) {
       this.nfts = nfts
+      this.nftChecked = checked
     },
     bindCreate() {
-      this.$message('请选择 NFT')
+      if (this.nftChecked <= 0) {
+        this.$message('请选择 NFT')
+        this.showSelect = true
+        return
+      }
+      if (!this.number) {
+        this.$message('请填写红包个数')
+        this.$refs.number.focus()
+        return
+      }
+      if (!this.password) {
+        this.$message('请填写红包口令')
+        this.$refs.password.focus()
+        return
+      }
+      this.$message.success('校验完成，正在开发')
+      console.log('🌊', this.nftChecked)
     },
   },
 }
@@ -239,6 +236,7 @@ export default {
       cursor: pointer;
       padding: 16px 8px;
       margin-top: 23px;
+      flex-direction: column;
 
       .top {
         width: 100%;
@@ -271,6 +269,88 @@ export default {
           margin-left: auto;
           color: #000;
           font-size: 20px;
+        }
+      }
+
+      .nft-list {
+        width: 100%;
+        border: 0;
+
+        .nft {
+          .nft-info {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 16px 0;
+            cursor: pointer;
+            margin-right: 6px;
+
+            .nft-image {
+              background: #eee;
+              height: 50px;
+              width: 50px;
+              flex-shrink: 0;
+              box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.24);
+              border-radius: 4px;
+              overflow: hidden;
+            }
+
+            .info {
+              margin-top: 4px;
+              margin-left: 10px;
+
+              .name {
+                color: rgba(16, 16, 16, 100);
+                font-size: 16px;
+                line-height: 16px;
+                font-weight: bold;
+              }
+
+              .user {
+                margin-top: 5px;
+                display: flex;
+                align-items: center;
+
+                .user-name {
+                  font-size: 14px;
+                  color: #aaa;
+                }
+              }
+            }
+          }
+
+          .nft-box {
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #f4f4f4;
+
+            .nft-one {
+              margin-bottom: 14px;
+              border-radius: 5px;
+              background: #E6E6E6;
+              margin-right: 24px;
+              width: 50px;
+              height: 26px;
+              line-height: 26px;
+              text-align: center;
+
+              .el-checkbox__input {
+                display: none;
+              }
+
+              .el-checkbox__label {
+                padding-left: 0;
+              }
+            }
+
+            .nft-one.is-checked {
+              background: #F35543;
+
+              .el-checkbox__input.is-checked + .el-checkbox__label {
+                color: #FFF;
+              }
+            }
+          }
         }
       }
     }
@@ -318,13 +398,33 @@ export default {
         font-size: 16px;
       }
 
+      /* Chrome/Opera/Safari */
+      input::-webkit-input-placeholder {
+        color: rgba(210, 123, 48, 0.6);
+      }
+
+      /* Firefox 19+ */
+      input::-moz-placeholder {
+        color: rgba(210, 123, 48, 0.6);
+      }
+
+      /* IE 10+ */
+      input:-ms-input-placeholder {
+        color: rgba(210, 123, 48, 0.6);
+      }
+
+      /* Firefox 18- */
+      input:-moz-placeholder {
+        color: rgba(210, 123, 48, 0.6);
+      }
+
       .tip {
         font-size: 12px;
       }
     }
 
     .btn-create {
-      margin-top: 31px;
+      margin: 31px 0;
       width: 173px;
       height: 40px;
       border-radius: 30px;

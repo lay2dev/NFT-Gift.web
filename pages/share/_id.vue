@@ -134,8 +134,8 @@ export default {
       position: relative;
       margin-top: 24px;
       padding: 9px;
-      width: 94px;
-      height: 94px;
+      width: 150px;
+      height: 150px;
 
       .rectangle {
         width: 100%;

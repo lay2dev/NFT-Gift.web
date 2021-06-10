@@ -11,7 +11,11 @@
       <div class="page-title">选择您要赠送的 NFT</div>
       <main>
         <div class="search">
-          <el-input v-model="filter" placeholder="搜索" clearable>
+          <el-input
+            v-model="filter"
+            placeholder="搜索 NFT 名称 / 创作者"
+            clearable
+          >
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
         </div>

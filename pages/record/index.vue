@@ -377,10 +377,9 @@ export default {
         }
 
         .pactets {
-          border-top: 1px solid #C8C8C8;
-
+          // border-top: 1px solid #e6e6e6;
           .packet {
-            border-bottom: 1px solid #C8C8C8;
+            border-top: 1px solid #e6e6e6;
             display: flex;
             justify-content: space-between;
             align-items: center;

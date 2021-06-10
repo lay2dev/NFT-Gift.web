@@ -72,7 +72,6 @@
       <div class="box number">
         <div class="left">
           <span>红包个数</span>
-          <i class="el-icon-question"></i>
         </div>
         <div class="right">
           <input

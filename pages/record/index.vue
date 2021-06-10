@@ -28,7 +28,13 @@
           <div class="date">
             {{ dayjs(e.createdAt).format('M月D日 HH:mm') }}
           </div>
-          <div class="state">{{ StatusDictBig[e.status] }}</div>
+          <div class="state">
+            {{
+              e.direction === 'in'
+                ? statusDictSmall[e.status]
+                : statusDictBig[e.status] || e.status
+            }}
+          </div>
         </div>
         <div class="record-box" :class="e.direction">
           <div class="status">
@@ -37,7 +43,7 @@
                 <div class="line">
                   <span>
                     红包状态：<span class="black">{{
-                      StatusDictBig[e.status]
+                      statusDictSmall[e.status]
                     }}</span>
                   </span>
                 </div>
@@ -66,18 +72,18 @@
                 <div class="line">
                   <span>
                     红包状态：<span class="black">{{
-                      StatusDictBig[e.status]
+                      statusDictBig[e.status]
                     }}</span>
                   </span>
                 </div>
-                <div class="line">
+                <div v-if="e.direction === 'create'" class="line">
                   <span>
                     未被领取：<span class="red"
                       >{{ e.packetNum - e.picked }} 个红包
                     </span>
                   </span>
                 </div>
-                <div class="line">
+                <div v-if="e.direction === 'create'" class="line">
                   <span>
                     已被领取：<span>{{ e.picked }} 个红包</span>
                   </span>
@@ -89,24 +95,26 @@
                 </div>
               </div>
               <div class="right">
-                <div class="btn">
-                  <el-button
-                    size="mini"
-                    icon="el-icon-share"
-                    @click="bindShare(e)"
-                  >
-                    分享
-                  </el-button>
-                </div>
-                <div class="btn">
-                  <el-button
-                    size="mini"
-                    icon="el-icon-refresh-left"
-                    @click="bindCancel(e)"
-                  >
-                    撤回
-                  </el-button>
-                </div>
+                <template v-if="e.direction === 'create'">
+                  <div class="btn">
+                    <el-button
+                      size="mini"
+                      icon="el-icon-share"
+                      @click="bindShare(e)"
+                    >
+                      分享
+                    </el-button>
+                  </div>
+                  <div class="btn">
+                    <el-button
+                      size="mini"
+                      icon="el-icon-refresh-left"
+                      @click="bindCancel(e)"
+                    >
+                      撤回
+                    </el-button>
+                  </div>
+                </template>
               </div>
             </template>
           </div>
@@ -150,19 +158,17 @@ export default {
       address: '',
       records: [],
       activeList: [],
-      StatusDictBig: {
-        create: '创建红包',
-        init: '领取中',
+      statusDictBig: {
+        create: '进行中',
         pending: '进行中',
-        committed: '领取完成',
+        committed: '已完成',
         cancel: '已撤回',
-        fail: '领取失败',
       },
       statusDictSmall: {
         create: '未领取',
         init: '领取中',
         pending: '确认中',
-        committed: '领取完成',
+        committed: '已完成',
         cancel: '已撤回',
         fail: '领取失败',
       },
@@ -203,11 +209,12 @@ export default {
     },
     async bindCancel(e) {
       this.loading = true
+      const packet = e.packets[0]
       const res = await Sea.Ajax({
         url: '/nft/cancel',
         method: 'post',
         data: {
-          id: e.id,
+          id: packet.id,
           fromAddress: this.address,
         },
       })

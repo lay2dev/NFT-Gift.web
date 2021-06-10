@@ -130,8 +130,8 @@ export default {
       }
     },
     bindSelect(nfts, checked) {
-      this.nfts = nfts
-      this.nftChecked = checked
+      this.nfts = Sea.deepCopy(nfts)
+      this.nftChecked = Sea.deepCopy(checked)
     },
     bindCreate() {
       if (this.nftChecked <= 0) {

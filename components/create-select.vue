@@ -101,11 +101,6 @@ export default {
       nftList: [],
       tokenList: [],
       activeList: [],
-      stateDict: {
-        pending: '接收中',
-        submitting: '确认中',
-        committed: '',
-      },
       provider: null,
       showCheckBox: false,
       showAsset: false,

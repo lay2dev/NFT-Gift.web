@@ -76,14 +76,20 @@
                     }}</span>
                   </span>
                 </div>
-                <div v-if="e.direction === 'create'" class="line">
+                <div
+                  v-if="['create', 'pending'].includes(e.status)"
+                  class="line"
+                >
                   <span>
                     未被领取：<span class="red"
                       >{{ e.packetNum - e.picked }} 个红包
                     </span>
                   </span>
                 </div>
-                <div v-if="e.direction === 'create'" class="line">
+                <div
+                  v-if="['create', 'pending'].includes(e.status)"
+                  class="line"
+                >
                   <span>
                     已被领取：<span>{{ e.picked }} 个红包</span>
                   </span>
@@ -95,7 +101,7 @@
                 </div>
               </div>
               <div class="right">
-                <template v-if="e.direction === 'create'">
+                <template v-if="['create', 'pending'].includes(e.status)">
                   <div class="btn">
                     <el-button
                       size="mini"
@@ -168,7 +174,7 @@ export default {
         create: '未领取',
         init: '领取中',
         pending: '确认中',
-        committed: '已完成',
+        committed: '已领取',
         cancel: '已撤回',
         fail: '领取失败',
       },

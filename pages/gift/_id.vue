@@ -14,8 +14,18 @@
     </template>
     <template v-else-if="status === 'fail'">
       <div class="fail">
-        <div class="t1">抱歉</div>
-        <div class="t2">NFT红包已经被抢完了</div>
+        <template v-if="statusCode === -3">
+          <div class="t1">抱歉</div>
+          <div class="t2">你已经领过这个红包了</div>
+        </template>
+        <template v-if="statusCode === -2">
+          <div class="t1">404</div>
+          <div class="t2">NFT红包地址有误</div>
+        </template>
+        <template v-else>
+          <div class="t1">抱歉</div>
+          <div class="t2">NFT红包已经被抢完了</div>
+        </template>
       </div>
       <router-link to="/record">
         <div class="balance">
@@ -50,6 +60,7 @@ export default {
   data() {
     return {
       status: '',
+      statusCode: null,
       password: '',
       provider: null,
       loading: false,
@@ -62,13 +73,16 @@ export default {
   },
   mounted() {
     this.init()
-    this.bindLogin()
   },
   methods: {
     bindSuccess() {
       this.$router.push('/record')
     },
     init() {
+      if (!this.provider) {
+        this.bindLogin(true)
+        return
+      }
       this.$nextTick(() => {
         this.getStatus({
           address: 'do_not_need_address',
@@ -88,6 +102,7 @@ export default {
       })
     },
     async getStatus({ address, password }) {
+      this.loading = true
       const id = this.$route.params.id || 'null'
       const res = await Sea.Ajax({
         url: `/nft/${id}`,
@@ -97,9 +112,9 @@ export default {
           address,
         },
       })
-      if (res.status === -1) {
-        this.status = 'fail'
-      } else if (res.status === -2) {
+      this.loading = false
+      this.statusCode = res.status
+      if (res.status < 0) {
         this.status = 'fail'
       }
       return res
@@ -154,18 +169,17 @@ export default {
         }
       } else if (res.status === 0) {
         this.$message.error('红包口令错误')
-      } else if (res.status === -1) {
-        this.status = 'fail'
-      } else if (res.status === -2) {
-        this.$message.error('分享地址无效')
       }
       this.loading = false
     },
-    async bindLogin() {
+    async bindLogin(init) {
       this.loading = true
       const provider = await Sea.bindLogin()
       if (provider) {
         this.provider = provider
+        if (init) {
+          this.init()
+        }
       } else {
         this.$message.warning('登录不成功')
       }

@@ -18,7 +18,7 @@
           <div class="t1">抱歉</div>
           <div class="t2">你已经领过这个红包了</div>
         </template>
-        <template v-if="statusCode === -2">
+        <template v-else-if="statusCode === -2">
           <div class="t1">404</div>
           <div class="t2">NFT红包地址有误</div>
         </template>

@@ -4,7 +4,6 @@ import PWCore, {
   BuilderOption,
   Cell,
   OutPoint,
-  RPC,
 } from '@lay2/pw-core'
 import { RedPacketBuilder } from './red-packet-builder'
 import { RedPacketProvider } from './red-packet-provider'
@@ -58,11 +57,13 @@ export async function redPacketTransfer(
   const fromAddress = getAddressByPubkey(masterPubkey)
   console.log('fromAddress', fromAddress)
   // const rpc = new RPC(NODE_URL)
+  console.log('[outpoints]', outpoints, outpoints.length)
   const cells = []
   for (const item of outpoints) {
     cells.push(await Cell.loadFromBlockchain(pwcore.rpc, item))
   }
-  const inputCells = cells.slice(0, 4)
+  console.log('[cells]', cells)
+  const inputCells = cells
   const lockLen =
     (1 + (8 + 256 * 2) * 3) * 2 + localAuthInfo.replace('0x', '').length
   console.log('lockLen', lockLen)

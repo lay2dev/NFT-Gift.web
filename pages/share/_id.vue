@@ -2,7 +2,7 @@
   <div id="page-share">
     <back />
     <div id="red-box" ref="red-box" v-loading="loading">
-      <img class="top-bg" src="~/assets/img/top-bg.png" />
+      <img class="top-bg" src="~/assets/img/top-bg.png" @load="bindLoad" />
       <div class="t1">NFT 红包</div>
       <div class="t2">- 输入口令，抢 NFT 红包 -</div>
       <div v-if="password" class="password">「{{ password }}」</div>
@@ -39,6 +39,19 @@ export default {
     this.initQRCode()
   },
   methods: {
+    bindLoad() {
+      this.$nextTick(() => {
+        const redBox = this.$refs['red-box']
+        html2canvas(redBox, {
+          useCORS: true,
+        }).then((canvas) => {
+          if (canvas && canvas.getContext) {
+            const png = canvas.toDataURL('image/png')
+            this.png = png
+          }
+        })
+      })
+    },
     bindShare() {
       let v = `打开链接，输入口令，抢NFT红包，玩转加密新社交，${this.shareUrl}`
       if (this.password) {
@@ -70,16 +83,7 @@ export default {
         },
       })
       this.QRCode = url
-      this.$nextTick(() => {
-        const redBox = this.$refs['red-box']
-        html2canvas(redBox).then((canvas) => {
-          this.loading = false
-          if (canvas && canvas.getContext) {
-            const png = canvas.toDataURL('image/png')
-            this.png = png
-          }
-        })
-      })
+      this.loading = false
     },
   },
 }

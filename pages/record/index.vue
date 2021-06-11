@@ -156,6 +156,7 @@
 
 <script>
 import dayjs from 'dayjs'
+import { AddressType, Address } from '@lay2/pw-core'
 export default {
   components: {},
   data() {
@@ -184,6 +185,10 @@ export default {
     const provider = await Sea.bindLogin()
     if (provider) {
       this.address = provider._address.addressString
+      this.$socket.emit('login', {
+        type: 'address',
+        value: new Address(this.address, AddressType.ckb).toLockScript().args,
+      })
       this.init()
     } else {
       this.$router.replace('/')
@@ -196,8 +201,8 @@ export default {
       const host = process.env.NERVOS_EXPLORER
       Sea.open(`${host}${packet.txHash}`)
     },
-    async init() {
-      this.loading = true
+    async init(showLoading = true) {
+      if (showLoading) this.loading = true
       const res = await Sea.Ajax({
         url: '/nft/history',
         method: 'post',
@@ -208,7 +213,7 @@ export default {
         },
       })
       this.records = res
-      this.loading = false
+      if (showLoading) this.loading = false
     },
     bindShare(e) {
       this.$router.push(`/share/${e.short}`)
@@ -236,11 +241,21 @@ export default {
   sockets: {
     connect() {
       console.log('sockets', 'connect')
-      this.$socket.emit('login', { type: 'address', value: this.address })
+      // this.$socket.emit('login', {
+      //   type: 'address',
+      //   value: new Address(this.address, AddressType.ckb).toLockScript().args,
+      // })
+    },
+    newBlock() {
+      console.log('sockets-newBlock-')
+      this.init(false)
     },
     newTx(data) {
       console.log('sockets-newTx-')
-      // todo 刷新
+      this.init(false)
+      setTimeout(() => {
+        this.init(false)
+      }, 10 * 1000)
       console.log(data)
     },
     disconnect() {

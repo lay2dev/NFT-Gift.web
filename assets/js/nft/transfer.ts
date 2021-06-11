@@ -58,10 +58,11 @@ export async function redPacketTransfer(
   console.log('fromAddress', fromAddress)
   // const rpc = new RPC(NODE_URL)
   console.log('[outpoints]', outpoints, outpoints.length)
-  const cells = []
-  for (const item of outpoints) {
-    cells.push(await Cell.loadFromBlockchain(pwcore.rpc, item))
-  }
+
+  const cells = await Promise.all(
+    outpoints.map((x) => Cell.loadFromBlockchain(pwcore.rpc, x)),
+  )
+
   console.log('[cells]', cells)
   const inputCells = cells
   const lockLen =

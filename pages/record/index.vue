@@ -6,6 +6,10 @@
       </span>
     </back>
     <div class="page-title">红包记录</div>
+    <div v-if="records.length === 0" v-loading="loading" class="not-found">
+      <img src="~/assets/img/not_found.svg" />
+      <div>您还没有发出或接收过红包</div>
+    </div>
     <el-collapse v-model="activeList" v-loading="loading" class="records">
       <el-collapse-item
         v-for="(e, i) in records"
@@ -277,6 +281,13 @@ export default {
     color: rgba(16, 16, 16, 100);
     height: 35px;
     line-height: 35px;
+  }
+
+  .not-found {
+    text-align: center;
+    font-weight: 300;
+    font-size: 16px;
+    margin: 10px;
   }
 
   .records {

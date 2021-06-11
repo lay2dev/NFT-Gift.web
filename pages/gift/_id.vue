@@ -4,8 +4,8 @@
     <img class="top-bg" src="~/assets/img/top-bg.png" />
     <template v-if="status === 'success'">
       <div class="success">
-        <div class="t1">恭喜你</div>
-        <div class="t2">成功领取到一个NFT</div>
+        <div class="t1">恭喜您</div>
+        <div class="t2">成功领取到一个NFT红包</div>
       </div>
       <div class="balance" @click="bindSuccess">
         <img :src="require('~/assets/img/ze-balance-pay.svg')" />

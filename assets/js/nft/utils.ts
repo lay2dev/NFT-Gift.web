@@ -1,6 +1,7 @@
 import {
   Blake2bHasher,
   CellDep,
+  ChainID,
   DepType,
   getDefaultPrefix,
   Hasher,
@@ -20,6 +21,9 @@ interface UnipassData {
 export const UNIPASS_TYPE_ID = process.env.UNIPASS_TYPE_ID as string
 export const NODE_URL = process.env.CKB_NODE_URL as string
 export const INDEXER_URL = process.env.CKB_INDEXER_URL as string
+export const CKB_CHAIN_ID =
+  process.env.CKB_CHAIN_ID === '0' ? ChainID.ckb : ChainID.ckb_testnet
+
 export const rsaDep = new CellDep(
   DepType.code,
   new OutPoint(process.env.RSA_TXHASH as string, '0x0'),
@@ -72,7 +76,7 @@ export async function decryptMasterKey(
   salt: string,
   password: string,
 ): Promise<CryptoKey> {
-  const strongPass = forge.pkcs5.pbkdf2(password, salt, 2 ** 16, 16)
+  const strongPass = forge.pkcs5.pbkdf2(password, salt, 2 ** 4, 16)
   const privkey = forge.pki.decryptRsaPrivateKey(masterKey, strongPass)
 
   // convert to pkcs8 format pem, refer to https://github.com/digitalbazaar/forge/issues/109#issuecomment-38009619
@@ -163,7 +167,7 @@ export async function generateKey(salt: string, password?: string) {
 
     // encrypt key with password
     // const start = new Date().getTime();
-    const strongPass = forge.pkcs5.pbkdf2(password, salt, 2 ** 16, 16)
+    const strongPass = forge.pkcs5.pbkdf2(password, salt, 2 ** 4, 16)
     // const end = new Date().getTime();
     // alert(`[kdf time] ${(end - start) / 1000}`);
 

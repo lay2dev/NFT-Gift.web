@@ -67,8 +67,8 @@ const _redPacketCreate = async ({ password, nfts, redPackeNumber }) => {
   const redPacket = []
   const localAuth = []
   const newNfts = getPacketRandomList(redPackeNumber, nfts)
-  const same = redPackeNumber === nfts.length
-  const keyData = await generateKey('generateKey', password)
+  // const same = redPackeNumber === nfts.length
+  // const keyData = await generateKey('generateKey', password)
   for (const itemNFTs of newNfts) {
     const outpoints = []
     const nftTypeArgs = []
@@ -81,15 +81,15 @@ const _redPacketCreate = async ({ password, nfts, redPackeNumber }) => {
       nftTypeArgs.push(item.nftTypeArgs)
     }
     const data = {
-      encrypt: same ? keyData.pem : pem,
-      keyPubkey: same ? keyData.pubkey : pubkey,
+      encrypt: pem,
+      keyPubkey: pubkey,
       outpoints: JSON.stringify(outpoints),
       outpointSize: itemNFTs.length,
       nftTypeArgs: nftTypeArgs.join(','),
     }
     redPacket.push(data)
     localAuth.push({
-      pubkeyHash: getPubkeyHash(same ? keyData.pubkey : pubkey),
+      pubkeyHash: getPubkeyHash(pubkey),
       outpoints,
     })
   }

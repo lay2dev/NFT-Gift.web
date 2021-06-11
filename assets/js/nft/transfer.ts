@@ -17,6 +17,7 @@ import {
   unipassDep,
   NODE_URL,
   INDEXER_URL,
+  CKB_CHAIN_ID,
   redPacketDep,
 } from './utils'
 
@@ -49,13 +50,17 @@ export async function redPacketTransfer(
     localAuthInfo,
   )
   const collector = new UnipassIndexerCollector(INDEXER_URL)
-  const pwcore = await new PWCore(NODE_URL).init(provider, collector)
+  const pwcore = await new PWCore(NODE_URL).init(
+    provider,
+    collector,
+    CKB_CHAIN_ID,
+  )
   const fromAddress = getAddressByPubkey(masterPubkey)
   console.log('fromAddress', fromAddress)
-  const rpc = new RPC(NODE_URL)
+  // const rpc = new RPC(NODE_URL)
   const cells = []
   for (const item of outpoints) {
-    cells.push(await Cell.loadFromBlockchain(rpc, item))
+    cells.push(await Cell.loadFromBlockchain(pwcore.rpc, item))
   }
   const inputCells = cells.slice(0, 4)
   const lockLen =

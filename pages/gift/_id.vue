@@ -102,7 +102,6 @@ export default {
       })
     },
     async getStatus({ address, password }) {
-      this.loading = true
       const id = this.$route.params.id || 'null'
       const res = await Sea.Ajax({
         url: `/nft/${id}`,
@@ -112,7 +111,6 @@ export default {
           address,
         },
       })
-      this.loading = false
       this.statusCode = res.status
       if (res.status < 0) {
         this.status = 'fail'

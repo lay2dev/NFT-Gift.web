@@ -152,6 +152,9 @@ export default {
       this.bindNext()
     },
     async bindNext() {
+      const loading = this.$loading({
+        lock: true,
+      })
       console.log('[create-bindNext] start')
       const nfts = this.nftChecked
       const provider = await Sea.bindLogin()
@@ -175,6 +178,7 @@ export default {
           this.$message.error('请求失败')
         }
       }
+      loading.close()
     },
   },
 }

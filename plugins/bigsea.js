@@ -59,7 +59,6 @@ Sea.SaveDataByUrl = (address, email) => {
   provider._address = new Address(address)
   provider._email = email || ''
   Sea.localStorage('provider', provider)
-  return null
 }
 // sign
 const _redPacketCreate = async ({ password, nfts, redPackeNumber }) => {

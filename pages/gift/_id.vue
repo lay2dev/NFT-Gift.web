@@ -7,10 +7,6 @@
         <div class="t1">恭喜您</div>
         <div class="t2">成功领取到一个NFT红包</div>
       </div>
-      <div class="balance" @click="bindSuccess">
-        <img :src="require('~/assets/img/ze-balance-pay.svg')" />
-        <div>打开钱包</div>
-      </div>
     </template>
     <template v-else-if="status === 'fail'">
       <div class="fail">
@@ -27,12 +23,6 @@
           <div class="t2">NFT红包已经被抢完了</div>
         </template>
       </div>
-      <router-link to="/record">
-        <div class="balance">
-          <img :src="require('~/assets/img/ze-balance-pay.svg')" />
-          <div>打开钱包</div>
-        </div>
-      </router-link>
     </template>
     <template v-else>
       <div class="get">
@@ -47,6 +37,18 @@
         </div>
         <div class="receive-box" @click="bindGet">
           <el-button class="receive" :loading="loading">立 即 领 取</el-button>
+        </div>
+      </div>
+    </template>
+    <template v-if="status === 'success' || status === 'fail'">
+      <div class="btns">
+        <div class="balance" @click="bindWallet">
+          <img :src="require('~/assets/img/ze-balance-pay.svg')" />
+          <div>打开钱包</div>
+        </div>
+        <div class="balance nft" @click="bindCreate">
+          <img :src="require('~/assets/img/dashboard_nft.svg')" />
+          <div>发同款红包</div>
         </div>
       </div>
     </template>
@@ -75,8 +77,11 @@ export default {
     this.init()
   },
   methods: {
-    bindSuccess() {
-      this.$router.push('/record')
+    bindWallet() {
+      window.location.href = process.env.UNIPASS_HOME
+    },
+    bindCreate() {
+      this.$router.push('/create')
     },
     init() {
       if (!this.provider) {
@@ -118,6 +123,9 @@ export default {
       return res
     },
     async getRedPacketData({ address, password }) {
+      const loading = this.$loading({
+        lock: true,
+      })
       let res
       res = await this.getStatus({ address, password })
       if (res.success) {
@@ -169,6 +177,7 @@ export default {
         this.$message.error('红包口令错误')
       }
       this.loading = false
+      loading.close()
     },
     async bindLogin(init) {
       this.loading = true
@@ -225,14 +234,29 @@ export default {
     }
   }
 
-  .balance {
-    img {
-      width: 83px;
-      height: 83px;
+  .btns {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    width: 100%;
+
+    .balance {
+      img {
+        width: 83px;
+        height: 83px;
+      }
+
+      text-align: center;
+      color: #000;
     }
 
-    text-align: center;
-    color: #000;
+    .balance.nft {
+      img {
+        margin-left: 14px;
+        width: 72px;
+        height: 72px;
+      }
+    }
   }
 
   .get {

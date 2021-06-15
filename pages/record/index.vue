@@ -251,10 +251,10 @@ export default {
       })
       if (res.success) {
         await this.init()
-        this.$message.success('撤销成功')
+        this.$message.success('撤回成功')
       } else {
         this.loading = false
-        this.$message.error('撤销失败')
+        this.$message.error('撤回失败')
       }
     },
   },

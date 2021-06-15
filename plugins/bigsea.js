@@ -53,12 +53,11 @@ Sea.bindLogin = async () => {
   return null
 }
 
-Sea.SaveDataByUrl = (address, _email) => {
+Sea.SaveDataByUrl = (address, email) => {
   const provider = new UnipassProvider()
   provider._time = Date.now()
   provider._address = new Address(address)
-  // _email
-  provider._email = _email
+  provider._email = email || ''
   Sea.localStorage('provider', provider)
   return null
 }

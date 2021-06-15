@@ -10,7 +10,12 @@
       <img src="~/assets/img/not_found.svg" />
       <div>您还没有发出或接收过红包</div>
     </div>
-    <el-collapse v-model="activeList" v-loading="loading" class="records">
+    <el-collapse
+      v-else
+      v-model="activeList"
+      v-loading="loading"
+      class="records"
+    >
       <el-collapse-item
         v-for="(e, i) in records"
         :key="i"
@@ -130,13 +135,9 @@
           </div>
 
           <div v-if="e.packets" class="pactets">
-            <div
-              v-for="(packet, index) in e.packets"
-              :key="index"
-              class="packet"
-            >
+            <div v-for="(packet, i2) in e.packets" :key="i2" class="packet">
               <div class="nfts">
-                <div v-for="nft in packet.nfts" :key="nft.tokenId" class="nft">
+                <div v-for="(nft, i3) in packet.nfts" :key="i3" class="nft">
                   <img :src="nft.renderer" alt="renderer" />
                   <div class="nft-title" :title="nft.name">
                     {{ nft.name }}

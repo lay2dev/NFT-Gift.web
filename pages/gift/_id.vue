@@ -43,11 +43,11 @@
     <template v-if="status === 'success' || status === 'fail'">
       <div class="btns">
         <div class="balance" @click="bindWallet">
-          <img :src="require('~/assets/img/ze-balance-pay.svg')" />
+          <img :src="require('~/assets/img/gift-open-wallet.svg')" />
           <div>打开钱包</div>
         </div>
         <div class="balance nft" @click="bindCreate">
-          <img :src="require('~/assets/img/dashboard_nft.svg')" />
+          <img :src="require('~/assets/img/gift-create-redpacket.svg')" />
           <div>发同款红包</div>
         </div>
       </div>
@@ -188,7 +188,7 @@ export default {
           this.init()
         }
       } else {
-        this.$message.warning('登录不成功')
+        this.$message.warning('登录失败')
       }
       this.loading = false
     },
@@ -237,13 +237,13 @@ export default {
   .btns {
     display: flex;
     align-items: flex-end;
-    justify-content: space-around;
+    justify-content: center;
     width: 100%;
 
     .balance {
       img {
-        width: 83px;
-        height: 83px;
+        width: 55px;
+        height: 55px;
       }
 
       text-align: center;
@@ -251,11 +251,7 @@ export default {
     }
 
     .balance.nft {
-      img {
-        margin-left: 14px;
-        width: 72px;
-        height: 72px;
-      }
+      margin-left: 55px;
     }
   }
 

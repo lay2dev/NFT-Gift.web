@@ -44,7 +44,7 @@ export default {
       if (provider) {
         this.$router.push('/create')
       } else {
-        this.$message.replace('登录不成功')
+        this.$message.warning('登录失败')
       }
       this.loading = false
     },

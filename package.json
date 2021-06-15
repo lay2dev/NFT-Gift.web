@@ -19,6 +19,7 @@
     "ali-oss": "^6.15.2",
     "core-js": "^3.12.1",
     "cross-env": "^7.0.3",
+    "crypto": "^1.0.1",
     "dayjs": "^1.10.5",
     "element-ui": "^2.15.1",
     "html2canvas": "^1.0.0-rc.7",

@@ -160,8 +160,10 @@
 </template>
 
 <script>
+import { createHash } from 'crypto'
 import dayjs from 'dayjs'
 import { AddressType, Address } from '@lay2/pw-core'
+import UnipassProvider from '~/assets/js/UnipassProvider.ts'
 export default {
   components: {},
   data() {
@@ -226,13 +228,26 @@ export default {
     async bindCancel(e) {
       this.loading = true
       const packet = e.packets[0]
+      const messageHash = createHash('SHA256')
+        .update('verifier_sign')
+        .digest('hex')
+        .toString()
+      console.log('messageHash', messageHash)
+      const sig = await new UnipassProvider(process.env.UNIPASS_URL).sign(
+        messageHash,
+      )
+      console.log('sig', sig)
+      const data = {
+        id: packet.packetId,
+        fromAddress: this.address,
+        sig,
+        messageHash,
+      }
+      console.log('data', data)
       const res = await Sea.Ajax({
         url: '/nft/cancel',
         method: 'post',
-        data: {
-          id: packet.packetId,
-          fromAddress: this.address,
-        },
+        data,
       })
       if (res.success) {
         await this.init()

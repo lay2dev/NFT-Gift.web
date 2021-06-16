@@ -401,6 +401,7 @@ export default {
         outline: 0;
         text-align: right;
         font-size: 16px;
+        width: 120px;
       }
     }
 

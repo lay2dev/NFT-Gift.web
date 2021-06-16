@@ -78,7 +78,7 @@ export default {
   },
   methods: {
     bindWallet() {
-      window.location.href = process.env.UNIPASS_HOME
+      window.location.href = process.env.UNIPASS_URL + '/home'
     },
     bindCreate() {
       this.$router.push('/create')

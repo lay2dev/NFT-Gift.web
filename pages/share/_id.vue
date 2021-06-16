@@ -90,7 +90,6 @@ export default {
 </script>
 <style lang="stylus">
 #page-share {
-  --red: #F35543;
   --yellow: #FFE2B0;
   height: 100vh;
   display: flex;
@@ -99,7 +98,7 @@ export default {
   align-items: center;
 
   #red-box {
-    background: var(--red);
+    background: var(--primary);
     width: 320px;
     height: 467px;
     // border-radius: 10px;
@@ -201,8 +200,8 @@ export default {
   .red-share {
     margin-top: 28px;
     width: 320px;
-    background: var(--red);
-    border-color: var(--red);
+    background: var(--primary);
+    border-color: var(--primary);
     color: var(--yellow);
   }
 }

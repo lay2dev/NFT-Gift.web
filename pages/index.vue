@@ -1,7 +1,7 @@
 <template>
   <div id="page-index">
-    <div class="title">NFT Gift</div>
-    <img class="illustration" src="~/assets/img/dolphins_in_the_ocean.svg" />
+    <div class="title">NFT 红包</div>
+    <img class="illustration" src="~/assets/img/gift-create-redpacket.svg" />
     <el-button
       class="connect"
       type="primary"
@@ -66,10 +66,11 @@ export default {
     font-weight: 300;
     font-size: 24px;
     margin-bottom: 20px;
+    color: var(--primary);
   }
 
-  .index-illustration {
-    width: 80vw;
+  .illustration {
+    width: 60vw;
   }
 
   .connect {

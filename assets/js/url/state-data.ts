@@ -73,6 +73,7 @@ export function getDataFromUrl(action: number): void {
   }
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const unipassStr = urlencode.decode(data, 'utf-8')
+
   const unipassData = JSON.parse(unipassStr) as UnipassURLData
 
   if (!unipassData) return
@@ -106,7 +107,7 @@ export function getDataFromUrl(action: number): void {
       saveData(PROVIDER, JSON.stringify(provider))
     }
   }
-  // url.searchParams.delete('unipass_ret')
-  // history.replaceState('', '', url.href)
+  url.searchParams.delete('unipass_ret')
+  history.replaceState('', '', url.href)
   console.log('url.href', url.href)
 }

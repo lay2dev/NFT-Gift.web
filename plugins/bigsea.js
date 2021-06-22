@@ -150,7 +150,6 @@ Sea.getSignData = () => {
       fromAddress: address,
       pin,
     }
-    console.log('[[[[data]]]]', data)
     return data
   }
   return null

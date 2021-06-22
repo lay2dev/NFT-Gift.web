@@ -117,6 +117,17 @@ export default {
       nftChecked: [],
     }
   },
+  async created() {
+    const loading = this.$loading({
+      lock: true,
+    })
+    const data = Sea.SaveDataByUrl(undefined, undefined, true)
+    console.log('[created]', data)
+    if (data) {
+      await this.postData(data)
+    }
+    loading.close()
+  },
   methods: {
     bindNumber(event) {
       this.number = event.target.value.replace(/[^\d]/g, '')
@@ -151,6 +162,19 @@ export default {
       }
       this.bindNext()
     },
+    async postData(data) {
+      const res = await Sea.Ajax({
+        url: '/nft',
+        method: 'post',
+        data,
+      })
+      if (res.short) {
+        this.showDialog = false
+        this.$router.push(`/share/${res.short}?p=${data.pin}`)
+      } else {
+        this.$message.error('请求失败')
+      }
+    },
     async bindNext() {
       const loading = this.$loading({
         lock: true,
@@ -166,17 +190,7 @@ export default {
       })
       console.log('[create-bindNext] sign', sign)
       if (sign.authorization) {
-        const res = await Sea.Ajax({
-          url: '/nft',
-          method: 'post',
-          data: sign,
-        })
-        if (res.short) {
-          this.showDialog = false
-          this.$router.push(`/share/${res.short}?p=${this.password}`)
-        } else {
-          this.$message.error('请求失败')
-        }
+        await this.postData(sign)
       }
       loading.close()
     },

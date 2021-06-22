@@ -1,7 +1,14 @@
 import '~/assets/js/bigsea'
 import dayjs from 'dayjs'
-import PWCore, { Address, ChainID, IndexerCollector } from '@lay2/pw-core'
+import PWCore, { Address, ChainID } from '@lay2/pw-core'
 import { getPacketRandomList } from 'assets/js/nft/utils'
+import { ActionType } from 'assets/js/url/interface'
+import {
+  restoreState,
+  getDataFromUrl,
+  getPubkey,
+  saveState,
+} from 'assets/js/url/state-data'
 import UnipassProvider from '~/assets/js/UnipassProvider.ts'
 import {
   getDataFromSignString,
@@ -30,45 +37,43 @@ Sea.checkLogin = () => {
   return null
 }
 Sea.bindLogin = async () => {
-  let provider
-  provider = await Sea.checkLogin()
+  // todo
+  const provider = await Sea.checkLogin()
   if (provider) {
     return provider
   }
-  const url = {
-    NODE_URL: process.env.CKB_NODE_URL,
-    INDEXER_URL: process.env.CKB_INDEXER_URL,
-    CHAIN_ID:
-      process.env.CKB_CHAIN_ID === '0' ? ChainID.ckb : ChainID.ckb_testnet,
-  }
-  await new PWCore(url.NODE_URL).init(
-    new UnipassProvider(process.env.UNIPASS_URL),
-    new IndexerCollector(url.INDEXER_URL),
-    url.CHAIN_ID,
-  )
-  provider = PWCore.provider
-  if (provider && provider._address) {
-    provider._time = Date.now()
-    Sea.localStorage('provider', provider)
-    return provider
-  }
-  return null
+  const host = process.env.UNIPASS_URL
+  const successUrl = window.location.origin
+  const failUrl = window.location.origin
+  const url = `${host}?success_url=${successUrl}&fail_url=${failUrl}/#login`
+  saveState(ActionType.Init)
+  window.location.href = url
 }
 
 Sea.SaveDataByUrl = (address, email) => {
-  const provider = new UnipassProvider()
-  provider._time = Date.now()
-  provider._address = new Address(address)
-  provider._email = email || ''
-  Sea.localStorage('provider', provider)
+  if (address) {
+    const provider = new UnipassProvider()
+    provider._time = Date.now()
+    provider._address = new Address(address)
+    provider._email = email || ''
+    Sea.localStorage('provider', provider)
+  } else {
+    const pageState = restoreState(true)
+    let action = ActionType.Init
+    if (pageState) action = pageState.action
+    if (action === ActionType.Init) {
+      getDataFromUrl(ActionType.Login)
+    } else if (action === ActionType.SignMsg) {
+      getDataFromUrl(ActionType.SignMsg)
+      return Sea.getSignData()
+    }
+  }
 }
 // sign
 const _redPacketCreate = async ({ password, nfts, redPackeNumber }) => {
   const redPacket = []
   const localAuth = []
   const newNfts = getPacketRandomList(redPackeNumber, nfts)
-  // const same = redPackeNumber === nfts.length
-  // const keyData = await generateKey('generateKey', password)
   for (const itemNFTs of newNfts) {
     const outpoints = []
     const nftTypeArgs = []
@@ -100,34 +105,78 @@ const _redPacketCreate = async ({ password, nfts, redPackeNumber }) => {
     authItemsHex,
   }
 }
-const _redPacketSign = async (message) => {
-  const data = await new UnipassProvider(process.env.UNIPASS_URL).sign(message)
-  const sign = getDataFromSignString(data)
-  const { masterkey, authorization, localKey, sig } = sign
-  const { authSig, authInfo } = getSecondaryAuth(localKey, message, sig)
-  return {
-    masterkey,
-    authorization,
-    localKey,
-    authSig,
-    authInfo,
-  }
+const _redPacketSign = (message, redPacket, password, address, pin) => {
+  const host = process.env.UNIPASS_URL
+  const successUrl = window.location.origin + '/create'
+  const failUrl = window.location.origin + '/create'
+  const pubkey = getPubkey()
+  if (!pubkey) return
+  const _url = `${host}?success_url=${successUrl}&fail_url=${failUrl}&pubkey=${pubkey}&message=${message}/#sign`
+  saveState(
+    ActionType.SignMsg,
+    JSON.stringify({ message, redPacket, password, address, pin }),
+  )
+  console.log(_url)
+  window.location.href = _url
+  // const data = await new UnipassProvider(process.env.UNIPASS_URL).sign(message)
+  // const sign = getDataFromSignString(data)
+  // const { masterkey, authorization, localKey, sig } = sign
+  // const { authSig, authInfo } = getSecondaryAuth(localKey, message, sig)
+  // return {
+  //   masterkey,
+  //   authorization,
+  //   localKey,
+  //   authSig,
+  //   authInfo,
+  // }
 }
+Sea.getSignData = () => {
+  const pageState = restoreState()
+  const extraObj = pageState.extraObj
+  console.log('[[[[pageState]]]]', pageState)
+  if (extraObj) {
+    const { message, redPacket, password, address, pin } = JSON.parse(extraObj)
+    const sign = getDataFromSignString(pageState.data.signature)
+    const { masterkey, authorization, localKey, sig } = sign
+    const { authSig, authInfo } = getSecondaryAuth(localKey, message, sig)
+    const data = {
+      authorization,
+      masterKeyPubkey: masterkey,
+      localKeyPubkey: localKey,
+      localKeySig: authSig,
+      localAuthInfo: authInfo,
+      redPacket,
+      password,
+      fromAddress: address,
+      pin,
+    }
+    console.log('[[[[data]]]]', data)
+    return data
+  }
+  return null
+}
+
 Sea.bindSign = async ({ nfts, password, address, redPackeNumber }) => {
   const { redPacket, authItemsHex } = await _redPacketCreate({
     password,
     nfts,
     redPackeNumber,
   })
-  const sign = await _redPacketSign(authItemsHex)
-  return {
-    authorization: sign.authorization,
-    masterKeyPubkey: sign.masterkey,
-    localKeyPubkey: sign.localKey,
-    localKeySig: sign.authSig,
-    localAuthInfo: sign.authInfo,
+  await _redPacketSign(
+    authItemsHex,
     redPacket,
-    password: getKeyPassword(password),
-    fromAddress: address,
-  }
+    getKeyPassword(password),
+    address,
+    password,
+  )
+  // return {
+  //   authorization: sign.authorization,
+  //   masterKeyPubkey: sign.masterkey,
+  //   localKeyPubkey: sign.localKey,
+  //   localKeySig: sign.authSig,
+  //   localAuthInfo: sign.authInfo,
+  //   redPacket,
+  //   password,
+  //   fromAddress: address,
+  // }
 }

@@ -24,7 +24,8 @@ export default {
     const { address, email, phone } = this.$route.query
     if (address) {
       Sea.SaveDataByUrl(address, email || phone)
-      // this.$router.push('/create')
+    } else {
+      Sea.SaveDataByUrl()
     }
   },
   mounted() {

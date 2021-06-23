@@ -43,8 +43,8 @@ Sea.bindLogin = async () => {
     return provider
   }
   const host = process.env.UNIPASS_URL
-  const successUrl = window.location.origin
-  const failUrl = window.location.origin
+  const successUrl = new URL(window.location.href).href
+  const failUrl = new URL(window.location.href).href
   const url = `${host}?success_url=${successUrl}&fail_url=${failUrl}/#login`
   saveState(ActionType.Init)
   window.location.href = url
@@ -109,8 +109,8 @@ const _redPacketCreate = async ({ password, nfts, redPackeNumber }) => {
 }
 const _redPacketSign = (message, redPacket, password, address, pin) => {
   const host = process.env.UNIPASS_URL
-  const successUrl = window.location.origin + '/create'
-  const failUrl = window.location.origin + '/create'
+  const successUrl = new URL(window.location.href).href
+  const failUrl = new URL(window.location.href).href
   const pubkey = getPubkey()
   if (!pubkey) return
   const _url = `${host}?success_url=${successUrl}&fail_url=${failUrl}&pubkey=${pubkey}&message=${message}/#sign`

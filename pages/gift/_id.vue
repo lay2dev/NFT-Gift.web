@@ -73,6 +73,10 @@ export default {
       return this.password || 'unipass'
     },
   },
+  created() {
+    const info = Sea.SaveDataByUrl()
+    if (info) this.$message.warning(info)
+  },
   mounted() {
     this.init()
   },

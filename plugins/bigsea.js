@@ -9,7 +9,6 @@ import {
   getPubkey,
   saveState,
 } from 'assets/js/url/state-data'
-import UnipassProvider from '~/assets/js/UnipassProvider.ts'
 import {
   getDataFromSignString,
   getKeyPassword,
@@ -50,25 +49,20 @@ Sea.bindLogin = async () => {
   window.location.href = url
 }
 
-Sea.SaveDataByUrl = (address, email) => {
-  if (address) {
-    const provider = new UnipassProvider()
-    provider._time = Date.now()
-    provider._address = new Address(address)
-    provider._email = email || ''
-    Sea.localStorage('provider', provider)
-  } else {
-    const pageState = restoreState(true)
-    let action = ActionType.Init
-    if (pageState) action = pageState.action
-    if (action === ActionType.Init) {
-      const info = getDataFromUrl(ActionType.Login)
-      return info
-    } else if (action === ActionType.SignMsg) {
-      const info = getDataFromUrl(ActionType.SignMsg)
-      console.log(info)
-      return Sea.getSignData(info)
-    }
+Sea.SaveDataByUrl = () => {
+  const pageState = restoreState(true)
+  let action = ActionType.Init
+  if (pageState) action = pageState.action
+  console.log('pageState', pageState)
+  if (action === ActionType.Init) {
+    const info = getDataFromUrl(ActionType.Login)
+    return info
+  } else if (action === ActionType.SignMsg) {
+    const info = getDataFromUrl(ActionType.SignMsg)
+    return Sea.getSignData(info)
+  } else if (action === ActionType.CancelSignMsg) {
+    const info = getDataFromUrl(ActionType.CancelSignMsg)
+    return Sea.getCancleSignData(info)
   }
 }
 // sign
@@ -120,18 +114,19 @@ const _redPacketSign = (message, redPacket, password, address, pin) => {
   )
   console.log(_url)
   window.location.href = _url
-  // const data = await new UnipassProvider(process.env.UNIPASS_URL).sign(message)
-  // const sign = getDataFromSignString(data)
-  // const { masterkey, authorization, localKey, sig } = sign
-  // const { authSig, authInfo } = getSecondaryAuth(localKey, message, sig)
-  // return {
-  //   masterkey,
-  //   authorization,
-  //   localKey,
-  //   authSig,
-  //   authInfo,
-  // }
 }
+Sea.cancleSign = (data, message) => {
+  const host = process.env.UNIPASS_URL
+  const successUrl = new URL(window.location.href).href
+  const failUrl = new URL(window.location.href).href
+  const pubkey = getPubkey()
+  if (!pubkey) return
+  const _url = `${host}?success_url=${successUrl}&fail_url=${failUrl}&pubkey=${pubkey}&message=${message}/#sign`
+  saveState(ActionType.CancelSignMsg, JSON.stringify(data))
+  console.log(_url)
+  window.location.href = _url
+}
+
 Sea.getSignData = (info) => {
   const pageState = restoreState()
   const extraObj = pageState.extraObj
@@ -151,6 +146,21 @@ Sea.getSignData = (info) => {
       password,
       fromAddress: address,
       pin,
+    }
+    return data
+  }
+  return { info }
+}
+Sea.getCancleSignData = (info) => {
+  const pageState = restoreState()
+  const extraObj = pageState.extraObj
+  if (extraObj && pageState.data.signature) {
+    const { id, fromAddress, messageHash } = JSON.parse(extraObj)
+    const data = {
+      sig: '0x01' + pageState.data.signature.replace('0x', ''),
+      id,
+      fromAddress,
+      messageHash,
     }
     return data
   }

@@ -163,7 +163,6 @@
 import { createHash } from 'crypto'
 import dayjs from 'dayjs'
 import { AddressType, Address } from '@lay2/pw-core'
-import UnipassProvider from '~/assets/js/UnipassProvider.ts'
 export default {
   components: {},
   data() {
@@ -186,6 +185,17 @@ export default {
         cancel: '已撤回',
         fail: '领取失败',
       },
+    }
+  },
+  async created() {
+    const data = Sea.SaveDataByUrl()
+    if (data) {
+      if (data.info) {
+        this.$message.warning(data.info)
+      } else {
+        console.log(data, 'messageHash, ')
+        await this.postData(data)
+      }
     }
   },
   async mounted() {
@@ -225,25 +235,7 @@ export default {
     bindShare(e) {
       this.$router.push(`/share/${e.short}`)
     },
-    async bindCancel(e) {
-      this.loading = true
-      const packet = e.packets[0]
-      const messageHash = createHash('SHA256')
-        .update('verifier_sign')
-        .digest('hex')
-        .toString()
-      console.log('messageHash', messageHash)
-      const sig = await new UnipassProvider(process.env.UNIPASS_URL).sign(
-        messageHash,
-      )
-      console.log('sig', sig)
-      const data = {
-        id: packet.packetId,
-        fromAddress: this.address,
-        sig,
-        messageHash,
-      }
-      console.log('data', data)
+    async postData(data) {
       const res = await Sea.Ajax({
         url: '/nft/cancel',
         method: 'post',
@@ -257,14 +249,28 @@ export default {
         this.$message.error('撤回失败')
       }
     },
+    bindCancel(e) {
+      this.loading = true
+      const packet = e.packets[0]
+      const messageHash = createHash('SHA256')
+        .update('verifier_sign')
+        .digest('hex')
+        .toString()
+      console.log('messageHash', messageHash)
+
+      Sea.cancleSign(
+        {
+          id: packet.packetId,
+          fromAddress: this.address,
+          messageHash,
+        },
+        messageHash,
+      )
+    },
   },
   sockets: {
     connect() {
       console.log('sockets', 'connect')
-      // this.$socket.emit('login', {
-      //   type: 'address',
-      //   value: new Address(this.address, AddressType.ckb).toLockScript().args,
-      // })
     },
     newBlock() {
       console.log('sockets-newBlock-')

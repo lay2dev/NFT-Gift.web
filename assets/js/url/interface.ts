@@ -15,7 +15,7 @@ export enum ActionType {
   Init,
   Login,
   SignMsg,
-  SendTx,
+  CancelSignMsg,
 }
 export interface PageData {
   signature: string

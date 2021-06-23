@@ -123,8 +123,13 @@ export default {
     })
     const data = Sea.SaveDataByUrl(undefined, undefined, true)
     console.log('[created]', data)
+
     if (data) {
-      await this.postData(data)
+      if (data.info) {
+        this.$message.warning(data.info)
+      } else {
+        await this.postData(data)
+      }
     }
     loading.close()
   },

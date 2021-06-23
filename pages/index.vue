@@ -21,12 +21,8 @@ export default {
     }
   },
   created() {
-    const { address, email, phone } = this.$route.query
-    if (address) {
-      Sea.SaveDataByUrl(address, email || phone)
-    } else {
-      Sea.SaveDataByUrl()
-    }
+    const info = Sea.SaveDataByUrl()
+    if (info) this.$message.warning(info)
   },
   mounted() {
     this.init()
@@ -44,8 +40,6 @@ export default {
       const provider = await Sea.bindLogin()
       if (provider) {
         this.$router.push('/create')
-      } else {
-        this.$message.warning('登录失败')
       }
       this.loading = false
     },

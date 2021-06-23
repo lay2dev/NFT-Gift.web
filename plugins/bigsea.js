@@ -62,10 +62,12 @@ Sea.SaveDataByUrl = (address, email) => {
     let action = ActionType.Init
     if (pageState) action = pageState.action
     if (action === ActionType.Init) {
-      getDataFromUrl(ActionType.Login)
+      const info = getDataFromUrl(ActionType.Login)
+      return info
     } else if (action === ActionType.SignMsg) {
-      getDataFromUrl(ActionType.SignMsg)
-      return Sea.getSignData()
+      const info = getDataFromUrl(ActionType.SignMsg)
+      console.log(info)
+      return Sea.getSignData(info)
     }
   }
 }
@@ -130,11 +132,11 @@ const _redPacketSign = (message, redPacket, password, address, pin) => {
   //   authInfo,
   // }
 }
-Sea.getSignData = () => {
+Sea.getSignData = (info) => {
   const pageState = restoreState()
   const extraObj = pageState.extraObj
   console.log('[[[[pageState]]]]', pageState)
-  if (extraObj) {
+  if (extraObj && pageState.data.signature) {
     const { message, redPacket, password, address, pin } = JSON.parse(extraObj)
     const sign = getDataFromSignString(pageState.data.signature)
     const { masterkey, authorization, localKey, sig } = sign
@@ -152,7 +154,7 @@ Sea.getSignData = () => {
     }
     return data
   }
-  return null
+  return { info }
 }
 
 Sea.bindSign = async ({ nfts, password, address, redPackeNumber }) => {

@@ -138,7 +138,10 @@
             <div v-for="(packet, i2) in e.packets" :key="i2" class="packet">
               <div class="nfts">
                 <div v-for="(nft, i3) in packet.nfts" :key="i3" class="nft">
-                  <img :src="nft.renderer" alt="renderer" />
+                  <img
+                    :src="`${nft.renderer}?x-oss-process=image/resize,h_50,m_lfit`"
+                    alt="renderer"
+                  />
                   <div class="nft-title" :title="nft.name">
                     {{ nft.name }}
                   </div>

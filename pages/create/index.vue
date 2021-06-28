@@ -87,15 +87,38 @@
         </div>
       </div>
       <div class="box password">
-        <span>红包口令</span>
-        <input
-          ref="password"
-          v-model="password"
-          type="text"
-          placeholder="恭喜发财"
-          @focus="$refs.password.select()"
-        />
-        <div class="tip">对方输入口令，即可领取红包</div>
+        <el-tabs v-model="activeTab" stretch>
+          <el-tab-pane label="口令模式" name="password">
+            <span>红包口令</span>
+            <input
+              ref="password"
+              v-model="password"
+              type="text"
+              placeholder="恭喜发财"
+              @focus="$refs.password.select()"
+            />
+            <div class="tip">对方输入口令，即可领取红包</div>
+          </el-tab-pane>
+          <el-tab-pane label="谜语模式" name="riddle">
+            <span>红包谜题</span>
+            <input
+              ref="question"
+              v-model="question"
+              type="text"
+              placeholder="大吉大利"
+              @focus="$refs.question.select()"
+            />
+            <span>红包谜底</span>
+            <input
+              ref="answer"
+              v-model="password"
+              type="text"
+              placeholder="今晚吃鸡"
+              @focus="$refs.answer.select()"
+            />
+            <div class="tip">对方输入谜底，即可领取红包</div>
+          </el-tab-pane>
+        </el-tabs>
       </div>
       <el-button class="btn-create" @click="bindCreate">
         生成 NFT 红包
@@ -115,6 +138,8 @@ export default {
       showSelect: false,
       nfts: [],
       nftChecked: [],
+      question: '',
+      activeTab: 'password',
     }
   },
   async created() {
@@ -163,7 +188,18 @@ export default {
         this.$refs.number.focus()
         return
       }
-      if (!this.password) {
+      if (this.activeTab === 'riddle') {
+        if (!this.question) {
+          this.$message('请填写红包谜题')
+          this.$refs.question.focus()
+          return
+        }
+        if (!this.password) {
+          this.$message('请填写红包谜底')
+          this.$refs.answer.focus()
+          return
+        }
+      } else if (!this.password) {
         this.$message('请填写红包口令')
         this.$refs.password.focus()
         return
@@ -178,7 +214,11 @@ export default {
       })
       if (res.short) {
         this.showDialog = false
-        this.$router.push(`/share/${res.short}?p=${data.pin}`)
+        let url = `/share/${res.short}?p=${data.pin}`
+        if (data.question) {
+          url = `/share/${res.short}?q=${data.question}`
+        }
+        this.$router.push(url)
       } else {
         this.$message.error('请求失败')
       }
@@ -195,9 +235,9 @@ export default {
         password: this.password,
         address: provider._address.addressString,
         redPackeNumber: this.number,
+        question: this.question,
       })
-      console.log('[create-bindNext] sign', sign)
-      if (sign.authorization) {
+      if (sign && sign.authorization) {
         await this.postData(sign)
       }
       loading.close()
@@ -436,8 +476,30 @@ export default {
       justify-content: space-between;
       align-items: center;
       flex-direction: column;
-      padding: 14px 12px;
+      padding: 0 12px 12px;
       margin-top: 31px;
+
+      .el-tabs {
+        width: 100%;
+      }
+
+      .el-tabs__header {
+        display: flex;
+        justify-content: center;
+      }
+
+      .el-tabs__nav-wrap::after {
+        background: transparent;
+      }
+
+      .el-tabs__content {
+        .el-tab-pane {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-direction: column;
+        }
+      }
 
       span {
         align-self: flex-start;

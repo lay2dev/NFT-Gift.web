@@ -101,7 +101,14 @@ const _redPacketCreate = async ({ password, nfts, redPackeNumber }) => {
     authItemsHex,
   }
 }
-const _redPacketSign = (message, redPacket, password, address, pin) => {
+const _redPacketSign = (
+  message,
+  redPacket,
+  password,
+  address,
+  pin,
+  question,
+) => {
   const host = process.env.UNIPASS_URL
   const successUrl = new URL(window.location.href).href
   const failUrl = new URL(window.location.href).href
@@ -110,7 +117,7 @@ const _redPacketSign = (message, redPacket, password, address, pin) => {
   const _url = `${host}?success_url=${successUrl}&fail_url=${failUrl}&pubkey=${pubkey}&message=${message}/#sign`
   saveState(
     ActionType.SignMsg,
-    JSON.stringify({ message, redPacket, password, address, pin }),
+    JSON.stringify({ message, redPacket, password, address, pin, question }),
   )
   console.log(_url)
   window.location.href = _url
@@ -132,7 +139,8 @@ Sea.getSignData = (info) => {
   const extraObj = pageState.extraObj
   console.log('[[[[pageState]]]]', pageState)
   if (extraObj && pageState.data.signature) {
-    const { message, redPacket, password, address, pin } = JSON.parse(extraObj)
+    const { message, redPacket, password, address, pin, question } =
+      JSON.parse(extraObj)
     const sign = getDataFromSignString(pageState.data.signature)
     const { masterkey, authorization, localKey, sig } = sign
     const { authSig, authInfo } = getSecondaryAuth(localKey, message, sig)
@@ -146,6 +154,7 @@ Sea.getSignData = (info) => {
       password,
       fromAddress: address,
       pin,
+      question,
     }
     return data
   }
@@ -167,7 +176,13 @@ Sea.getCancleSignData = (info) => {
   return { info }
 }
 
-Sea.bindSign = async ({ nfts, password, address, redPackeNumber }) => {
+Sea.bindSign = async ({
+  nfts,
+  password,
+  address,
+  redPackeNumber,
+  question,
+}) => {
   const { redPacket, authItemsHex } = await _redPacketCreate({
     password,
     nfts,
@@ -179,6 +194,7 @@ Sea.bindSign = async ({ nfts, password, address, redPackeNumber }) => {
     getKeyPassword(password),
     address,
     password,
+    question,
   )
   // return {
   //   authorization: sign.authorization,

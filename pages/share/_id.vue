@@ -3,9 +3,17 @@
     <back />
     <div id="red-box" ref="red-box" v-loading="loading">
       <img class="top-bg" src="~/assets/img/top-bg.png" @load="bindLoad" />
-      <div class="t1">NFT 红包</div>
-      <div class="t2">- 输入口令，抢 NFT 红包 -</div>
-      <div v-if="password" class="password">「{{ password }}」</div>
+      <template v-if="question">
+        <div class="t1">NFT 谜语红包</div>
+        <div class="t2">- 看谜题，猜谜底，抢红包 -</div>
+        <div v-if="question" class="password">「{{ question }}」</div>
+      </template>
+      <template v-else>
+        <div class="t1">NFT 口令红包</div>
+        <div class="t2">- 输入口令，抢 NFT 红包 -</div>
+        <div v-if="password" class="password">「{{ password }}」</div>
+      </template>
+
       <div class="qrcode-box" :class="{ password: password }">
         <!-- <img class="rectangle" src="~/assets/img/red-rectangle.png" alt="" /> -->
         <img v-if="QRCode" class="qrcode" :src="QRCode" alt="qrcode" />
@@ -32,6 +40,7 @@ export default {
       loading: true,
       shareUrl: '',
       password: this.$route.query.p || '',
+      question: this.$route.query.q || '',
     }
   },
   mounted() {
@@ -56,6 +65,9 @@ export default {
       let v = `打开链接，输入口令，抢NFT红包，玩转加密新社交，${this.shareUrl}`
       if (this.password) {
         v += `\n红包口令：${this.password}`
+      }
+      if (this.question) {
+        v = `打开链接，输入谜底，抢NFT红包，玩转加密新社交，${this.shareUrl}\n红包谜题：${this.question}`
       }
       this.$clipboard(v)
       const password = this.password ? `<br>红包口令：${this.password}` : ''
@@ -148,6 +160,7 @@ export default {
       font-weight: bold;
       color: #fff;
       font-size: 20px;
+      text-align: center;
     }
 
     .qrcode-box {

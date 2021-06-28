@@ -26,12 +26,19 @@
     </template>
     <template v-else>
       <div class="get">
-        <div class="t1">您有一个待领取的</div>
-        <div class="t2">NFT 红包</div>
+        <template v-if="question">
+          <div class="t1">您有一个 NFT 谜语红包</div>
+          <div class="tip">- 谜题 -</div>
+          <div class="t2">{{ question }}</div>
+        </template>
+        <template v-else>
+          <div class="t1">您有一个待领取的</div>
+          <div class="t2">NFT 红包</div>
+        </template>
         <div class="password">
           <el-input
             v-model="password"
-            placeholder="输口令，领NFT"
+            :placeholder="question ? '猜谜底，领NFT' : '输口令，领NFT'"
             @keyup.enter="bindGet"
           ></el-input>
         </div>
@@ -66,6 +73,7 @@ export default {
       password: '',
       provider: null,
       loading: false,
+      question: this.$route.query.q || '',
     }
   },
   computed: {
@@ -269,6 +277,12 @@ export default {
 
     .t1 {
       margin-top: 49px;
+    }
+
+    .tip {
+      margin-top: 12px;
+      color: #fff;
+      text-align: center;
     }
 
     .t2 {

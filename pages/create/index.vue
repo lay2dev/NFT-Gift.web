@@ -140,7 +140,10 @@ export default {
     bindNumberBlur(event) {
       const v = Number(event.target.value)
       const l = this.nftChecked.length
-      if (v > l) {
+      if (v < 1 || l < 1) {
+        this.number = 1
+        this.$message.warning('红包个数最少 1 个')
+      } else if (v > l) {
         this.number = l
         this.$message.warning('不能超过 NFT 总数')
       }

@@ -46,7 +46,7 @@ export default {
   mounted() {
     this.shareUrl = `${window.location.origin}/gift/${this.$route.params.id}`
     if (this.question) {
-      this.shareUrl += `?q=${this.question}`
+      this.shareUrl += encodeURIComponent(`?q=${this.question}`)
     }
     this.initQRCode()
   },
@@ -70,7 +70,7 @@ export default {
         v += `\n红包口令：${this.password}`
       }
       if (this.question) {
-        v = `打开链接，输入谜底，抢NFT红包，玩转加密新社交，${this.shareUrl}\n红包谜题：${this.question}`
+        v = `打开链接，输入谜底，抢NFT红包，玩转加密新社交，${this.shareUrl}`
       }
       this.$clipboard(v)
       const password = this.password ? `<br>红包口令：${this.password}` : ''

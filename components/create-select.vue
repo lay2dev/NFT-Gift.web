@@ -62,6 +62,7 @@
               </div>
             </div>
           </template>
+          <infinite-loading @infinite="bindLoad"></infinite-loading>
         </div>
       </main>
       <transition name="el-zoom-in-bottom">
@@ -80,6 +81,7 @@
   </el-dialog>
 </template>
 <script>
+import InfiniteLoading from 'vue-infinite-loading'
 import MineGift from '~/components/mine-gift.vue'
 import MineAsset from '~/components/mine-asset.vue'
 
@@ -87,6 +89,7 @@ export default {
   components: {
     MineAsset,
     MineGift,
+    InfiniteLoading,
   },
   props: {
     show: {
@@ -109,6 +112,9 @@ export default {
       showCheckBox: false,
       showAsset: false,
       showGift: false,
+      page: 0,
+      limit: 10,
+      hasMore: true,
     }
   },
   computed: {
@@ -151,6 +157,15 @@ export default {
     }
   },
   methods: {
+    async bindLoad($state) {
+      this.page += 1
+      await this.initNFTs(this.page)
+      if (this.hasMore) {
+        $state.loaded()
+      } else {
+        $state.complete()
+      }
+    },
     bindRight() {
       this.showDialog = false
       this.$emit('select', this.nftList, this.nftChecked)
@@ -174,38 +189,42 @@ export default {
     async init() {
       // first page
       this.loading = true
+      await this.initNFTs(0)
+      this.loading = false
+    },
+    async initNFTs(page) {
       const res = await Sea.Ajax({
         url: '/ckb',
         data: {
           address: this.provider._address.addressString,
+          limit: this.limit,
+          page,
         },
       })
-      this.loading = false
       if (Array.isArray(res)) {
-        this.nftList = this.initList(res)
-      }
-    },
-    initList(res) {
-      const tokenList = res
-      const list = Sea.set(tokenList, 'classTypeArgs')
-      const arr = []
-      for (const token of list) {
-        const children = tokenList
-          .filter(
-            (e) => e.classTypeArgs && e.classTypeArgs === token.classTypeArgs,
-          )
-          .sort((a, b) => {
-            return a.tokenId - b.tokenId
+        if (res.length === 0) {
+          this.hasMore = false
+          return
+        }
+        const list = []
+        for (const arr of res) {
+          const first = JSON.parse(JSON.stringify(arr[0]))
+          list.push({
+            ...first,
+            children: arr.sort((a, b) => {
+              return a.tokenId - b.tokenId
+            }),
+            isIndeterminate: false,
+            checkAll: false,
+            checked: [],
           })
-        arr.push({
-          ...token,
-          children,
-          isIndeterminate: false,
-          checkAll: false,
-          checked: [],
-        })
+        }
+        if (page === 0) {
+          this.nftList = list
+        } else {
+          this.nftList.push(...list)
+        }
       }
-      return arr
     },
     bindNFT(nft) {
       this.nftItem = nft

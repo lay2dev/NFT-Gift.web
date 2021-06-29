@@ -17,7 +17,7 @@
       class="records"
     >
       <el-collapse-item
-        v-for="(e, i) in records"
+        v-for="(e, i) in recordsFilter"
         :key="i"
         :name="i"
         class="record"
@@ -158,6 +158,7 @@
           </div>
         </div>
       </el-collapse-item>
+      <infinite-loading @infinite="bindLoad"></infinite-loading>
     </el-collapse>
   </div>
 </template>
@@ -188,7 +189,19 @@ export default {
         cancel: '已撤回',
         fail: '领取失败',
       },
+      page: 0,
+      limit: 10,
+      hasMore: true,
     }
+  },
+  computed: {
+    recordsFilter() {
+      const list = []
+      for (const arr of this.records) {
+        list.push(...arr)
+      }
+      return list
+    },
   },
   async created() {
     const data = Sea.SaveDataByUrl()
@@ -215,25 +228,48 @@ export default {
     }
   },
   methods: {
+    async bindLoad($state) {
+      this.page += 1
+      await this.initRecord(this.page)
+      if (this.hasMore) {
+        $state.loaded()
+      } else {
+        $state.complete()
+      }
+    },
     dayjs,
     bindOpen(e) {
       const packet = e.packets[0]
       const host = process.env.NERVOS_EXPLORER
       Sea.open(`${host}${packet.txHash}`)
     },
-    async init(showLoading = true) {
-      if (showLoading) this.loading = true
+    async init() {
+      this.loading = true
+      await this.initRecord(0)
+      this.loading = false
+    },
+    async initRecord(page) {
       const res = await Sea.Ajax({
         url: '/nft/history',
         method: 'post',
         data: {
           address: this.address,
-          limit: 1000,
-          page: 0,
+          limit: this.limit,
+          page,
         },
       })
-      this.records = res
-      if (showLoading) this.loading = false
+      if (res.length === 0) {
+        this.hasMore = false
+      }
+      if (page === 0) {
+        if (this.records.length === 0) {
+          this.records.push(res)
+        } else {
+          this.$set(this.records, '0', res)
+        }
+      } else {
+        this.records.push(res)
+      }
     },
     bindShare(e) {
       this.$router.push(`/share/${e.short}`)
@@ -277,13 +313,13 @@ export default {
     },
     newBlock() {
       console.log('sockets-newBlock-')
-      this.init(false)
+      this.initRecord(0)
     },
     newTx(data) {
       console.log('sockets-newTx-')
-      this.init(false)
+      this.initRecord(0)
       setTimeout(() => {
-        this.init(false)
+        this.initRecord(0)
       }, 10 * 1000)
       console.log(data)
     },

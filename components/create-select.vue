@@ -81,7 +81,6 @@
   </el-dialog>
 </template>
 <script>
-import InfiniteLoading from 'vue-infinite-loading'
 import MineGift from '~/components/mine-gift.vue'
 import MineAsset from '~/components/mine-asset.vue'
 
@@ -89,7 +88,6 @@ export default {
   components: {
     MineAsset,
     MineGift,
-    InfiniteLoading,
   },
   props: {
     show: {

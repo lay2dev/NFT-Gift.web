@@ -283,7 +283,7 @@ export default {
         data,
       })
       if (res.success) {
-        await this.init()
+        // await this.init()
         this.$message.success('撤回成功')
       } else {
         this.loading = false

@@ -46,7 +46,7 @@ export default {
   mounted() {
     this.shareUrl = `${window.location.origin}/gift/${this.$route.params.id}`
     if (this.question) {
-      this.shareUrl += encodeURIComponent(`?q=${this.question}`)
+      this.shareUrl += `?q=${encodeURIComponent(this.question)}`
     }
     this.initQRCode()
   },

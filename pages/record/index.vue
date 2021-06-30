@@ -196,11 +196,7 @@ export default {
   },
   computed: {
     recordsFilter() {
-      const list = []
-      for (const arr of this.records) {
-        list.push(...arr)
-      }
-      return list
+      return this.records
     },
   },
   async created() {
@@ -234,6 +230,7 @@ export default {
       if (this.hasMore) {
         $state.loaded()
       } else {
+        this.page -= 1
         $state.complete()
       }
     },
@@ -261,15 +258,20 @@ export default {
       if (res.length === 0) {
         this.hasMore = false
       }
-      if (page === 0) {
-        if (this.records.length === 0) {
-          this.records.push(res)
-        } else {
-          this.$set(this.records, '0', res)
-        }
-      } else {
-        this.records.push(res)
-      }
+      this.records.push(...res)
+    },
+    async refreshRecord() {
+      const limit = (this.page + 1) * this.limit
+      const res = await Sea.Ajax({
+        url: '/nft/history',
+        method: 'post',
+        data: {
+          address: this.address,
+          limit,
+          page: 0,
+        },
+      })
+      this.records = res
     },
     bindShare(e) {
       this.$router.push(`/share/${e.short}`)
@@ -313,13 +315,13 @@ export default {
     },
     newBlock() {
       console.log('sockets-newBlock-')
-      this.initRecord(0)
+      this.refreshRecord()
     },
     newTx(data) {
       console.log('sockets-newTx-')
-      this.initRecord(0)
+      this.refreshRecord()
       setTimeout(() => {
-        this.initRecord(0)
+        this.refreshRecord()
       }, 10 * 1000)
       console.log(data)
     },

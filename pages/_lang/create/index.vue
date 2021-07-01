@@ -164,7 +164,7 @@ export default {
       return this.$t(`create.${key}`)
     },
     bindRecord() {
-      this.$router.push(Sea.lang + '/record')
+      this.$router.push(Sea.lang + '/record/')
     },
     bindNumber(event) {
       this.number = event.target.value.replace(/[^\d]/g, '')
@@ -228,9 +228,9 @@ export default {
       })
       if (res.short) {
         this.showDialog = false
-        let url = `/share/${res.short}?p=${data.pin}`
+        let url = `/share/${res.short}/?p=${data.pin}`
         if (data.question) {
-          url = `/share/${res.short}?q=${data.question}`
+          url = `/share/${res.short}/?q=${data.question}`
         }
         this.$router.push(Sea.lang + url)
       } else {

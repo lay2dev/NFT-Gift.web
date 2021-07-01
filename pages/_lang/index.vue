@@ -36,7 +36,7 @@ export default {
     init() {
       const provider = Sea.checkLogin()
       if (provider) {
-        this.$router.replace(Sea.lang + `/create`)
+        this.$router.replace(Sea.lang + `/create/`)
       }
       this.loading = false
     },
@@ -44,7 +44,7 @@ export default {
       this.loading = true
       const provider = await Sea.bindLogin()
       if (provider) {
-        this.$router.push(Sea.lang + `/create`)
+        this.$router.push(Sea.lang + `/create/`)
       }
       this.loading = false
     },

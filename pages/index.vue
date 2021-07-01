@@ -4,7 +4,7 @@
 <script>
 export default {
   beforeCreate() {
-    this.$router.replace('/en')
+    this.$router.replace('/en/')
   },
 }
 </script>

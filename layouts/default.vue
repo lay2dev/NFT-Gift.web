@@ -12,7 +12,7 @@ export default {
       this.$i18n.locale = 'en'
       if (lang) {
         const fullPath = this.$route.fullPath
-        this.$router.replace(`/en${fullPath}`)
+        this.$router.replace(`/en${fullPath}/`)
       }
     }
   },

@@ -82,7 +82,8 @@ export default {
   },
   computed: {
     giftPassword() {
-      return this.password || 'unipass'
+      // 大小写不敏感
+      return this.password.toLowerCase() || 'unipass'
     },
   },
   created() {

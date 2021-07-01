@@ -247,7 +247,8 @@ export default {
       const provider = await Sea.bindLogin()
       const sign = await Sea.bindSign({
         nfts,
-        password: this.password,
+        // 大小写不敏感
+        password: this.password.toLowerCase(),
         address: provider._address.addressString,
         redPackeNumber: this.number,
         question: this.question,

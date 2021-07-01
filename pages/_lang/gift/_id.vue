@@ -1,5 +1,5 @@
 <template>
-  <div id="page-gift">
+  <div id="page-gift" :class="lang">
     <div class="email">{{ provider && provider._email }}</div>
     <img class="top-bg" src="~/assets/img/top-bg.png" />
     <template v-if="status === 'success'">
@@ -78,6 +78,7 @@ export default {
       provider: null,
       loading: false,
       question: this.$route.query.q || '',
+      lang: this.$route.params.lang,
     }
   },
   computed: {
@@ -192,11 +193,11 @@ export default {
         } else {
           this.status = 'fail'
           // 交易无效
-          this.$message.error(this.t('tip1'))
+          this.$message.error(this.t_('tip1'))
         }
       } else if (res.status === 0) {
         // 红包口令错误
-        this.$message.error(this.t('tip2'))
+        this.$message.error(this.t_('tip2'))
       }
       this.loading = false
       loading.close()
@@ -211,7 +212,7 @@ export default {
         }
       } else {
         // 登录失败
-        this.$message.warning(this.t('tip3'))
+        this.$message.warning(this.t_('tip3'))
       }
       this.loading = false
     },
@@ -242,8 +243,7 @@ export default {
 
   .success, .fail {
     color: #ffe2b0;
-    letter-spacing: 6px;
-    padding-left: 6px;
+    padding: 0 20px;
     font-size: 20px;
     text-align: center;
 
@@ -331,6 +331,12 @@ export default {
         background: rgba(0, 0, 0, 0.1);
       }
     }
+  }
+}
+
+#page-gift.zh {
+  .success, .fail {
+    letter-spacing: 6px;
   }
 }
 </style>

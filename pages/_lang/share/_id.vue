@@ -15,12 +15,11 @@
       </template>
 
       <div class="qrcode-box" :class="{ password: password }">
-        <!-- <img class="rectangle" src="~/assets/img/red-rectangle.png" alt="" /> -->
-        <img v-if="QRCode" class="qrcode" :src="QRCode" alt="qrcode" />
+        <img v-if="QRCode" class="qrcode" :src="QRCode" />
       </div>
       <div class="t3">{{ t_('t3') }}</div>
       <div class="t4">{{ t_('t4') }}</div>
-      <img v-if="png" class="share" :src="png" alt="share" />
+      <img v-if="png" class="share" :src="png" />
     </div>
     <div class="red-tip">{{ t_('tip') }}</div>
     <el-button class="red-share" type="primary" round @click="bindShare">

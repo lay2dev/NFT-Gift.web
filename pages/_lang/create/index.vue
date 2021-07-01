@@ -3,7 +3,7 @@
     <back>
       <span @click="bindRecord">{{ t_('record') }}</span>
     </back>
-    <img class="bg" src="~/assets/img/bg.png" alt="backgorund" />
+    <img class="bg" src="~/assets/img/bg.png" />
     <main>
       <div class="title">{{ t_('title') }}</div>
       <div class="subtitle">{{ t_('subtitle') }}</div>
@@ -13,7 +13,7 @@
         @click="showSelect = true"
       >
         <div class="top">
-          <img src="~/assets/img/create_giftcard.svg" alt="create_giftcard" />
+          <img src="~/assets/img/create_giftcard.svg" />
           <div class="text">
             <div class="t1">{{ t_('checked.t1') }}</div>
             <div class="t2">{{ t_('checked.t2') }}</div>
@@ -27,7 +27,6 @@
                 <el-image
                   class="nft-image"
                   :src="`${e.renderer}?x-oss-process=image/resize,h_100,m_lfit`"
-                  alt="bg_image_url"
                   fit="cover"
                   lazy
                 />
@@ -64,7 +63,7 @@
         </div>
       </div>
       <div v-else class="box select" @click="showSelect = true">
-        <img src="~/assets/img/create_giftcard.svg" alt="create_giftcard" />
+        <img src="~/assets/img/create_giftcard.svg" />
         <div class="text">
           <div class="t1">{{ t_('checked.t1') }}</div>
           <div class="t2">{{ t_('checked.t2') }}</div>

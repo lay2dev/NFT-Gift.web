@@ -25,12 +25,12 @@
       >
         <div slot="title" class="record-title">
           <template v-if="e.direction === 'in'">
-            <img src="~/assets/img/record-in.svg" alt="in" />
+            <img src="~/assets/img/record-in.svg" />
             <div class="text">{{ t_('get') }}</div>
             <div class="red">{{ e.nftNum }} NFT</div>
           </template>
           <template v-else>
-            <img src="~/assets/img/record-out.svg" alt="out" />
+            <img src="~/assets/img/record-out.svg" />
             <div class="text">{{ t_('send') }}</div>
             <div class="red">
               {{ e.packetNum }} {{ t_('redPacket') }} {{ e.nftNum }} NFT
@@ -132,7 +132,6 @@
                 <div v-for="(nft, i3) in packet.nfts" :key="i3" class="nft">
                   <img
                     :src="`${nft.renderer}?x-oss-process=image/resize,h_50,m_lfit`"
-                    alt="renderer"
                   />
                   <div class="nft-title" :title="nft.name">
                     {{ nft.name }}

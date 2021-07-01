@@ -1,7 +1,7 @@
 <template>
   <div id="component-back">
     <div class="left" @click="bindBack">
-      <img src="~/assets/img/back.svg" alt="back" />
+      <img src="~/assets/img/back.svg" />
     </div>
     <div class="right">
       <slot />

@@ -43,6 +43,7 @@ a {
   }
   .el-message-box {
     width: 300px !important;
+    word-break: break-word;
   }
 }
 /* guide routing https://www.nuxtjs.cn/guide/routing */

@@ -26,7 +26,6 @@
                 <el-image
                   class="nft-image"
                   :src="`${e.renderer}?x-oss-process=image/resize,h_100,m_lfit`"
-                  alt="bg_image_url"
                   fit="cover"
                   lazy
                 />

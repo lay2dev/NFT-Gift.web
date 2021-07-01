@@ -9,7 +9,7 @@
     <div id="mine-asset">
       <back stop @click="showDialog = false" />
       <div class="image-box">
-        <el-image :src="nft.renderer" fit="contain" alt="image" />
+        <el-image :src="nft.renderer" fit="contain" />
       </div>
       <div class="info-box">
         <div class="info">
@@ -22,7 +22,6 @@
                 <el-image
                   class="user-avator"
                   :src="nft.issuerAvatarUrl"
-                  alt="user-avator"
                   fit="cover"
                 >
                   <template #error>

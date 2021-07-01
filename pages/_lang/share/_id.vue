@@ -44,7 +44,10 @@ export default {
     }
   },
   mounted() {
-    this.shareUrl = `${window.location.origin}/gift/${this.$route.params.id}`
+    const host = window.location.origin
+    const lang = Sea.lang
+    const id = this.$route.params.id
+    this.shareUrl = `${host}${lang}/gift/${id}`
     if (this.question) {
       this.shareUrl += `?q=${encodeURIComponent(this.question)}`
     }

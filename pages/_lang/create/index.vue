@@ -60,7 +60,7 @@
           </template>
         </div>
         <div class="nft-total">
-          NFT{{ t_('total') }}：{{ nftChecked.length }} 个
+          NFT {{ t_('total') }}：{{ nftChecked.length }} {{ t_('number') }}
         </div>
       </div>
       <div v-else class="box select" @click="showSelect = true">
@@ -73,57 +73,57 @@
       </div>
       <div class="box number">
         <div class="left">
-          <span>红包个数</span>
+          <span>{{ t_('numberPacket') }}</span>
         </div>
         <div class="right">
           <input
             ref="number"
             v-model="number"
             type="tel"
-            placeholder="填写个数"
+            :placeholder="t_('numberPlaceholder')"
             @input="bindNumber"
             @focus="$refs.number.select()"
             @blur="bindNumberBlur"
           />
-          <span>个</span>
+          <span>{{ t_('number') }}</span>
         </div>
       </div>
       <div class="box password">
         <el-tabs v-model="activeTab" stretch>
-          <el-tab-pane label="口令模式" name="password">
-            <span>红包口令</span>
+          <el-tab-pane :label="t_('passwordMode')" name="password">
+            <span>{{ t_('passwordTip') }}</span>
             <input
               ref="password"
               v-model="password"
               type="text"
-              placeholder="恭喜发财"
+              :placeholder="t_('password')"
               @focus="$refs.password.select()"
             />
-            <div class="tip">对方输入口令，即可领取红包</div>
+            <div class="tip">{{ t_('tipPassword') }}</div>
           </el-tab-pane>
-          <el-tab-pane label="谜语模式" name="riddle">
-            <span>红包谜题</span>
+          <el-tab-pane :label="t_('questionMode')" name="riddle">
+            <span>{{ t_('questionTip') }}</span>
             <input
               ref="question"
               v-model="question"
               type="text"
-              placeholder="大吉大利"
+              :placeholder="t_('question')"
               @focus="$refs.question.select()"
             />
-            <span>红包谜底</span>
+            <span>{{ t_('answerTip') }}</span>
             <input
               ref="answer"
               v-model="password"
               type="text"
-              placeholder="今晚吃鸡"
+              :placeholder="t_('answer')"
               @focus="$refs.answer.select()"
             />
-            <div class="tip">对方输入谜底，即可领取红包</div>
+            <div class="tip">{{ t_('tipAnswer') }}</div>
           </el-tab-pane>
         </el-tabs>
       </div>
       <el-button class="btn-create" @click="bindCreate">
-        生成 NFT 红包
+        {{ t_('create') }}
       </el-button>
     </main>
     <create-select :show.sync="showSelect" @select="bindSelect" />
@@ -225,7 +225,7 @@ export default {
         }
         this.$router.push(url)
       } else {
-        this.$message.error('请求失败')
+        this.$message.error($t('requestFailed'))
       }
     },
     async bindNext() {
@@ -282,6 +282,7 @@ export default {
       margin-top: 21px;
       color: rgba(255, 189, 132, 0.68);
       font-size: 16px;
+      text-align: center;
     }
 
     .box {
@@ -545,12 +546,12 @@ export default {
 
       .tip {
         font-size: 12px;
+        text-align: center;
       }
     }
 
     .btn-create {
       margin: 31px 0;
-      width: 173px;
       height: 40px;
       border-radius: 30px;
       background-color: rgba(255, 189, 132, 0.94);

@@ -127,7 +127,7 @@ export default {
           this.showDialog = false
           this.$router.push(`/share/${res.short}?p=${this.password}`)
         } else {
-          this.$message.error('请求失败')
+          this.$message.error(`${$t('requestFailed')}`)
         }
       }
       this.loading = false

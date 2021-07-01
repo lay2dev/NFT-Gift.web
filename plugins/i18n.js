@@ -7,10 +7,10 @@ import ElementLocale from 'element-ui/lib/locale'
 // 加入Vue全局
 Vue.use(VueI18n)
 
-export default ({ app, store }) => {
+export default ({ app }) => {
   app.i18n = new VueI18n({
-    locale: store.state.locale,
-    fallbackLocale: 'zh',
+    locale: 'en',
+    fallbackLocale: 'en',
     messages: {
       en: {
         ...enLocale,

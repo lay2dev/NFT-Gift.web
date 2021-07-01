@@ -8,20 +8,16 @@
   >
     <div id="create-select">
       <back stop @click="showDialog = false" />
-      <div class="page-title">选择您要赠送的 NFT</div>
+      <div class="page-title">{{ t_('check') }}</div>
       <main>
         <div class="search">
-          <el-input
-            v-model="filter"
-            placeholder="搜索 NFT 名称 / 创作者"
-            clearable
-          >
+          <el-input v-model="filter" :placeholder="t_('search')" clearable>
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
         </div>
         <div v-if="nftList.length === 0" v-loading="loading" class="not-found">
           <img src="~/assets/img/not_found.svg" />
-          <div>你的资产宝箱里空空如也</div>
+          <div>{{ t_('notFound') }}</div>
         </div>
         <div v-else class="nft-list">
           <template v-for="(e, i) in nftListFilter">
@@ -67,8 +63,10 @@
       </main>
       <transition name="el-zoom-in-bottom">
         <div class="check-box" :class="{ checked: showCheckBox }">
-          <div class="has">总计 {{ nftChecked.length }} 个</div>
-          <div class="ok" @click="bindRight">选好了</div>
+          <div class="has">
+            {{ t_('total') }} {{ nftChecked.length }} {{ t_('number') }}
+          </div>
+          <div class="ok" @click="bindRight">{{ t_('checkRight') }}</div>
         </div>
       </transition>
       <mine-asset :show.sync="showAsset" :nft="nftItem" />
@@ -155,6 +153,9 @@ export default {
     }
   },
   methods: {
+    t_(key) {
+      return this.$t(`create.${key}`)
+    },
     async bindLoad($state) {
       this.page += 1
       await this.initNFTs(this.page)
@@ -167,22 +168,6 @@ export default {
     bindRight() {
       this.showDialog = false
       this.$emit('select', this.nftList, this.nftChecked)
-    },
-    bindCheckBoxClose() {
-      this.$confirm('退出后将清空当前的选择记录', '确定退出？', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-      })
-        .then(() => {
-          for (let i = 0; i < this.nftList.length; i++) {
-            this.nftList[i].checked = []
-            this.nftList[i].isIndeterminate = false
-            this.nftList[i].checkAll = false
-          }
-          this.activeList = []
-          this.checkList()
-        })
-        .catch(() => {})
     },
     async init() {
       // first page

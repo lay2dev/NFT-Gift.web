@@ -318,7 +318,7 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 154px;
+        min-width: 154px;
         height: 59px;
         border: 2px solid #FFE2B0;
         border-radius: 2px;

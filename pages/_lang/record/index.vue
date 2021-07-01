@@ -2,13 +2,13 @@
   <div id="page-record">
     <back>
       <span v-if="activeList.length > 3" @click="activeList = []">
-        全部折叠
+        {{ t_('fold') }}
       </span>
     </back>
-    <div class="page-title">红包记录</div>
+    <div class="page-title">{{ t_('title') }}</div>
     <div v-if="records.length === 0" v-loading="loading" class="not-found">
       <img src="~/assets/img/not_found.svg" />
-      <div>您还没有发出或接收过红包</div>
+      <div>{{ t_('notFound') }}</div>
     </div>
     <el-collapse
       v-else
@@ -26,22 +26,24 @@
         <div slot="title" class="record-title">
           <template v-if="e.direction === 'in'">
             <img src="~/assets/img/record-in.svg" alt="in" />
-            <div class="text">收到</div>
+            <div class="text">{{ t_('get') }}</div>
             <div class="red">{{ e.nftNum }} NFT</div>
           </template>
           <template v-else>
             <img src="~/assets/img/record-out.svg" alt="out" />
-            <div class="text">发出</div>
-            <div class="red">{{ e.packetNum }} 红包 {{ e.nftNum }} NFT</div>
+            <div class="text">{{ t_('send') }}</div>
+            <div class="red">
+              {{ e.packetNum }} {{ t_('redPacket') }} {{ e.nftNum }} NFT
+            </div>
           </template>
           <div class="date">
-            {{ dayjs(e.createdAt).format('M月D日 HH:mm') }}
+            {{ dayjs(e.createdAt).format(t_('date')) }}
           </div>
           <div class="state">
             {{
               e.direction === 'in'
-                ? statusDictSmall[e.status]
-                : statusDictBig[e.status] || e.status
+                ? t_(`small.${e.status}`)
+                : t_(`big.${e.status}`)
             }}
           </div>
         </div>
@@ -50,16 +52,12 @@
             <template v-if="e.direction === 'in'">
               <div class="left">
                 <div class="line">
-                  <span>
-                    红包状态：<span class="black">{{
-                      statusDictSmall[e.status]
-                    }}</span>
-                  </span>
+                  {{ t_('status') }}
+                  <span class="black">{{ t_(`small.${e.status}`) }}</span>
                 </div>
                 <div class="line">
-                  发起时间：<span>{{
-                    dayjs(e.createdAt).format('YYYY年M月D日 HH:mm')
-                  }}</span>
+                  {{ t_('time') }}
+                  <span>{{ dayjs(e.createdAt).format(t_('dateFull')) }}</span>
                 </div>
               </div>
               <div class="right">
@@ -70,7 +68,7 @@
                       icon="el-icon-search"
                       @click="bindOpen(e)"
                     >
-                      浏览器中查看交易
+                      {{ t_('openLook') }}
                     </el-button>
                   </div>
                 </template>
@@ -79,34 +77,28 @@
             <template v-else>
               <div class="left">
                 <div class="line">
-                  <span>
-                    红包状态：<span class="black">{{
-                      statusDictBig[e.status]
-                    }}</span>
+                  {{ t_('status') }}
+                  <span class="black">{{ t_(`big.${e.status}`) }}</span>
+                </div>
+                <div
+                  v-if="['create', 'pending'].includes(e.status)"
+                  class="line"
+                >
+                  {{ t_('notYet') }}
+                  <span class="red">
+                    {{ e.packetNum - e.picked }} {{ t_('number') }}
                   </span>
                 </div>
                 <div
                   v-if="['create', 'pending'].includes(e.status)"
                   class="line"
                 >
-                  <span>
-                    未被领取：<span class="red"
-                      >{{ e.packetNum - e.picked }} 个红包
-                    </span>
-                  </span>
-                </div>
-                <div
-                  v-if="['create', 'pending'].includes(e.status)"
-                  class="line"
-                >
-                  <span>
-                    已被领取：<span>{{ e.picked }} 个红包</span>
-                  </span>
+                  {{ t_('hasBeen') }}
+                  <span>{{ e.picked }} {{ t_('number') }}</span>
                 </div>
                 <div class="line">
-                  发起时间：<span>{{
-                    dayjs(e.createdAt).format('YYYY年M月D日 HH:mm')
-                  }}</span>
+                  {{ t_('time') }}
+                  <span>{{ dayjs(e.createdAt).format(t_('dateFull')) }}</span>
                 </div>
               </div>
               <div class="right">
@@ -117,7 +109,7 @@
                       icon="el-icon-share"
                       @click="bindShare(e)"
                     >
-                      分享
+                      {{ t_('share') }}
                     </el-button>
                   </div>
                   <div class="btn">
@@ -126,7 +118,7 @@
                       icon="el-icon-refresh-left"
                       @click="bindCancel(e)"
                     >
-                      撤回
+                      {{ t_('recall') }}
                     </el-button>
                   </div>
                 </template>
@@ -152,7 +144,7 @@
                 class="packet-state"
                 :class="{ red: packet.status === 'create' }"
               >
-                {{ statusDictSmall[packet.status] }}
+                {{ t_(`small.${packet.status}`) }}
               </div>
             </div>
           </div>
@@ -175,20 +167,6 @@ export default {
       address: '',
       records: [],
       activeList: [],
-      statusDictBig: {
-        create: '进行中',
-        pending: '进行中',
-        committed: '已完成',
-        cancel: '已撤回',
-      },
-      statusDictSmall: {
-        create: '未领取',
-        init: '领取中',
-        pending: '确认中',
-        committed: '已领取',
-        cancel: '已撤回',
-        fail: '领取失败',
-      },
       page: 0,
       limit: 10,
       hasMore: true,
@@ -224,6 +202,9 @@ export default {
     }
   },
   methods: {
+    t_(key) {
+      return this.$t(`record.${key}`)
+    },
     async bindLoad($state) {
       this.page += 1
       await this.initRecord(this.page)
@@ -283,11 +264,12 @@ export default {
         data,
       })
       if (res.success) {
-        // await this.init()
-        this.$message.success('撤回成功')
+        // 撤回成功
+        this.$message.success(this.t_('recallSuccess'))
       } else {
         this.loading = false
-        this.$message.error('撤回失败')
+        // 撤回失败
+        this.$message.error(this.t_('recallFail'))
       }
     },
     bindCancel(e) {

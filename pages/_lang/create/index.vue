@@ -1,12 +1,12 @@
 <template>
   <div id="page-create">
     <back>
-      <router-link to="/record">红包记录</router-link>
+      <router-link to="/record">{{ t_('record') }}</router-link>
     </back>
     <img class="bg" src="~/assets/img/bg.png" alt="backgorund" />
     <main>
-      <div class="title">NFT 红包</div>
-      <div class="subtitle">抢 NFT 红包，玩加密新社交</div>
+      <div class="title">{{ t_('title') }}</div>
+      <div class="subtitle">{{ t_('subtitle') }}</div>
       <div
         v-if="nfts.length > 0"
         class="box checked"
@@ -15,8 +15,8 @@
         <div class="top">
           <img src="~/assets/img/create_giftcard.svg" alt="create_giftcard" />
           <div class="text">
-            <div class="t1">选择 NFT</div>
-            <div class="t2">好友打开红包，即可领 NFT</div>
+            <div class="t1">{{ t_('checked.t1') }}</div>
+            <div class="t2">{{ t_('checked.t2') }}</div>
           </div>
           <i class="el-icon-arrow-right"></i>
         </div>
@@ -59,13 +59,15 @@
             </div>
           </template>
         </div>
-        <div class="nft-total">NFT总计：{{ nftChecked.length }} 个</div>
+        <div class="nft-total">
+          NFT{{ t_('total') }}：{{ nftChecked.length }} 个
+        </div>
       </div>
       <div v-else class="box select" @click="showSelect = true">
         <img src="~/assets/img/create_giftcard.svg" alt="create_giftcard" />
         <div class="text">
-          <div class="t1">选择 NFT</div>
-          <div class="t2">好友打开红包，即可领 NFT</div>
+          <div class="t1">{{ t_('checked.t1') }}</div>
+          <div class="t2">{{ t_('checked.t2') }}</div>
         </div>
         <i class="el-icon-arrow-right"></i>
       </div>
@@ -159,6 +161,9 @@ export default {
     loading.close()
   },
   methods: {
+    t_(key) {
+      return this.$t(`create.${key}`)
+    },
     bindNumber(event) {
       this.number = event.target.value.replace(/[^\d]/g, '')
     },

@@ -3,6 +3,18 @@
 </template>
 <script>
 export default {
+  created() {
+    const lang = this.$route.params.lang
+    if (['zh', 'en'].includes(lang)) {
+      this.$i18n.locale = lang
+    } else {
+      this.$i18n.locale = 'en'
+      if (lang) {
+        const path = this.$route.path
+        this.$router.replace(`/en/${path}`)
+      }
+    }
+  },
   mounted() {
     // Ajax default param
     // Sea.Ajax.default = function () {}

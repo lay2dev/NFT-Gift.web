@@ -4,6 +4,7 @@ const sotre = {
   state() {
     return {
       token: null,
+      locale: 'zh',
     }
   },
   // 获取

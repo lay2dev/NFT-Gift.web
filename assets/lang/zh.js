@@ -1,4 +1,5 @@
 module.exports = {
+  requestFailed: '请求失败',
   login: {
     connect: '连接 Unipass',
     nftRedPacket: 'NFT 红包',
@@ -31,6 +32,23 @@ module.exports = {
     checkRight: '选好了',
     search: '搜索 NFT 名称 / 创作者',
     notFound: '你的资产宝箱里空空如也',
+    // tip
+    tip1: '红包个数最少 1 个',
+    tip2: '不能超过 NFT 总数',
+    // check
+    check1: '请填写红包个数',
+    check2: '请填写红包谜题',
+    check3: '请填写红包谜底',
+    check4: '请填写红包口令',
   },
-  requestFailed: '请求失败',
+  share: {
+    password: {
+      t1: 'NFT 口令红包',
+      t2: '- 输入口令，抢 NFT 红包 -',
+    },
+    question: {
+      t1: 'NFT 谜语红包',
+      t2: '- 看谜题，猜谜底，抢红包 -',
+    },
+  },
 }

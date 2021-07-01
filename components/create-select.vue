@@ -149,7 +149,7 @@ export default {
       this.provider = provider
       this.init()
     } else {
-      this.$router.replace('/')
+      this.$router.replace(Sea.lang + '/')
     }
   },
   methods: {
@@ -215,7 +215,7 @@ export default {
     },
     bindExit() {
       Sea.localStorage('provider', '')
-      this.$router.replace('/')
+      this.$router.replace(Sea.lang + '/')
     },
     bindCheckAll(checkAll, i) {
       const all = this.nftList[i].children.map((e) => e.tokenId)
@@ -394,6 +394,7 @@ export default {
     }
 
     .ok {
+      cursor: pointer;
       height: 100%;
       display: flex;
       justify-content: center;

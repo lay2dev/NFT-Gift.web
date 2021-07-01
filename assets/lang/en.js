@@ -1,4 +1,5 @@
 module.exports = {
+  requestFailed: 'Request Failed',
   login: {
     connect: 'Connect Unipass',
     nftRedPacket: 'NFT Red Packet',
@@ -32,5 +33,23 @@ module.exports = {
     checkRight: 'Selected',
     search: 'Search NFT name or creator',
     notFound: 'Your treasure chest is empty',
+    // tip
+    tip1: 'The number of red packet is at least 1',
+    tip2: 'Cannot exceed the total number of NFTs',
+    // check
+    check1: 'Please fill in the number of red packet',
+    check2: 'Please fill in the question of red packet',
+    check3: 'Please fill in the answer of red packet',
+    check4: 'Please fill in the password of red packet',
+  },
+  share: {
+    password: {
+      t1: 'NFT password red packet',
+      t2: '- Enter the password and grab the NFT red packet -',
+    },
+    question: {
+      t1: 'NFT question red packet',
+      t2: '- Look at the puzzle, guess the answer, grab the red packet -',
+    },
   },
 }

@@ -18,7 +18,7 @@ export default {
         confirmButtonText: '去首页',
       })
         .then(() => {
-          this.$router.push('/')
+          this.$router.push(Sea.lang + '/')
         })
         .catch(() => {})
     },

@@ -4,13 +4,13 @@
     <div id="red-box" ref="red-box" v-loading="loading">
       <img class="top-bg" src="~/assets/img/top-bg.png" @load="bindLoad" />
       <template v-if="question">
-        <div class="t1">NFT 谜语红包</div>
-        <div class="t2">- 看谜题，猜谜底，抢红包 -</div>
+        <div class="t1">{{ t_('question.t1') }}</div>
+        <div class="t2">{{ t_('question.t2') }}</div>
         <div v-if="question" class="password">「{{ question }}」</div>
       </template>
       <template v-else>
-        <div class="t1">NFT 口令红包</div>
-        <div class="t2">- 输入口令，抢 NFT 红包 -</div>
+        <div class="t1">{{ t_('password.t1') }}</div>
+        <div class="t2">{{ t_('password.t2') }}</div>
         <div v-if="password" class="password">「{{ password }}」</div>
       </template>
 
@@ -51,6 +51,9 @@ export default {
     this.initQRCode()
   },
   methods: {
+    t_(key) {
+      return this.$t(`share.${key}`)
+    },
     bindLoad() {
       this.$nextTick(() => {
         const redBox = this.$refs['red-box']
@@ -121,6 +124,7 @@ export default {
     flex-direction: column;
     align-items: center;
     position: relative;
+    padding: 0 20px;
 
     .canvas {
       position: absolute;
@@ -156,6 +160,7 @@ export default {
     .t2 {
       margin-top: 12px;
       color: var(--yellow);
+      text-align: center;
     }
 
     .password {

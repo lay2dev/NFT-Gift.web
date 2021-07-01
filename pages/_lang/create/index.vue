@@ -1,7 +1,7 @@
 <template>
   <div id="page-create">
     <back>
-      <router-link to="/record">{{ t_('record') }}</router-link>
+      <span @click="bindRecord">{{ t_('record') }}</span>
     </back>
     <img class="bg" src="~/assets/img/bg.png" alt="backgorund" />
     <main>
@@ -164,18 +164,24 @@ export default {
     t_(key) {
       return this.$t(`create.${key}`)
     },
+    bindRecord() {
+      this.$router.push(Sea.lang + '/record')
+    },
     bindNumber(event) {
       this.number = event.target.value.replace(/[^\d]/g, '')
     },
     bindNumberBlur(event) {
+      const t_ = this.t_
       const v = Number(event.target.value)
       const l = this.nftChecked.length
       if (v < 1 || l < 1) {
         this.number = 1
-        this.$message.warning('红包个数最少 1 个')
+        // 红包个数最少 1 个
+        this.$message.warning(t_('tip1'))
       } else if (v > l) {
         this.number = l
-        this.$message.warning('不能超过 NFT 总数')
+        // 不能超过 NFT 总数
+        this.$message.warning(t_('tip2'))
       }
     },
     bindSelect(nfts, checked) {
@@ -183,29 +189,33 @@ export default {
       this.nftChecked = Sea.deepCopy(checked)
     },
     bindCreate() {
+      const t_ = this.t_
       if (this.nftChecked <= 0) {
-        this.$message('请选择 NFT')
         this.showSelect = true
         return
       }
       if (!this.number) {
-        this.$message('请填写红包个数')
+        // 请填写红包个数
+        this.$message(t_('check1'))
         this.$refs.number.focus()
         return
       }
       if (this.activeTab === 'riddle') {
         if (!this.question) {
-          this.$message('请填写红包谜题')
+          // 请填写红包个数
+          this.$message(t_('check2'))
           this.$refs.question.focus()
           return
         }
         if (!this.password) {
-          this.$message('请填写红包谜底')
+          // 请填写红包谜底
+          this.$message(t_('check3'))
           this.$refs.answer.focus()
           return
         }
       } else if (!this.password) {
-        this.$message('请填写红包口令')
+        // 请填写红包口令
+        this.$message(t_('check4'))
         this.$refs.password.focus()
         return
       }
@@ -223,7 +233,7 @@ export default {
         if (data.question) {
           url = `/share/${res.short}?q=${data.question}`
         }
-        this.$router.push(url)
+        this.$router.push(Sea.lang + url)
       } else {
         this.$message.error($t('requestFailed'))
       }

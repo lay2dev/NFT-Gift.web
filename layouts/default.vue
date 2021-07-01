@@ -7,6 +7,7 @@ export default {
     const lang = this.$route.params.lang
     if (['zh', 'en'].includes(lang)) {
       this.$i18n.locale = lang
+      Sea.lang = `/${lang}`
     } else {
       this.$i18n.locale = 'en'
       if (lang) {

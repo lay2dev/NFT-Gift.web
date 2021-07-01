@@ -18,7 +18,6 @@ export default {
   data() {
     return {
       loading: true,
-      lang: this.$route.params.lang,
     }
   },
   created() {
@@ -37,7 +36,7 @@ export default {
     init() {
       const provider = Sea.checkLogin()
       if (provider) {
-        this.$router.replace(`/${this.lang}/create`)
+        this.$router.replace(Sea.lang + `/create`)
       }
       this.loading = false
     },
@@ -45,7 +44,7 @@ export default {
       this.loading = true
       const provider = await Sea.bindLogin()
       if (provider) {
-        this.$router.push(`/${this.lang}/create`)
+        this.$router.push(Sea.lang + `/create`)
       }
       this.loading = false
     },

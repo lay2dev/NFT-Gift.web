@@ -21,6 +21,7 @@ import { getSecondaryAuth, serializeLocalAuth } from '~/assets/js/nft/auth-item'
 PWCore.chainId =
   process.env.CKB_CHAIN_ID === '0' ? ChainID.ckb : ChainID.ckb_testnet
 Sea.Ajax.HOST = process.env.NFT_GIFT
+Sea.lang = '/en'
 Sea.checkLogin = () => {
   const provider = Sea.localStorage('provider')
   if (provider && provider._address) {

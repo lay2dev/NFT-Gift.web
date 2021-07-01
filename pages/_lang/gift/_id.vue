@@ -93,7 +93,7 @@ export default {
       window.location.href = process.env.UNIPASS_URL + '/home'
     },
     bindCreate() {
-      this.$router.push('/create')
+      this.$router.push(Sea.lang + '/create')
     },
     init() {
       if (!this.provider) {

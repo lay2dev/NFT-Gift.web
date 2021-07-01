@@ -68,18 +68,20 @@ export default {
       })
     },
     bindShare() {
-      let v = `打开链接，输入口令，抢NFT红包，玩转加密新社交，${this.shareUrl}`
+      let v = `${this.t_('copiedContent4Cmd')}${this.shareUrl}`
       if (this.password) {
-        v += `\n红包口令：${this.password}`
+        v += `\n${this.t_('command')}：${this.password}`
       }
       if (this.question) {
-        v = `打开链接，输入谜底，抢NFT红包，玩转加密新社交，${this.shareUrl}`
+        v = `${this.t_('copiedContent4Cmd')}${this.shareUrl}`
       }
       this.$clipboard(v)
-      const password = this.password ? `<br>红包口令：${this.password}` : ''
+      const password = this.password
+        ? `<br>${this.t_('command')}：${this.password}`
+        : ''
       this.$alert(
-        `已复制分享链接，快去粘贴<br>${this.shareUrl}${password}`,
-        '复制成功',
+        `${this.t_('msgBoxContent')}<br>${this.shareUrl}${password}`,
+        this.t_('msgBoxTitle'),
         {
           showConfirmButton: false,
           closeOnClickModal: true,

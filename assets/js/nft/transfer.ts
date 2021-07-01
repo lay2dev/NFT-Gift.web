@@ -83,7 +83,9 @@ export async function redPacketTransfer(
       [rsaDep, acpDep, redPacketDep, unipassDep],
     )
     const signer = new UnipassSigner([provider])
-    const txhash = await pwcore.sendTransaction(builder, signer)
+    const tx = await builder.build()
+    console.log('tx', tx)
+    const txhash = await pwcore.sendTransaction(tx, signer)
     console.log('txhash', txhash)
     return txhash
   } catch (err) {

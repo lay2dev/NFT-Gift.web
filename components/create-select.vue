@@ -63,9 +63,7 @@
       </main>
       <transition name="el-zoom-in-bottom">
         <div class="check-box" :class="{ checked: showCheckBox }">
-          <div class="has">
-            {{ t_('total') }} {{ nftChecked.length }} {{ t_('number') }}
-          </div>
+          <div class="has">{{ t_('total') }} {{ nftChecked.length }} NFT</div>
           <div class="ok" @click="bindRight">{{ t_('checkRight') }}</div>
         </div>
       </transition>

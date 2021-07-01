@@ -54,6 +54,11 @@ module.exports = {
     t4: '抢 NFT 红包，玩加密新社交',
     tip: '长按图片分享给朋友',
     btn: '分 享 链 接',
+    msgBoxTitle: '复制成功',
+    msgBoxContent: '已复制分享链接，快去粘贴<br>',
+    copiedContent4Cmd: '打开链接，输入口令，抢NFT红包，玩转加密新社交，',
+    copiedContent4Riddle: '打开链接，输入谜底，抢NFT红包，玩转加密新社交，',
+    command: '红包口令',
   },
   gift: {
     success: {

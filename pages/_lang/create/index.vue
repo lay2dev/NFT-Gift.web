@@ -60,7 +60,7 @@
           </template>
         </div>
         <div class="nft-total">
-          NFT {{ t_('total') }}：{{ nftChecked.length }} {{ t_('number') }}
+          {{ t_('total') }}：{{ nftChecked.length }} NFT
         </div>
       </div>
       <div v-else class="box select" @click="showSelect = true">

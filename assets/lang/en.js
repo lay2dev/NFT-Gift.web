@@ -45,11 +45,15 @@ module.exports = {
   share: {
     password: {
       t1: 'NFT password red packet',
-      t2: '- Enter the password and grab the NFT red packet -',
+      t2: '- Enter the password grab red packet -',
     },
     question: {
       t1: 'NFT question red packet',
-      t2: '- Look at the puzzle, guess the answer, grab the red packet -',
+      t2: '- Guess the answer, grab red packet -',
     },
+    t3: 'Long press to receive to wallet',
+    t4: 'Grab NFT red packet and play encrypted new social',
+    tip: 'Long press the picture to share with friends',
+    btn: 'Share Link',
   },
 }

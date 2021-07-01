@@ -18,13 +18,13 @@
         <!-- <img class="rectangle" src="~/assets/img/red-rectangle.png" alt="" /> -->
         <img v-if="QRCode" class="qrcode" :src="QRCode" alt="qrcode" />
       </div>
-      <div class="t3">长按领取至钱包</div>
-      <div class="t4">抢 NFT 红包，玩加密新社交</div>
+      <div class="t3">{{ t_('t3') }}</div>
+      <div class="t4">{{ t_('t4') }}</div>
       <img v-if="png" class="share" :src="png" alt="share" />
     </div>
-    <div class="red-tip">长按图片分享给朋友</div>
+    <div class="red-tip">{{ t_('tip') }}</div>
     <el-button class="red-share" type="primary" round @click="bindShare">
-      分 享 链 接
+      {{ t_('btn') }}
     </el-button>
   </div>
 </template>
@@ -204,18 +204,21 @@ export default {
     .t3 {
       margin-top: 4px;
       color: #ffbbbb;
+      text-align: center;
     }
 
     .t4 {
       margin-top: auto;
       margin-bottom: 31px;
       color: var(--yellow);
+      text-align: center;
     }
   }
 
   .red-tip {
     margin-top: 8px;
     font-size: 14px;
+    text-align: center;
   }
 
   .red-share {

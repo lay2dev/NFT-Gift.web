@@ -110,8 +110,8 @@ const _redPacketSign = (
   question,
 ) => {
   const host = process.env.UNIPASS_URL
-  const successUrl = new URL(window.location.href).href
-  const failUrl = new URL(window.location.href).href
+  const successUrl = encodeURIComponent(new URL(window.location.href).href)
+  const failUrl = encodeURIComponent(new URL(window.location.href).href)
   const pubkey = getPubkey()
   if (!pubkey) return
   const _url = `${host}?success_url=${successUrl}&fail_url=${failUrl}&pubkey=${pubkey}&message=${message}/#sign`
@@ -124,8 +124,8 @@ const _redPacketSign = (
 }
 Sea.cancleSign = (data, message) => {
   const host = process.env.UNIPASS_URL
-  const successUrl = new URL(window.location.href).href
-  const failUrl = new URL(window.location.href).href
+  const successUrl = encodeURIComponent(new URL(window.location.href).href)
+  const failUrl = encodeURIComponent(new URL(window.location.href).href)
   const pubkey = getPubkey()
   if (!pubkey) return
   const _url = `${host}?success_url=${successUrl}&fail_url=${failUrl}&pubkey=${pubkey}&message=${message}/#sign`

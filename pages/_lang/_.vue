@@ -8,19 +8,9 @@ export default {
   data() {
     return {}
   },
-  mounted() {
-    this.bindBack()
-  },
   methods: {
     bindBack() {
-      this.$alert('找不到该页面', '抱歉', {
-        type: 'error',
-        confirmButtonText: '去首页',
-      })
-        .then(() => {
-          this.$router.push(Sea.lang + '/')
-        })
-        .catch(() => {})
+      this.$router.push(Sea.lang + '/')
     },
   },
 }

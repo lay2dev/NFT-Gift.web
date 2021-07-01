@@ -4,46 +4,50 @@
     <img class="top-bg" src="~/assets/img/top-bg.png" />
     <template v-if="status === 'success'">
       <div class="success">
-        <div class="t1">恭喜您</div>
-        <div class="t2">成功领取到一个NFT红包</div>
+        <div class="t1">{{ t_('success.t1') }}</div>
+        <div class="t2">{{ t_('success.t2') }}</div>
       </div>
     </template>
     <template v-else-if="status === 'fail'">
       <div class="fail">
         <template v-if="statusCode === -3">
-          <div class="t1">抱歉</div>
-          <div class="t2">你已经领过这个红包了</div>
+          <div class="t1">{{ t_('fail.code3.t1') }}</div>
+          <div class="t2">{{ t_('fail.code3.t2') }}</div>
         </template>
         <template v-else-if="statusCode === -2">
-          <div class="t1">404</div>
-          <div class="t2">NFT红包地址有误</div>
+          <div class="t1">{{ t_('fail.code2.t1') }}</div>
+          <div class="t2">{{ t_('fail.code2.t2') }}</div>
         </template>
         <template v-else>
-          <div class="t1">抱歉</div>
-          <div class="t2">NFT红包已经被抢完了</div>
+          <div class="t1">{{ t_('fail.code1.t1') }}</div>
+          <div class="t2">{{ t_('fail.code1.t2') }}</div>
         </template>
       </div>
     </template>
     <template v-else>
       <div class="get">
         <template v-if="question">
-          <div class="t1">您有一个 NFT 谜语红包</div>
-          <div class="tip">- 谜题 -</div>
+          <div class="t1">{{ t_('question.t1') }}</div>
+          <div class="tip">{{ t_('question.tip') }}</div>
           <div class="t2">{{ question }}</div>
         </template>
         <template v-else>
-          <div class="t1">您有一个待领取的</div>
-          <div class="t2">NFT 红包</div>
+          <div class="t1">{{ t_('password.t1') }}</div>
+          <div class="t2">{{ t_('password.t2') }}</div>
         </template>
         <div class="password">
           <el-input
             v-model="password"
-            :placeholder="question ? '猜谜底，领NFT' : '输口令，领NFT'"
+            :placeholder="
+              question ? t_('question.placeholder') : t_('password.placeholder')
+            "
             @keyup.enter="bindGet"
           ></el-input>
         </div>
         <div class="receive-box" @click="bindGet">
-          <el-button class="receive" :loading="loading">立 即 领 取</el-button>
+          <el-button class="receive" :loading="loading">{{
+            t_('btn')
+          }}</el-button>
         </div>
       </div>
     </template>
@@ -51,11 +55,11 @@
       <div class="btns">
         <div class="balance" @click="bindWallet">
           <img :src="require('~/assets/img/gift-open-wallet.svg')" />
-          <div>打开钱包</div>
+          <div>{{ t_('open') }}</div>
         </div>
         <div class="balance nft" @click="bindCreate">
           <img :src="require('~/assets/img/gift-create-redpacket.svg')" />
-          <div>发同款红包</div>
+          <div>{{ t_('send') }}</div>
         </div>
       </div>
     </template>
@@ -89,6 +93,9 @@ export default {
     this.init()
   },
   methods: {
+    t_(key) {
+      return this.$t(`gift.${key}`)
+    },
     bindWallet() {
       window.location.href = process.env.UNIPASS_URL + '/home'
     },
@@ -183,10 +190,12 @@ export default {
           this.status = 'success'
         } else {
           this.status = 'fail'
-          this.$message.error('交易无效')
+          // 交易无效
+          this.$message.error(this.t('tip1'))
         }
       } else if (res.status === 0) {
-        this.$message.error('红包口令错误')
+        // 红包口令错误
+        this.$message.error(this.t('tip2'))
       }
       this.loading = false
       loading.close()
@@ -200,7 +209,8 @@ export default {
           this.init()
         }
       } else {
-        this.$message.warning('登录失败')
+        // 登录失败
+        this.$message.warning(this.t('tip3'))
       }
       this.loading = false
     },

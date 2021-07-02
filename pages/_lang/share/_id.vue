@@ -113,7 +113,8 @@ export default {
 <style lang="stylus">
 #page-share {
   --yellow: #FFE2B0;
-  height: 100vh;
+  min-height: 100vh;
+  padding: 42px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -122,13 +123,13 @@ export default {
   #red-box {
     background: var(--primary);
     width: 320px;
-    height: 467px;
+    // height: 467px;
     // border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
-    padding: 0 20px;
+    padding: 0 10px;
 
     .canvas {
       position: absolute;
@@ -212,8 +213,7 @@ export default {
     }
 
     .t4 {
-      margin-top: auto;
-      margin-bottom: 31px;
+      margin: 20px 0;
       color: var(--yellow);
       text-align: center;
     }

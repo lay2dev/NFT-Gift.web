@@ -129,7 +129,7 @@ export default {
             Sea.lang + `/share/${res.short}/?p=${this.password}`,
           )
         } else {
-          this.$message.error(`${$t('requestFailed')}`)
+          this.$message.error(`${this.$t('requestFailed')}`)
         }
       }
       this.loading = false

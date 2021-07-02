@@ -21,7 +21,7 @@ export default {
     // Sea.Ajax.default = function () {}
     // Ajax fail
     Sea.Ajax.fail = (r) => {
-      this.$message.error(`${$t('requestFailed')} ${r.statusText}`)
+      this.$message.error(`${this.$t('requestFailed')} ${r.statusText}`)
     }
   },
 }

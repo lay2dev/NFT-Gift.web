@@ -234,7 +234,7 @@ export default {
         }
         this.$router.push(Sea.lang + url)
       } else {
-        this.$message.error($t('requestFailed'))
+        this.$message.error(this.$t('requestFailed'))
       }
     },
     async bindNext() {

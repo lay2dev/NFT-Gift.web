@@ -2,10 +2,9 @@ import PWCore, {
   Address,
   AddressType,
   BuilderOption,
-  Cell,
   OutPoint,
 } from '@lay2/pw-core'
-import { getCellDeps } from './cellDepsApi'
+import { getCellDeps, getCellsByOutpoints } from './cellDepsApi'
 import { RedPacketBuilder } from './red-packet-builder'
 import { RedPacketProvider } from './red-packet-provider'
 import { UnipassIndexerCollector } from './unipass-indexer-collector'
@@ -53,12 +52,8 @@ export async function redPacketTransfer(
   )
   const fromAddress = getAddressByPubkey(masterPubkey)
   console.log('fromAddress', fromAddress)
-  // const rpc = new RPC(NODE_URL)
-  console.log('[outpoints]', outpoints, outpoints.length)
-
-  const cells = await Promise.all(
-    outpoints.map((x) => Cell.loadFromBlockchain(pwcore.rpc, x)),
-  )
+  console.log('[outpoints]', JSON.stringify(outpoints), outpoints.length)
+  const cells = await getCellsByOutpoints(outpoints)
 
   console.log('[cells]', cells)
   const inputCells = cells
@@ -86,7 +81,7 @@ export async function redPacketTransfer(
     console.log('tx', tx)
     const txhash = await pwcore.sendTransaction(tx, signer)
     console.log('txhash', txhash)
-    return txhash
+    return 'txhash'
   } catch (err) {
     console.log(err)
   }

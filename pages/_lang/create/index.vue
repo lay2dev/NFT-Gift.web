@@ -230,7 +230,7 @@ export default {
         this.showDialog = false
         let url = `/share/${res.short}/?p=${data.pin}`
         if (data.question) {
-          url = `/share/${res.short}/?q=${data.question}`
+          url = `/share/${res.short}/?q=${encodeURIComponent(data.question)}`
         }
         this.$router.push(Sea.lang + url)
       } else {

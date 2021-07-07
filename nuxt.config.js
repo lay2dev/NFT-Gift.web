@@ -79,7 +79,6 @@ export default {
   build: {
     transpile: [/^element-ui/],
     publicPath: process.env.OSS_PUBLIC_PATH,
-    vendor: ['vue-i18n'],
   },
   env: {
     environment: process.env.NODE_ENV,

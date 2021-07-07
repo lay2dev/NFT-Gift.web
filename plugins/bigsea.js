@@ -1,6 +1,6 @@
 import '~/assets/js/bigsea'
 import dayjs from 'dayjs'
-import PWCore, { Address, ChainID } from '@lay2/pw-core'
+import PWCore, { ChainID } from '@lay2/pw-core'
 import { getPacketRandomList } from 'assets/js/nft/utils'
 import { ActionType } from 'assets/js/url/interface'
 import {

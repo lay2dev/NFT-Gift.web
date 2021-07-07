@@ -1,12 +1,9 @@
 import {
   Blake2bHasher,
-  CellDep,
   ChainID,
-  DepType,
   getDefaultPrefix,
   Hasher,
   HashType,
-  OutPoint,
   Reader,
   Script,
 } from '@lay2/pw-core'
@@ -24,25 +21,6 @@ export const INDEXER_URL = process.env.CKB_INDEXER_URL as string
 export const CKB_CHAIN_ID =
   process.env.CKB_CHAIN_ID === '0' ? ChainID.ckb : ChainID.ckb_testnet
 
-export const rsaDep = new CellDep(
-  DepType.code,
-  new OutPoint(process.env.RSA_TXHASH as string, '0x0'),
-)
-export const acpDep = new CellDep(
-  DepType.code,
-  new OutPoint(process.env.ACP_TXHASH as string, '0x0'),
-)
-export const redPacketDep = new CellDep(
-  DepType.code,
-  new OutPoint(
-    process.env.TOKEN_SCRIPT_TXHASH as string,
-    process.env.TOKEN_SCRIPT_INDEX as string,
-  ),
-)
-export const unipassDep = new CellDep(
-  DepType.code,
-  new OutPoint(process.env.UNIPASS_TXHASH as string, '0x0'),
-)
 export function getPubkeyHash(pubkey: string) {
   const blake2b: Hasher = new Blake2bHasher()
   blake2b.update(new Reader(`0x${pubkey.replace('0x', '')}`))

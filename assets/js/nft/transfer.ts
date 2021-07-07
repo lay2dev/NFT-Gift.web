@@ -5,19 +5,16 @@ import PWCore, {
   Cell,
   OutPoint,
 } from '@lay2/pw-core'
+import { getCellDeps } from './cellDepsApi'
 import { RedPacketBuilder } from './red-packet-builder'
 import { RedPacketProvider } from './red-packet-provider'
 import { UnipassIndexerCollector } from './unipass-indexer-collector'
 import { UnipassSigner } from './unipass-signer'
 import {
   getAddressByPubkey,
-  rsaDep,
-  acpDep,
-  unipassDep,
   NODE_URL,
   INDEXER_URL,
   CKB_CHAIN_ID,
-  redPacketDep,
 } from './utils'
 
 /**
@@ -75,12 +72,14 @@ export async function redPacketTransfer(
       output_type: '',
     },
   }
+  const cellDeps = await getCellDeps()
+  console.log('[celldeps]', cellDeps)
   try {
     const builder = new RedPacketBuilder(
       new Address(toAddress, AddressType.ckb),
       inputCells,
       options,
-      [rsaDep, acpDep, redPacketDep, unipassDep],
+      cellDeps,
     )
     const signer = new UnipassSigner([provider])
     const tx = await builder.build()

@@ -19,7 +19,8 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       {
         ref: 'stylesheet',
-        href: 'https://cdn.jsdelivr.net/npm/normalize.css@latest/normalize.min.css',
+        href:
+          'https://cdn.jsdelivr.net/npm/normalize.css@latest/normalize.min.css',
       },
     ],
     script: [
@@ -79,6 +80,14 @@ export default {
   build: {
     transpile: [/^element-ui/],
     publicPath: process.env.OSS_PUBLIC_PATH,
+    terser: {
+      // https://github.com/terser/terser#compress-options
+      terserOptions: {
+        compress: {
+          drop_console: process.env.NODE_ENV === 'cdn',
+        },
+      },
+    },
   },
   env: {
     environment: process.env.NODE_ENV,

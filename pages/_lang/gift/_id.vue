@@ -62,23 +62,66 @@
           <div>{{ t_('send') }}</div>
         </div>
       </div>
+      <div v-if="recoder" class="recoder">
+        <div class="sender">
+          {{ address(recoder.senderAddress) }} {{ t_('recoder.who') }}
+        </div>
+        <span>
+          {{ t_('recoder.t1') }} {{ recoder.picked }} {{ t_('recoder.t2') }}
+          {{ recoder.packetNum - recoder.picked }} {{ t_('recoder.t3') }}
+          {{ recoder.nftNum }} {{ t_('recoder.t4') }}
+        </span>
+        <div class="packets">
+          <div v-for="(e, i) in recoder.packets" :key="i" class="packet">
+            <div class="left">
+              <div class="address">{{ address(e.receiverAddress) }}</div>
+              <div class="date">{{ date(e.receivedAt) }}</div>
+            </div>
+            <div class="right">
+              <div
+                v-for="(nft, i2) in e.nfts"
+                :key="i2"
+                class="nft"
+                @click="bindNFT(nft)"
+              >
+                <!-- <span class="name">{{ nft.name }}</span> -->
+                <img class="renderer" :src="nft.renderer" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </template>
+    <mine-asset :show.sync="showAsset" :nft="nftItem" />
   </div>
 </template>
 <script>
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 import { getKeyPassword, decryptMasterKey } from '~/assets/js/nft/utils'
 import { redPacketTransfer } from '~/assets/js/nft/transfer'
+import MineAsset from '~/components/mine-asset.vue'
+import 'dayjs/locale/zh-cn'
+dayjs.locale('zh-cn')
+dayjs.extend(relativeTime)
 
 export default {
+  components: {
+    MineAsset,
+  },
   data() {
     return {
-      status: '',
+      status: 'success',
       statusCode: null,
       password: '',
       provider: null,
       loading: false,
       question: this.$route.query.q || '',
       lang: this.$route.params.lang,
+      // 领取记录
+      recoder: null,
+      showAsset: false,
+      nftItem: {},
     }
   },
   computed: {
@@ -95,6 +138,32 @@ export default {
     this.init()
   },
   methods: {
+    bindNFT(nft) {
+      this.nftItem = nft
+      this.showAsset = true
+    },
+    date(date) {
+      const t_ = this.t_
+      const startDate = dayjs()
+      const endDate = dayjs(date)
+      const isSameDay = startDate.isSame(endDate, 'day')
+      const isSameMonth = startDate.isSame(endDate, 'month')
+      const isSameYear = startDate.isSame(endDate, 'year')
+      let end = endDate.format(t_('recoder.date'))
+      if (isSameDay) {
+        end = endDate.format(t_('recoder.sameDay'))
+      } else if (isSameMonth) {
+        end = endDate.format(t_('recoder.sameMonth'))
+      } else if (isSameYear) {
+        end = endDate.format(t_('recoder.sameYear'))
+      }
+      return end
+    },
+    address(address) {
+      const start = address.slice(0, 3)
+      const end = address.slice(-3)
+      return `${start}...${end}`
+    },
     t_(key) {
       return this.$t(`gift.${key}`)
     },
@@ -110,6 +179,7 @@ export default {
         return
       }
       this.$nextTick(() => {
+        this.getRecoder()
         this.getStatus({
           address: 'do_not_need_address',
           password: getKeyPassword('do_not_need_password'),
@@ -126,6 +196,17 @@ export default {
         address: this.provider._address.addressString,
         password: getKeyPassword(this.giftPassword),
       })
+    },
+    async getRecoder() {
+      const id = this.$route.params.id || ''
+      const res = await Sea.Ajax({
+        url: `/nft/recoder`,
+        method: 'get',
+        data: {
+          key: id,
+        },
+      })
+      this.recoder = res
     },
     async getStatus({ address, password }) {
       const id = this.$route.params.id || 'null'
@@ -224,7 +305,7 @@ export default {
   max-width: 475px;
   position: relative;
   background: #F35543;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -247,12 +328,71 @@ export default {
     text-align: center;
 
     .t1 {
-      margin-top: 107px;
+      margin-top: 40px;
     }
 
     .t2 {
       margin-top: 28px;
-      margin-bottom: 106px;
+      margin-bottom: 40px;
+    }
+  }
+
+  .recoder {
+    border-top: 1px dashed #000;
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+
+    .sender {
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .packets {
+      margin-top: 20px;
+      border-bottom: 1px dashed #000;
+
+      .packet {
+        border-top: 1px dashed #000;
+        padding: 4px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .left {
+          text-align: left;
+          flex-shrink: 0;
+
+          .date {
+            color: #000;
+            font-size: 14px;
+          }
+        }
+
+        .right {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: flex-end;
+          margin-bottom: -4px;
+
+          .nft {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+
+            img.renderer {
+              background: #ffe2b0;
+              border-radius: 4px;
+              margin-left: 8px;
+              object-fit: cover;
+              overflow: hidden;
+              width: 30px;
+              height: 30px;
+            }
+          }
+        }
+      }
     }
   }
 
@@ -261,8 +401,11 @@ export default {
     align-items: flex-end;
     justify-content: center;
     width: 100%;
+    margin-bottom: 40px;
 
     .balance {
+      cursor: pointer;
+
       img {
         width: 55px;
         height: 55px;

@@ -1,57 +1,119 @@
 <template>
   <el-dialog
+    id="dialog-asset"
     :visible.sync="showDialog"
     :show-close="false"
     fullscreen
-    class="dialog-asset"
-    :modal="false"
   >
-    <div id="mine-asset">
-      <back stop @click="showDialog = false" />
-      <div class="image-box">
-        <el-image :src="nft.renderer" fit="contain" />
-      </div>
-      <div class="info-box">
-        <div class="info">
-          <header>
-            <div class="name">{{ nft.name }}</div>
-            <div class="description">{{ nft.description }}</div>
-            <div class="user">
-              <div class="user-name">
-                <span>{{ nft.issuerName }}</span>
-                <el-image
-                  class="user-avator"
-                  :src="nft.issuerAvatarUrl"
-                  fit="cover"
-                >
-                  <template #error>
-                    <div class="el-image__error"></div>
-                  </template>
-                </el-image>
-              </div>
-              <div class="user-total">
-                <div>拥有 {{ nft.children.length }}</div>
-                <!-- <div>共有 {{ nft.total === 0 ? '无限' : nft.total }}</div>
-                <div>已分发 {{ nft.issued }}</div>
-                <div>当前 #{{ nft.tokenId }}</div> -->
-              </div>
-            </div>
-          </header>
-          <!-- <main>
-          <el-button
-            type="primary"
-            icon="el-icon-shopping-bag-1"
-            @click="bindHandsel"
+    <back stop @click="showDialog = false" />
+    <img :src="nft.renderer" alt="blur" class="blur" />
+    <main>
+      <section>
+        <div ref="section" class="wrap section">
+          <img class="container" :src="nft.renderer" alt="container" />
+        </div>
+      </section>
+      <h1>{{ nft.name }}</h1>
+      <p>{{ nft.description || '-' }}</p>
+      <div class="user">
+        <div class="user-name">
+          <el-image
+            class="user-avator"
+            :src="nft.issuerAvatarUrl"
+            alt="user-avator"
+            fit="cover"
           >
-            赠送
-          </el-button>
-        </main> -->
+            <template #error>
+              <div class="el-image__error"></div>
+            </template>
+          </el-image>
+          <span>{{ nft.issuerName }}</span>
+        </div>
+        <div class="user-total">
+          <div>
+            {{ t_('have') }} {{ nft.children ? nft.children.length : 1 }} /
+            {{ t_('quantum') }}
+            {{ nft.total === 0 ? t_('unlimited') : nft.total }}
+          </div>
+          <!-- <div>共有 {{ nft.total === 0 ? '无限' : nft.total }}</div>
+          <div>已分发 {{ nft.issued }}</div>
+          <div>当前 #{{ nft.tokenId }}</div> -->
         </div>
       </div>
-    </div>
+    </main>
   </el-dialog>
 </template>
 <script>
+class ParallaxTiltEffect {
+  constructor({ element, tiltEffect }) {
+    this.element = element
+    this.container = this.element.querySelector('.container')
+    this.size = [300, 360]
+    ;[this.w, this.h] = this.size
+
+    this.tiltEffect = tiltEffect
+
+    this.mouseOnComponent = false
+
+    this.handleMouseMove = this.handleMouseMove.bind(this)
+    this.handleMouseEnter = this.handleMouseEnter.bind(this)
+    this.handleMouseLeave = this.handleMouseLeave.bind(this)
+    this.defaultStates = this.defaultStates.bind(this)
+    this.setProperty = this.setProperty.bind(this)
+    this.init = this.init.bind(this)
+
+    this.init()
+  }
+
+  handleMouseMove(event) {
+    const { offsetX, offsetY } = event
+
+    let X
+    let Y
+
+    if (this.tiltEffect === 'reverse') {
+      X = (offsetX - this.w / 2) / 3 / 3
+      Y = -(offsetY - this.h / 2) / 3 / 3
+    } else if (this.tiltEffect === 'normal') {
+      X = -(offsetX - this.w / 2) / 3 / 3
+      Y = (offsetY - this.h / 2) / 3 / 3
+    }
+
+    this.setProperty('--rY', X.toFixed(2))
+    this.setProperty('--rX', Y.toFixed(2))
+
+    this.setProperty('--bY', 80 - (X / 4).toFixed(2) + '%')
+    this.setProperty('--bX', 50 - (Y / 4).toFixed(2) + '%')
+  }
+
+  handleMouseEnter() {
+    this.mouseOnComponent = true
+    this.container.classList.add('container--active')
+  }
+
+  handleMouseLeave() {
+    this.mouseOnComponent = false
+    this.defaultStates()
+  }
+
+  defaultStates() {
+    this.container.classList.remove('container--active')
+    this.setProperty('--rY', 0)
+    this.setProperty('--rX', 0)
+    this.setProperty('--bY', '80%')
+    this.setProperty('--bX', '50%')
+  }
+
+  setProperty(p, v) {
+    return this.container.style.setProperty(p, v)
+  }
+
+  init() {
+    this.element.addEventListener('mousemove', this.handleMouseMove)
+    this.element.addEventListener('mouseenter', this.handleMouseEnter)
+    this.element.addEventListener('mouseleave', this.handleMouseLeave)
+  }
+}
 export default {
   props: {
     show: Boolean,
@@ -65,7 +127,9 @@ export default {
     },
   },
   data() {
-    return {}
+    return {
+      inited: false,
+    }
   },
   computed: {
     showDialog: {
@@ -77,116 +141,173 @@ export default {
       },
     },
   },
+  watch: {
+    show(nv) {
+      if (nv === true && this.inited === false) {
+        this.init()
+      }
+    },
+  },
   methods: {
-    bindHandsel() {},
+    t_(key) {
+      return this.$t(`home.${key}`)
+    },
+    init() {
+      this.inited = true
+      this.$nextTick(() => {
+        // eslint-disable-next-line no-new
+        new ParallaxTiltEffect({
+          element: this.$refs.section,
+          tiltEffect: 'reverse',
+        })
+      })
+    },
   },
 }
 </script>
 <style lang="stylus">
-#mine-asset {
-  background: #eee;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  .image-box {
-    display: flex;
-    justify-content: center;
-    height: 343px;
-    align-items: center;
-
-    .el-image {
-      width: 300px;
-      height: 300px;
-      border-radius: 4px;
-      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.24);
-      // will-change: transform;
-      // transition: all 1000ms cubic-bezier(0.03, 0.98, 0.52, 0.99) 0s;
-      // transform: perspective(1000px) rotateX(0deg) rotateY(15deg) scale3d(1, 1, 1);
+#dialog-asset {
+  .el-dialog {
+    .el-dialog__header {
+      padding: 0;
     }
   }
 
-  .info-box {
-    flex: 1;
-    display: flex;
+  .blur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    filter: blur(180px);
+    width: 100%;
+    height: 100%;
+  }
 
-    .info {
-      background: rgb(250, 250, 250);
-      width: 100%;
-      border-radius: 25px 25px 0px 0px;
-      box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.14);
+  main {
+    color: hsla(0, 0%, 0%, 0.6);
+    text-align: center;
+    z-index: 2;
+    position: relative;
+
+    h1 {
+      font-size: 32px;
+      padding-top: 32px;
+      word-break: break-word;
+    }
+
+    h1 + p {
+      font-size: 20px;
+      padding: 32px 20px;
+    }
+
+    .user {
+      margin-top: 20px;
       display: flex;
-      flex-direction: column;
       justify-content: space-between;
+      align-items: center;
 
-      >header {
-        width: 100%;
-        padding: 20px;
-
-        .name {
-          font-size: 18px;
-        }
-
-        .description {
-          margin-top: 12px;
-          font-size: 14px;
-          line-height: 18px;
-          color: #aaa;
-          text-align: justify;
-        }
-
-        .user {
-          margin-top: 20px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          color: rgba(0, 0, 0, 0.8);
-
-          .user-name {
-            display: flex;
-            align-items: center;
-
-            span {
-              font-size: 14px;
-            }
-
-            img {
-              margin-left: 4px;
-              width: 18px;
-              height: 18px;
-            }
-          }
-
-          .user-total {
-            text-align: right;
-            font-size: 14px;
-            color: #aaa;
-          }
-        }
-      }
-
-      >main {
-        width: 100%;
-        height: 20vh;
-        background: white;
-        border-radius: 35px 35px 0px 0px;
-        box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.14);
+      .user-name {
         display: flex;
-        justify-content: center;
         align-items: center;
+
+        span {
+          font-size: 16px;
+          margin-left: 6px;
+        }
+
+        img {
+          width: 18px;
+          height: 18px;
+        }
+      }
+
+      .user-total {
+        text-align: right;
+        font-size: 16px;
       }
     }
-  }
 
-  .dialog-send {
-    .i-have {
-      text-align: right;
-      margin-bottom: -30px;
+    section {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+
+      .wrap {
+        margin: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+        -webkit-transform: perspective(100rem);
+        transform: perspective(100rem);
+      }
+
+      .container {
+        --rX: 0;
+        --rY: 0;
+        --bX: 50%;
+        --bY: 80%;
+        max-width: 300px;
+        max-height: 300px;
+        border: 1px solid #e8eaed;
+        border-radius: 1.6rem;
+        overflow: hidden;
+        padding: 6px;
+        display: flex;
+        -webkit-transform: rotateX(calc(var(--rX) * 1deg));
+        rotateY(calc(var(--rY) * 1deg));
+        transform: rotateX(calc(var(--rX) * 1deg)) rotateY(calc(var(--rY) * 1deg));
+        background: linear-gradient(hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.1));
+        background-position: var(--bX) var(--bY);
+        background-size: 40rem auto;
+        box-shadow: 0 0 3rem 0.5rem hsla(0, 0%, 0%, 0.24);
+        transition: -webkit-transform 0.6s 1s;
+        transition: transform 0.6s 1s;
+        transition: transform 0.6s 1s, -webkit-transform 0.6s 1s;
+      }
+
+      .container::before, .container::after {
+        content: '';
+        width: 2rem;
+        height: 2rem;
+        border: 1px solid #fff;
+        position: absolute;
+        z-index: 2;
+        opacity: 0.3;
+        transition: 0.3s;
+      }
+
+      .container::before {
+        top: 2rem;
+        right: 2rem;
+        border-bottom-width: 0;
+        border-left-width: 0;
+      }
+
+      .container::after {
+        bottom: 2rem;
+        left: 2rem;
+        border-top-width: 0;
+        border-right-width: 0;
+      }
+
+      .container--active {
+        /* transition: none; */
+        transition: all 0.6s;
+      }
+
+      .container p {
+        color: hsla(0, 0%, 100%, 0.6);
+        font-size: 2.2rem;
+      }
     }
 
-    .el-input-number {
-      width: 100%;
+    .wrap:hover .container::before, .wrap:hover .container::after {
+      width: calc(100% - 4rem);
+      height: calc(100% - 4rem);
     }
   }
 }

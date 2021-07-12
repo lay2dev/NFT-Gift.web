@@ -22,7 +22,7 @@
         <div v-else class="nft-list">
           <template v-for="(e, i) in nftListFilter">
             <div :key="i" class="nft">
-              <div class="nft-info">
+              <div class="nft-info" @click="bindCheckAll(e, i)">
                 <el-image
                   class="nft-image"
                   :src="`${e.renderer}?x-oss-process=image/resize,h_100,m_lfit`"
@@ -215,6 +215,7 @@ export default {
       this.$router.replace(Sea.lang + '/')
     },
     bindCheckAll(checkAll, i) {
+      if (checkAll.children.length > 1) return
       const all = this.nftList[i].children.map((e) => e.tokenId)
       this.nftList[i].checked = checkAll ? all : []
       // checkAll

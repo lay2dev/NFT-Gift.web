@@ -184,7 +184,11 @@ export default {
       }
     },
     bindSelect(nfts, checked) {
-      this.nfts = Sea.deepCopy(nfts)
+      try {
+        this.nfts = Sea.deepCopy(nfts)
+      } catch (e) {
+        this.nfts = nfts
+      }
       this.nftChecked = Sea.deepCopy(checked)
     },
     bindCreate() {

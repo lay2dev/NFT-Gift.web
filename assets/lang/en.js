@@ -1,4 +1,23 @@
 module.exports = {
+  home: {
+    lang: 'En',
+    exit: 'Sign out',
+    QRCode: 'Unipass Address',
+    nftAssets: 'NFT Assets',
+    redPacket: 'Red Packet',
+    ticket: 'Ticket',
+    mall: 'Mall',
+    wallet: 'Wallet',
+    wait: 'Comming soon',
+    notFound: 'Awwww... it looks like you do not own any NFT yet',
+    receiving: 'Receiving',
+    login: 'Login',
+    have: 'Own',
+    quantum: 'Limited',
+    unlimited: 'Unlimited',
+    copy: 'Copied',
+    pleaseLogin: 'Please login first',
+  },
   requestFailed: 'Request failed',
   login: {
     connect: 'Connect Unipass',
@@ -95,6 +114,19 @@ module.exports = {
     tip1: 'Transaction is invalid',
     tip2: 'Wrong password',
     tip3: 'Login failed',
+    // ckt...465 shared NFT
+    // x packets claimed, x packets left, total x NFT
+    recoder: {
+      who: 'shared NFT',
+      t1: '',
+      t2: 'packets claimed,',
+      t3: 'packets left, total',
+      t4: 'NFT',
+      date: 'YYYY-MM-DD HH:mm',
+      sameDay: 'HH:mm',
+      SameMonth: 'MM-DD HH:mm',
+      SameYear: 'MM-DD HH:mm',
+    },
   },
   record: {
     title: 'Records',

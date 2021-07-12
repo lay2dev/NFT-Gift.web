@@ -1,20 +1,15 @@
-import PWCore, {
+import {
   Address,
   AddressType,
   BuilderOption,
   OutPoint,
+  transformers,
 } from '@lay2/pw-core'
 import { getCellDeps, getCellsByOutpoints } from './cellDepsApi'
 import { RedPacketBuilder } from './red-packet-builder'
 import { RedPacketProvider } from './red-packet-provider'
-import { UnipassIndexerCollector } from './unipass-indexer-collector'
 import { UnipassSigner } from './unipass-signer'
-import {
-  getAddressByPubkey,
-  NODE_URL,
-  INDEXER_URL,
-  CKB_CHAIN_ID,
-} from './utils'
+import { getAddressByPubkey } from './utils'
 
 /**
  * create transfer to get red packet
@@ -44,12 +39,7 @@ export async function redPacketTransfer(
     exchangePubkey,
     localAuthInfo,
   )
-  const collector = new UnipassIndexerCollector(INDEXER_URL)
-  const pwcore = await new PWCore(NODE_URL).init(
-    provider,
-    collector,
-    CKB_CHAIN_ID,
-  )
+
   const fromAddress = getAddressByPubkey(masterPubkey)
   console.log('fromAddress', fromAddress)
   console.log('[outpoints]', JSON.stringify(outpoints), outpoints.length)
@@ -78,10 +68,9 @@ export async function redPacketTransfer(
     )
     const signer = new UnipassSigner([provider])
     const tx = await builder.build()
-    console.log('tx', tx)
-    const txhash = await pwcore.sendTransaction(tx, signer)
-    console.log('txhash', txhash)
-    return txhash
+    const txData = transformers.TransformTransaction(await signer.sign(tx))
+    console.log('txData', txData)
+    return JSON.stringify(txData)
   } catch (err) {
     console.log(err)
   }

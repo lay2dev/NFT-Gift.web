@@ -182,12 +182,11 @@ export default {
           url: `/nft/tx`,
           method: 'post',
           data: {
-            txHash: tx || '0x',
+            tx: tx || '0x',
             toAddress,
             id: resData.id,
           },
         })
-        console.log('tx', tx)
         if (tx) {
           this.status = 'success'
         } else {

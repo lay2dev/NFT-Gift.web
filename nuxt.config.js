@@ -19,8 +19,7 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       {
         ref: 'stylesheet',
-        href:
-          'https://cdn.jsdelivr.net/npm/normalize.css@latest/normalize.min.css',
+        href: 'https://cdn.jsdelivr.net/npm/normalize.css@latest/normalize.min.css',
       },
     ],
     script: [
@@ -69,7 +68,7 @@ export default {
       lang: 'en',
     },
     icon: {
-      fileName: 'icon.png?v1',
+      fileName: 'icon.png',
     },
   },
 

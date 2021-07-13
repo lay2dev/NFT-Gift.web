@@ -111,7 +111,7 @@ export default {
   },
   data() {
     return {
-      status: 'success',
+      status: '',
       statusCode: null,
       password: '',
       provider: null,

@@ -47,7 +47,16 @@ export default {
     // https://go.nuxtjs.dev/typescript
     '@nuxt/typescript-build',
     '@nuxtjs/dotenv',
+    'nuxt-compress',
   ],
+  'nuxt-compress': {
+    gzip: {
+      threshold: 8192,
+    },
+    brotli: {
+      threshold: 8192,
+    },
+  },
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
@@ -79,6 +88,12 @@ export default {
   build: {
     transpile: [/^element-ui/],
     publicPath: process.env.OSS_PUBLIC_PATH,
+    optimization: {
+      splitChunks: {
+        minSize: 10000,
+        maxSize: 250000,
+      },
+    },
     terser: {
       // https://github.com/terser/terser#compress-options
       terserOptions: {

@@ -122,8 +122,8 @@ module.exports = {
       t4: '个NFT',
       date: 'YYYY年M月D日 HH:mm',
       sameDay: 'HH:mm',
-      SameMonth: 'D日 HH:mm',
-      SameYear: 'M月D日 HH:mm',
+      sameMonth: 'M月D日 HH:mm',
+      sameYear: 'M月D日 HH:mm',
     },
   },
   record: {

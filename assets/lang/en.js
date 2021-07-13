@@ -124,8 +124,8 @@ module.exports = {
       t4: 'NFT',
       date: 'YYYY-MM-DD HH:mm',
       sameDay: 'HH:mm',
-      SameMonth: 'MM-DD HH:mm',
-      SameYear: 'MM-DD HH:mm',
+      sameMonth: 'MM-DD HH:mm',
+      sameYear: 'MM-DD HH:mm',
     },
   },
   record: {

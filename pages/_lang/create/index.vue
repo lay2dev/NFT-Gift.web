@@ -3,7 +3,7 @@
     <back>
       <span @click="bindRecord">{{ t_('record') }}</span>
     </back>
-    <img class="bg" src="~/assets/img/bg.png" />
+    <div class="bg" />
     <main>
       <div class="title">{{ t_('title') }}</div>
       <div class="subtitle">{{ t_('subtitle') }}</div>
@@ -275,7 +275,7 @@ export default {
     bottom: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    background: linear-gradient(90deg, rgba(243, 85, 67, 1) 0%, rgba(243, 67, 67, 1) 100%);
     z-index: -1;
   }
 

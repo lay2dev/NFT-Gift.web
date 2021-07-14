@@ -160,6 +160,7 @@ export default {
       return end
     },
     address(address) {
+      if (address.includes('@')) return address
       const start = address.slice(0, 3)
       const end = address.slice(-3)
       return `${start}...${end}`

@@ -4,7 +4,8 @@
 <script>
 export default {
   beforeCreate() {
-    this.$router.replace('/en/')
+    const lang = navigator.language.startsWith('zh') ? 'zh' : 'en'
+    this.$router.replace(`/${lang}/`)
   },
 }
 </script>

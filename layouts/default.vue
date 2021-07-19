@@ -9,10 +9,11 @@ export default {
       this.$i18n.locale = lang
       Sea.lang = `/${lang}`
     } else {
-      this.$i18n.locale = 'en'
+      const defaultLang = navigator.language.startsWith('zh') ? 'zh' : 'en'
+      this.$i18n.locale = defaultLang
       if (lang) {
         const fullPath = this.$route.fullPath
-        this.$router.replace(`/en${fullPath}/`)
+        this.$router.replace(`/${defaultLang}${fullPath}/`)
       }
     }
   },

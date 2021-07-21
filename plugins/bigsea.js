@@ -8,6 +8,7 @@ import {
   getDataFromUrl,
   getPubkey,
   saveState,
+  generateUnipassUrl,
 } from 'assets/js/url/state-data'
 import {
   getDataFromSignString,
@@ -43,9 +44,9 @@ Sea.bindLogin = async () => {
     return provider
   }
   const host = process.env.UNIPASS_URL
-  const successUrl = new URL(window.location.href).href
-  const failUrl = new URL(window.location.href).href
-  const url = `${host}?success_url=${successUrl}&fail_url=${failUrl}/#login`
+  // eslint-disable-next-line camelcase
+  const success_url = new URL(window.location.href).href
+  const url = generateUnipassUrl(host, 'login', { success_url })
   saveState(ActionType.Init)
   window.location.href = url
 }
@@ -111,11 +112,15 @@ const _redPacketSign = (
   question,
 ) => {
   const host = process.env.UNIPASS_URL
-  const successUrl = encodeURIComponent(new URL(window.location.href).href)
-  const failUrl = encodeURIComponent(new URL(window.location.href).href)
   const pubkey = getPubkey()
   if (!pubkey) return
-  const _url = `${host}?success_url=${successUrl}&fail_url=${failUrl}&pubkey=${pubkey}&message=${message}/#sign`
+  // eslint-disable-next-line camelcase
+  const success_url = new URL(window.location.href).href
+  const _url = generateUnipassUrl(host, 'sign', {
+    success_url,
+    pubkey,
+    message,
+  })
   saveState(
     ActionType.SignMsg,
     JSON.stringify({ message, redPacket, password, address, pin, question }),
@@ -125,11 +130,15 @@ const _redPacketSign = (
 }
 Sea.cancleSign = (data, message) => {
   const host = process.env.UNIPASS_URL
-  const successUrl = encodeURIComponent(new URL(window.location.href).href)
-  const failUrl = encodeURIComponent(new URL(window.location.href).href)
   const pubkey = getPubkey()
   if (!pubkey) return
-  const _url = `${host}?success_url=${successUrl}&fail_url=${failUrl}&pubkey=${pubkey}&message=${message}/#sign`
+  // eslint-disable-next-line camelcase
+  const success_url = new URL(window.location.href).href
+  const _url = generateUnipassUrl(host, 'sign', {
+    success_url,
+    pubkey,
+    message,
+  })
   saveState(ActionType.CancelSignMsg, JSON.stringify(data))
   console.log(_url)
   window.location.href = _url

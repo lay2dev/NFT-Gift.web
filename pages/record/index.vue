@@ -196,8 +196,6 @@ export default {
         value: new Address(this.address, AddressType.ckb).toLockScript().args,
       })
       this.init()
-    } else {
-      this.$router.replace(Sea.lang + '/')
     }
   },
   methods: {
@@ -254,7 +252,7 @@ export default {
       this.records = res
     },
     bindShare(e) {
-      this.$router.push(Sea.lang + `/share/${e.short}/`)
+      this.$router.push(`/share/${e.short}/`)
     },
     async postData(data) {
       const res = await Sea.Ajax({

@@ -117,7 +117,6 @@ export default {
       provider: null,
       loading: false,
       question: this.$route.query.q || '',
-      lang: this.$route.params.lang,
       // 领取记录
       recoder: null,
       showAsset: false,
@@ -169,10 +168,10 @@ export default {
       return this.$t(`gift.${key}`)
     },
     bindWallet() {
-      window.location.href = process.env.UNIPASS_URL + '/home'
+      window.location.href = process.env.ADSHBOARD_URL
     },
     bindCreate() {
-      this.$router.push(Sea.lang + '/create/')
+      this.$router.push('/create/')
     },
     init() {
       if (!this.provider) {

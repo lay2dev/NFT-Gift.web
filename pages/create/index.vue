@@ -164,7 +164,7 @@ export default {
       return this.$t(`create.${key}`)
     },
     bindRecord() {
-      this.$router.push(Sea.lang + '/record/')
+      this.$router.push('/record/')
     },
     bindNumber(event) {
       this.number = event.target.value.replace(/[^\d]/g, '')
@@ -236,7 +236,7 @@ export default {
         if (data.question) {
           url = `/share/${res.short}/?q=${encodeURIComponent(data.question)}`
         }
-        this.$router.push(Sea.lang + url)
+        this.$router.push(url)
       } else {
         this.$message.error(this.$t('requestFailed'))
       }

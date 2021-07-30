@@ -215,7 +215,7 @@ export default {
       this.$router.replace(Sea.lang + '/')
     },
     bindCheckAll(checkAll, i) {
-      if (checkAll.children.length > 1) return
+      // if (checkAll.children.length > 1) return
       const all = this.nftList[i].children.map((e) => e.tokenId)
       this.nftList[i].checked = checkAll ? all : []
       // checkAll

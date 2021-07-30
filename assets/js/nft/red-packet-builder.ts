@@ -7,6 +7,7 @@ import {
   RawTransaction,
   Transaction,
   CellDep,
+  AmountUnit,
 } from '@lay2/pw-core'
 
 // change all cell's lock and provide fee by self own expense
@@ -16,6 +17,7 @@ export class RedPacketBuilder extends Builder {
     private cells: Cell[],
     protected options: BuilderOption = {},
     private cellDeps: CellDep[],
+    private ticket?: boolean,
     private since: string = '0x0',
   ) {
     super(options.feeRate, options.collector, options.witnessArgs)
@@ -44,7 +46,14 @@ export class RedPacketBuilder extends Builder {
       rawTx.inputs[i].since = this.since
     }
     const tx = new Transaction(rawTx, [this.witnessArgs])
-    this.fee = Builder.calcFee(tx, this.feeRate)
+    if (this.ticket) {
+      this.fee = Builder.calcFee(tx, this.feeRate).add(
+        new Amount('1000', AmountUnit.shannon),
+      )
+    } else {
+      this.fee = Builder.calcFee(tx, this.feeRate)
+    }
+
     // this.fee = new Amount('10000', AmountUnit.shannon);
     const changeCell = tx.raw.outputs.pop() as Cell
     changeCell.capacity = changeCell.capacity.sub(this.fee)

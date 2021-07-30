@@ -9,13 +9,16 @@ export class RedPacketProvider extends Provider {
     private exchangeKey: CryptoKey,
     private exchangePubkey: string,
     private localAuthInfo: string,
+    private ticket?: boolean,
   ) {
     super(Platform.ckb)
     const addressStr = getAddressByPubkey(masterPubkey)
     this.address = new Address(addressStr, AddressType.ckb)
-    console.log('[address-provider]', this.address)
-    this.masterAuth =
-      masterPubkey.replace('0x', '') + this.masterAuth.replace('0x', '')
+    console.log('[address-provider]', this.address, this.address.toLockScript())
+    if (!ticket) {
+      this.masterAuth =
+        masterPubkey.replace('0x', '') + this.masterAuth.replace('0x', '')
+    }
   }
   // eslint-disable-next-line
   async init(): Promise<Provider> {

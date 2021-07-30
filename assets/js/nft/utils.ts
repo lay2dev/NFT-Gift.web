@@ -76,6 +76,8 @@ export async function decryptMasterKey(
   const binaryDerString = window.atob(pemContents)
   // convert from a binary string to an ArrayBuffer
   const binaryDer = str2ab(binaryDerString)
+  console.log('binaryDer', binaryDer)
+  console.log('window.crypto.subtle', window.crypto.subtle)
 
   return await window.crypto.subtle.importKey(
     'pkcs8',
@@ -106,6 +108,7 @@ function ab2str(buf: ArrayBuffer) {
  */
 export async function generateKey(salt: string, password?: string) {
   // create RSA key
+  console.log(window.crypto.subtle)
   const key = await window.crypto.subtle.generateKey(
     {
       name: 'RSASSA-PKCS1-v1_5',

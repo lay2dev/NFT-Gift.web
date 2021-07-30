@@ -30,6 +30,7 @@ export async function redPacketTransfer(
   localAuthInfo: string,
   toAddress: string,
   outpoints: OutPoint[],
+  ticket?: boolean,
 ) {
   const provider = new RedPacketProvider(
     masterPubkey,
@@ -38,11 +39,13 @@ export async function redPacketTransfer(
     exchangeKey,
     exchangePubkey,
     localAuthInfo,
+    ticket,
   )
 
   const fromAddress = getAddressByPubkey(masterPubkey)
   console.log('fromAddress', fromAddress)
-  console.log('[outpoints]', JSON.stringify(outpoints), outpoints.length)
+  console.log('masterPubkey', masterPubkey)
+  console.log('[outpoints]', outpoints.length)
   const cells = await getCellsByOutpoints(outpoints)
 
   console.log('[cells]', cells)
@@ -57,6 +60,7 @@ export async function redPacketTransfer(
       output_type: '',
     },
   }
+  console.log('options', options)
   const cellDeps = await getCellDeps()
   console.log('[celldeps]', cellDeps)
   try {
@@ -65,11 +69,12 @@ export async function redPacketTransfer(
       inputCells,
       options,
       cellDeps,
+      ticket,
     )
     const signer = new UnipassSigner([provider])
     const tx = await builder.build()
     const txData = transformers.TransformTransaction(await signer.sign(tx))
-    console.log('txData', txData)
+    console.log('txData', JSON.stringify(txData))
     return JSON.stringify(txData)
   } catch (err) {
     console.log(err)

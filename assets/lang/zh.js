@@ -59,6 +59,8 @@ module.exports = {
     check2: '请填写红包谜题',
     check3: '请填写红包谜底',
     check4: '请填写红包口令',
+    // error
+    SignFail: '签名失败',
   },
   share: {
     password: {

@@ -59,6 +59,8 @@ module.exports = {
     check2: 'Please fill in the riddle',
     check3: 'Please fill in the answer',
     check4: 'Please fill in the command',
+    // error
+    SignFail: 'Sign Fail',
   },
   share: {
     password: {

@@ -1,5 +1,5 @@
 <template>
-  <div id="page-gift" :class="lang">
+  <div id="page-gift">
     <div class="email">{{ provider && provider._email }}</div>
     <img class="top-bg" src="~/assets/img/top-bg.png" />
     <template v-if="status === 'success'">
@@ -168,7 +168,7 @@ export default {
       return this.$t(`gift.${key}`)
     },
     bindWallet() {
-      window.location.href = process.env.ADSHBOARD_URL
+      window.location.href = process.env.UNIPASS_URL
     },
     bindCreate() {
       this.$router.push('/create/')
@@ -179,7 +179,7 @@ export default {
         return
       }
       this.$nextTick(() => {
-        this.getRecoder()
+        // this.getRecoder()
         this.getStatus({
           address: 'do_not_need_address',
           password: getKeyPassword('do_not_need_password'),
@@ -401,6 +401,7 @@ export default {
     align-items: flex-end;
     justify-content: center;
     width: 100%;
+    margin-top: 80px;
     margin-bottom: 40px;
 
     .balance {

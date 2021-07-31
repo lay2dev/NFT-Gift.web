@@ -1,5 +1,5 @@
 <template>
-  <div id="page-gift" :class="lang">
+  <div id="page-gift">
     <img class="top-bg" src="~/assets/img/top-bg.png" />
 
     <template v-if="status === 'success'">

@@ -54,7 +54,7 @@ export async function getCellDeps(): Promise<CellDep[]> {
       args: '0x',
     },
     {
-      codeHash: process.env.NFT_TOKEN_TYPEID,
+      codeHash: process.env.NFT_TYPE_ID,
       hashType: 'type',
       args: '0x',
     },

@@ -152,7 +152,7 @@ export default {
 
     if (data) {
       if (data.info) {
-        this.$message.warning(data.info)
+        this.$message.warning(this.t_('SignFail'))
       } else {
         await this.postData(data)
       }

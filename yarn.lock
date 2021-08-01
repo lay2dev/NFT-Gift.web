@@ -3915,7 +3915,7 @@ compressible@~2.0.16:
 
 compression-webpack-plugin@^6.1.1:
   version "6.1.1"
-  resolved "https://registry.npmjs.org/compression-webpack-plugin/-/compression-webpack-plugin-6.1.1.tgz#ae8e4b2ffdb7396bb776e66918d751a20d8ccf0e"
+  resolved "https://mirrors.tencent.com/npm/compression-webpack-plugin/-/compression-webpack-plugin-6.1.1.tgz#ae8e4b2ffdb7396bb776e66918d751a20d8ccf0e"
   integrity sha512-BEHft9M6lwOqVIQFMS/YJGmeCYXVOakC5KzQk05TFpMBlODByh1qNsZCWjUBxCQhUP9x0WfGidxTbGkjbWO/TQ==
   dependencies:
     cacache "^15.0.5"
@@ -4836,6 +4836,11 @@ dot-prop@^5.2.0:
   integrity sha512-QM8q3zDe58hqUqjraQOmzZ1LIH9SWQJTlEKCH4kJ2oQvLZk7RbQXvtDM2XEq3fwkV9CCvvH4LA0AV+ogFsBM2Q==
   dependencies:
     is-obj "^2.0.0"
+
+dotenv@^10.0.0:
+  version "10.0.0"
+  resolved "https://mirrors.tencent.com/npm/dotenv/-/dotenv-10.0.0.tgz#3d4227b8fb95f81096cdd2b66653fb2c7085ba81"
+  integrity sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==
 
 dotenv@^8.1.0:
   version "8.6.0"
@@ -8870,7 +8875,7 @@ number-to-bn@1.7.0:
 
 nuxt-compress@^5.0.0:
   version "5.0.0"
-  resolved "https://registry.npmjs.org/nuxt-compress/-/nuxt-compress-5.0.0.tgz#386e40804351cb41222f6078c83b3572b5e049f1"
+  resolved "https://mirrors.tencent.com/npm/nuxt-compress/-/nuxt-compress-5.0.0.tgz#386e40804351cb41222f6078c83b3572b5e049f1"
   integrity sha512-KxsYzgRTMJhqQfGfgLbam0gOTw8GtmrhJhQjUfcShCmBpVaL2sFM6urOKW3I/fIx+aRvF9uE0FZCFviF1TLZww==
   dependencies:
     compression-webpack-plugin "^6.1.1"
@@ -12868,13 +12873,13 @@ vue-hot-reload-api@^2.3.0:
   integrity sha512-BXq3jwIagosjgNVae6tkHzzIk6a8MHFtzAdwhnV5VlvPTFxDCvIttgSiHWjdGoTJvXtmRu5HacExfdarRcFhog==
 
 vue-i18n@^8.24.5:
-  version "8.24.5"
-  resolved "https://registry.npmjs.org/vue-i18n/-/vue-i18n-8.24.5.tgz#7127a666d5be2199be69be39e439a419a90ff931"
-  integrity sha512-p8W5xOmniuZ8fj76VXe0vBL3bRWVU87jHuC/v8VwmhKVH2iMQsKnheB1U+umxDBqC/5g9K+NwzokepcLxnBAVQ==
+  version "8.25.0"
+  resolved "https://mirrors.tencent.com/npm/vue-i18n/-/vue-i18n-8.25.0.tgz#1037d9295fa2845a230b771de473481edb2cfc4c"
+  integrity sha512-ynhcL+PmTxuuSE1T10htiSXzjBozxYIE3ffbM1RfgAkVbr/v1SP+9Mi/7/uv8ZVV1yGuKjFAYp9BXq+X7op6MQ==
 
 vue-infinite-loading@^2.4.5:
   version "2.4.5"
-  resolved "https://registry.npmjs.org/vue-infinite-loading/-/vue-infinite-loading-2.4.5.tgz#cc20fd40af7f20188006443c99b60470cf1de1b3"
+  resolved "https://mirrors.tencent.com/npm/vue-infinite-loading/-/vue-infinite-loading-2.4.5.tgz#cc20fd40af7f20188006443c99b60470cf1de1b3"
   integrity sha512-xhq95Mxun060bRnsOoLE2Be6BR7jYwuC89kDe18+GmCLVrRA/dU0jrGb12Xu6NjmKs+iTW0AA6saSEmEW4cR7g==
 
 vue-loader@^15.9.7:

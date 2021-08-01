@@ -4,11 +4,15 @@
 
 <script>
 export default {
-  name: 'Error',
-  data() {
-    return {}
+  created() {
+    // fix route lang bug
+    const fullPath = this.$route.fullPath
+    for (const lang of ['/en', '/zh']) {
+      if (fullPath.startsWith(lang)) {
+        this.$router.replace(fullPath.slice(lang.length))
+      }
+    }
   },
-  methods: {},
 }
 </script>
 <style lang="stylus">

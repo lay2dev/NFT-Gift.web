@@ -302,7 +302,7 @@ export default {
 <style lang="stylus">
 #page-gift {
   margin: 0 auto;
-  max-width: 475px;
+  max-width: 500px;
   position: relative;
   background: #F35543;
   min-height: 100vh;

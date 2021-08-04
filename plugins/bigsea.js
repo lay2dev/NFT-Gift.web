@@ -56,7 +56,7 @@ Sea.SaveDataByUrl = () => {
   let action = ActionType.Init
   if (pageState) action = pageState.action
   console.log('pageState', pageState)
-  if (action === ActionType.Init) {
+  if (action === ActionType.Init || action === ActionType.Login) {
     const info = getDataFromUrl(ActionType.Login)
     return info
   } else if (action === ActionType.SignMsg) {

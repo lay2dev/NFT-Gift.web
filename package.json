@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "nuxt",
+    "start": "nuxt -open",
     "build": "nuxt generate",
     "preview": "node preview.js",
     "publish": "nuxt generate&&node bin/publish-cdn.js",

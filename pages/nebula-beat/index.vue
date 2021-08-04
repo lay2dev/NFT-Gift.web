@@ -4,11 +4,27 @@
       <el-image
         class="background"
         fit="cover"
-        :src="require('~/assets/img/cyber/background.jpg')"
+        :src="require('~/assets/img/ticket/background.png')"
+      />
+      <el-image
+        v-show="state === ''"
+        class="get"
+        :src="require('~/assets/img/ticket/get-wait.png')"
+      />
+      <el-image
+        v-show="state === 'success'"
+        class="get"
+        :src="require('~/assets/img/ticket/get-success.png')"
+      />
+      <el-image
+        v-show="state === 'fail'"
+        class="get"
+        :src="require('~/assets/img/ticket/get-already.png')"
       />
       <div class="bottom">
         <div class="btn-box" @click="bindGet">
-          <div class="btn">{{ btnText }}</div>
+          <el-image :src="require('~/assets/img/ticket/btn.svg')" />
+          <div class="txt">{{ btnText }}</div>
         </div>
       </div>
     </main>
@@ -20,33 +36,15 @@ import Ticket from '~/pages/ticket/ticket.js'
 
 export default {
   mixins: [Ticket],
-  computed: {
-    btnText() {
-      if (this.state === 'success') {
-        return '查看已领 NFT'
-      } else if (this.state === 'fail') {
-        return '查看本次活动更多信息'
-      } else {
-        return '登录并领取 NFT'
-      }
-    },
-  },
   methods: {
     bindSuccess() {
       if (this.state) {
         Sea.open(process.env.UNIPASS_URL, true)
-      } else {
-        this.$message.success('领取成功')
       }
     },
     bindFail() {
       if (this.state) {
-        Sea.open(
-          'https://chainsights.chaindd.com/cryptoart/#/?t1628057961424',
-          true,
-        )
-      } else {
-        this.$message.error('NFT 已被领走')
+        Sea.open(process.env.UNIPASS_URL, true)
       }
     },
   },

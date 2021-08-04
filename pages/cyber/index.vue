@@ -5,8 +5,8 @@
       fit="cover"
       :src="require('~/assets/img/cyber/background.jpg')"
     />
-    <div class="btn-box" @click="bindGet">
-      <div class="btn" type="primary">{{ btnText }}</div>
+    <div class="btn-box">
+      <div class="btn" type="primary" @click="bindGet">{{ btnText }}</div>
     </div>
   </div>
 </template>
@@ -84,7 +84,7 @@ export default {
       justify-content: center;
       align-items: center;
       font-size: 16px;
-      border-radius: 4px;
+      border-radius: 8px;
       padding: 9px 20px;
       background: rgba(68 143 202, 1);
       color: white;

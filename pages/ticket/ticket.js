@@ -21,8 +21,14 @@ export default {
   },
   created() {
     // login
+    const query = this.$route.query
     const info = Sea.SaveDataByUrl()
-    if (info) this.$message.warning(info)
+    if (info) {
+      this.$message.warning(info)
+    } else if (query.unipass_ret) {
+      // 登陆后自动领取
+      this.bindGet()
+    }
     // check
     this.check()
   },

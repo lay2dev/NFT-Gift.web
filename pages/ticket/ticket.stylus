@@ -1,3 +1,11 @@
+.el-message {
+	min-width: 300px !important;
+}
+
+.el-message-box {
+	width: 300px !important;
+}
+
 #page-ticket {
 	display: flex;
 	align-items: center;
@@ -6,7 +14,7 @@
 
 	> main {
 		width: 100%;
-		max-width: 375px;
+		max-width: 420px;
 		position: relative;
 		background: #EEE;
 		height: 812px;

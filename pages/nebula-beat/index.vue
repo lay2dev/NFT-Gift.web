@@ -1,5 +1,5 @@
 <template>
-  <div id="page-cyber">
+  <div id="page-ticket-1">
     <el-image
       class="background"
       fit="cover"
@@ -8,19 +8,22 @@
     <div class="btn-box">
       <div class="btn" type="primary" @click="bindGet">{{ btnText }}</div>
     </div>
+    <Support />
   </div>
 </template>
 <script>
 import Ticket from '~/pages/ticket/ticket.js'
+import Support from '~/components/support.vue'
 
 export default {
+  components: [Support],
   mixins: [Ticket],
   computed: {
     btnText() {
       if (this.state === 'success') {
         return '查看已领 NFT'
       } else if (this.state === 'fail') {
-        return '领取 NFT'
+        return '查看本次活动更多信息'
       } else {
         return '登录并领取 NFT'
       }
@@ -35,18 +38,25 @@ export default {
       }
     },
     bindFail() {
-      this.$message.error('NFT 已被领走')
+      if (this.state) {
+        Sea.open(
+          'https://chainsights.chaindd.com/cryptoart/#/?t1628057961424',
+          true,
+        )
+      } else {
+        this.$message.error('NFT 已被领走')
+      }
     },
   },
 }
 </script>
 <style lang="stylus">
-#page-cyber {
+#page-ticket-1 {
   margin: 0 auto;
   max-width: 500px;
+  min-height: 100vh;
   position: relative;
   background: #EEE;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -83,9 +93,9 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 16px;
+      font-size: 20px;
       border-radius: 8px;
-      padding: 9px 20px;
+      padding: 12px 30px;
       background: rgba(68 143 202, 1);
       color: white;
     }
@@ -93,12 +103,6 @@ export default {
     .btn:hover {
       background: rgba(68 143 202, 0.8);
     }
-  }
-}
-
-@media (min-width: 500px) {
-  #page-ticket {
-    min-height: 667px;
   }
 }
 </style>

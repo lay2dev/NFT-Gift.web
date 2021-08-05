@@ -131,7 +131,7 @@ export default {
         if (res.status === -1) {
           this.$message.error('NFT 已经被领完')
         } else if (res.status === -2) {
-          this.$message.error('地址有误')
+          this.$message.error('此链接无效')
         } else if (res.status === -3) {
           this.bindFail()
           this.state = 'fail' // 你已经领过这个红包了

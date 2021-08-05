@@ -115,6 +115,6 @@ export default {
   // server
   server: {
     // host: '0.0.0.0',
-    port: 6001,
+    port: 5001,
   },
 }

@@ -50,6 +50,11 @@
 				font-weight: bold;
 				user-select: none;
 
+				.el-image {
+					width: 298px;
+					height: 55px;
+				}
+
 				.txt {
 					position: absolute;
 					width: 100%;

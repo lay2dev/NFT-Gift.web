@@ -39,13 +39,31 @@ export default {
   methods: {
     bindSuccess() {
       if (this.state) {
-        Sea.open(process.env.UNIPASS_URL, true)
+        // 这样就跳到 /home
+        this.open(process.env.MIBAO_URL + '/unipass?action=login')
       }
     },
     bindFail() {
       if (this.state) {
-        Sea.open(process.env.UNIPASS_URL, true)
+        // 这样就跳到 /explore
+        this.open(
+          process.env.MIBAO_URL + '/unipass?action=login&redirect=/explore',
+        )
       }
+    },
+    open(openUrl) {
+      const provider = Sea.localStorage('provider')
+      const ret = {
+        code: 200,
+        info: 'login success',
+        data: {
+          email: provider._email,
+          pubkey: provider._pubkey,
+        },
+      }
+      const url = new URL(openUrl)
+      url.searchParams.set('unipass_ret', JSON.stringify(ret))
+      window.location.replace(url.href)
     },
   },
 }

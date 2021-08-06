@@ -3048,6 +3048,11 @@ bignumber.js@^9.0.0:
   resolved "https://mirrors.tencent.com/npm/bignumber.js/-/bignumber.js-9.0.1.tgz#8d7ba124c882bfd8e43260c67475518d0689e4e5"
   integrity sha512-IdZR9mh6ahOBv/hYGiXyVuyCetmGJhtYkqLBpTStdhEGjegpPlUawydyaF3pbIOFynJTpllEs+NP+CS9jKFLjA==
 
+bigsea@^2.2.5:
+  version "2.2.5"
+  resolved "https://mirrors.tencent.com/npm/bigsea/-/bigsea-2.2.5.tgz#af129041a90da5dabb75635e4ddbcffe5adb69b6"
+  integrity sha512-kHr7ifPxdexzd4Pqs1J9vv7QLWu4yNXLqXALnikTGe2C7n/cpap7U+Iqj2kgGPVF2rV+8CnGDH92+8PSayEE/Q==
+
 binary-extensions@^1.0.0:
   version "1.13.1"
   resolved "https://mirrors.tencent.com/npm/binary-extensions/-/binary-extensions-1.13.1.tgz#598afe54755b2868a5330d2aff9d4ebb53209b65"

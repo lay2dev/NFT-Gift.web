@@ -125,9 +125,7 @@ export default {
         })
         if (res.short) {
           this.showDialog = false
-          this.$router.push(
-            Sea.lang + `/share/${res.short}/?p=${this.password}`,
-          )
+          this.$router.push(`/share/${res.short}/?p=${this.password}`)
         } else {
           this.$message.error(`${this.$t('requestFailed')}`)
         }

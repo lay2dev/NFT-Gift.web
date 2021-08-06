@@ -146,7 +146,7 @@ export default {
       this.provider = provider
       this.init()
     } else {
-      this.$router.replace(Sea.lang + '/')
+      this.$router.replace('/')
     }
   },
   methods: {
@@ -210,10 +210,6 @@ export default {
       this.nftItem = nft
       this.showAsset = true
     },
-    bindExit() {
-      Sea.localStorage('provider', '')
-      this.$router.replace(Sea.lang + '/')
-    },
     bindCheckAll(checkAll, i) {
       // if (checkAll.children.length > 1) return
       const all = this.nftList[i].children.map((e) => e.tokenId)
@@ -265,7 +261,8 @@ export default {
 
 #create-select {
   .page-title {
-    margin-top: 8px;
+    padding-top: 8px;
+    margin-bottom: 10px;
     font-size: 16px;
     text-align: center;
     color: rgba(16, 16, 16, 100);
@@ -352,7 +349,7 @@ export default {
           }
 
           .nft-one.is-checked {
-            background: #F35543;
+            background: var(--primary);
 
             .el-checkbox__input.is-checked + .el-checkbox__label {
               color: #FFF;
@@ -364,14 +361,15 @@ export default {
 
     .not-found {
       text-align: center;
+      max-width: 300px;
       font-weight: 300;
       font-size: 16px;
-      margin: 10px;
+      margin: 10px auto;
     }
   }
 
   .check-box {
-    position: fixed;
+    position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
@@ -408,7 +406,7 @@ export default {
     }
 
     .ok {
-      background: #F35543;
+      background: var(--primary);
     }
   }
 }

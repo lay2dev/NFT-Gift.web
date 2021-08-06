@@ -1,4 +1,4 @@
-import '~/assets/js/bigsea'
+import 'bigsea'
 import dayjs from 'dayjs'
 import PWCore, { ChainID } from '@lay2/pw-core'
 import { getPacketRandomList } from 'assets/js/nft/utils'

@@ -227,9 +227,6 @@ export function pubkeyToAddress(pubkey: string): string {
     .digest()
     .serializeJson()
     .slice(0, 42)
-  // const isLina = localStorage.getItem('lina')
-  // const isTest = localStorage.getItem('test')
-  // const script: Script
   const script = new Script(
     process.env.UNIPASS_TYPE_ID as string,
     hashHex,

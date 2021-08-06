@@ -317,7 +317,8 @@ export default {
 <style lang="stylus">
 #page-record {
   .page-title {
-    margin-top: 8px;
+    padding-top: 10px;
+    margin-bottom: 8px;
     font-size: 16px;
     text-align: center;
     color: rgba(16, 16, 16, 100);
@@ -327,9 +328,10 @@ export default {
 
   .not-found {
     text-align: center;
+    max-width: 300px;
     font-weight: 300;
     font-size: 16px;
-    margin: 10px;
+    margin: 10px auto;
   }
 
   .records {

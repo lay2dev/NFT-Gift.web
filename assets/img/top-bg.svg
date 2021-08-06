@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="377px" height="125px" viewBox="0 0 377 125" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组</title>
+    <g id="0727红包/内页" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="red-packet/英文" transform="translate(1.000000, 0.000000)" fill="#F33B3D">
+            <g id="编组" transform="translate(-0.005796, 0.000000)">
+                <path d="M375.005796,0 L375.010407,79.0473119 C324.437016,106.479185 259.207749,123 188.005796,123 C116.332805,123 50.7117868,106.259874 -0.000595744208,78.5014527 L0.00579597279,0 L375.005796,0 Z" id="形状结合"></path>
+                <path d="M375.016798,79.5458592 C324.443407,106.977732 259.214141,123.498547 188.012188,123.498547 C116.339196,123.498547 50.7181785,106.758422 0.00579597279,79" id="路径" stroke="#FFD874" stroke-width="1.8"></path>
+            </g>
+        </g>
+    </g>
+</svg>

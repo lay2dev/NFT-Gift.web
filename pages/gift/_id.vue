@@ -1,7 +1,11 @@
 <template>
   <div id="page-gift">
-    <div class="email">{{ provider && provider._email }}</div>
-    <img class="top-bg" src="~/assets/img/top-bg.png" />
+    <div class="top-bg">
+      <img src="~/assets/img/top-bg.svg" />
+      <div class="email">
+        <span>{{ provider && provider._email }}</span>
+      </div>
+    </div>
     <template v-if="status === 'success'">
       <div class="success">
         <div class="t1">{{ t_('success.t1') }}</div>
@@ -302,37 +306,59 @@ export default {
 <style lang="stylus">
 #page-gift {
   margin: 0 auto;
-  max-width: 500px;
+  max-width: 480px;
   position: relative;
-  background: #F35543;
+  // background: var(--primary);
+  background: #FF6453;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  .email {
-    position: absolute;
-    top: 16px;
-    text-align: center;
-    color: #f88d6e;
-  }
-
   .top-bg {
+    position: relative;
+    user-select: none;
     width: 100%;
+
+    img {
+      width: 100%;
+    }
+
+    .email {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 100%;
+      width: 100%;
+      text-align: center;
+      font-weight: bold;
+      color: #FFD874;
+      line-height: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      span {
+        margin-bottom: 4px;
+      }
+    }
   }
 
   .success, .fail {
-    color: #ffe2b0;
+    color: #fff;
     padding: 0 20px;
-    font-size: 20px;
     text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 36px;
 
     .t1 {
-      margin-top: 40px;
+      margin-top: 58px;
     }
 
     .t2 {
-      margin-top: 28px;
       margin-bottom: 40px;
     }
   }

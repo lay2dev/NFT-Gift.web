@@ -1,5 +1,7 @@
 <template>
-  <Nuxt />
+  <div id="unipass">
+    <Nuxt />
+  </div>
 </template>
 <script>
 export default {
@@ -8,6 +10,15 @@ export default {
     this.$i18n.locale = lang
   },
   mounted() {
+    const lang = navigator.language.startsWith('zh') ? 'zh' : 'en'
+    const list = ['zh', 'en']
+    for (const s of list) {
+      if (s === lang) {
+        document.body.classList.add(s)
+      } else {
+        document.body.classList.remove(s)
+      }
+    }
     // Ajax default param
     // Sea.Ajax.default = function () {}
     // Ajax fail

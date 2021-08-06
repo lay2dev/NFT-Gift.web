@@ -46,7 +46,7 @@
         </template>
         <div class="password">
           <el-input
-            v-model="password"
+            v-model.trim="password"
             :placeholder="
               question ? t_('question.placeholder') : t_('password.placeholder')
             "

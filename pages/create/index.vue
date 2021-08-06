@@ -91,7 +91,7 @@
             <span>{{ t_('passwordTip') }}</span>
             <input
               ref="password"
-              v-model="password"
+              v-model.trim="password"
               type="text"
               :placeholder="t_('password')"
               @focus="$refs.password.select()"
@@ -110,7 +110,7 @@
             <span>{{ t_('answerTip') }}</span>
             <input
               ref="answer"
-              v-model="password"
+              v-model.trim="password"
               type="text"
               :placeholder="t_('answer')"
               @focus="$refs.answer.select()"

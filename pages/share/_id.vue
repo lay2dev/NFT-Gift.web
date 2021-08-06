@@ -99,7 +99,7 @@ export default {
         width: 260,
         margin: 1,
         color: {
-          dark: '#F35543FF',
+          dark: '#FF6453FF',
           light: '#FFE2B0FF',
         },
       })

@@ -82,6 +82,7 @@ module.exports = {
     command: 'command',
   },
   gift: {
+    account: 'Current Account',
     success: {
       t1: 'Congratulations!',
       t2: 'You have successfully snatched a NFT red packet',

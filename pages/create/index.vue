@@ -454,7 +454,7 @@ export default {
             }
 
             .nft-one.is-checked {
-              background: #F35543;
+              background: var(--primary);
 
               .el-checkbox__input.is-checked + .el-checkbox__label {
                 color: #FFF;
@@ -467,7 +467,7 @@ export default {
       .nft-total {
         margin-top: 10px;
         align-self: flex-end;
-        color: #F35543;
+        color: var(--primary);
         font-size: 14px;
       }
     }

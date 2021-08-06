@@ -82,6 +82,7 @@ module.exports = {
     command: '红包口令',
   },
   gift: {
+    account: '当前账号',
     success: {
       t1: '恭喜您',
       t2: '成功领取到一个NFT红包',

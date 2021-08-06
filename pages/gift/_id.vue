@@ -1,9 +1,11 @@
 <template>
   <div id="page-gift">
+    <img class="unipass-bg" src="~/assets/img/unipass-bg.svg" />
     <div class="top-bg">
       <img src="~/assets/img/top-bg.svg" />
-      <div class="email">
-        <span>{{ provider && provider._email }}</span>
+      <div v-if="provider && provider._email" class="email">
+        <span>{{ t_('account') }}</span>
+        <span>{{ provider._email }}</span>
       </div>
     </div>
     <template v-if="status === 'success'">
@@ -59,18 +61,18 @@
       <div class="btns">
         <div class="balance" @click="bindWallet">
           <img :src="require('~/assets/img/gift-open-wallet.svg')" />
-          <div>{{ t_('open') }}</div>
+          <span>{{ t_('open') }}</span>
         </div>
         <div class="balance nft" @click="bindCreate">
           <img :src="require('~/assets/img/gift-create-redpacket.svg')" />
-          <div>{{ t_('send') }}</div>
+          <span>{{ t_('send') }}</span>
         </div>
       </div>
       <div v-if="recoder" class="recoder">
-        <div class="sender">
+        <div class="sender1">
           {{ address(recoder.senderAddress) }} {{ t_('recoder.who') }}
         </div>
-        <span>
+        <span class="sender2">
           {{ t_('recoder.t1') }} {{ recoder.picked }} {{ t_('recoder.t2') }}
           {{ recoder.packetNum - recoder.picked }} {{ t_('recoder.t3') }}
           {{ recoder.nftNum }} {{ t_('recoder.t4') }}
@@ -88,7 +90,6 @@
                 class="nft"
                 @click="bindNFT(nft)"
               >
-                <!-- <span class="name">{{ nft.name }}</span> -->
                 <img class="renderer" :src="nft.renderer" />
               </div>
             </div>
@@ -183,7 +184,7 @@ export default {
         return
       }
       this.$nextTick(() => {
-        // this.getRecoder()
+        this.getRecoder()
         this.getStatus({
           address: 'do_not_need_address',
           password: getKeyPassword('do_not_need_password'),
@@ -274,6 +275,7 @@ export default {
         })
         if (tx) {
           this.status = 'success'
+          this.this.getRecoder()
         } else {
           this.status = 'fail'
           // 交易无效
@@ -308,16 +310,22 @@ export default {
   margin: 0 auto;
   max-width: 480px;
   position: relative;
-  // background: var(--primary);
-  background: #FF6453;
+  background: var(--primary);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: hidden;
+
+  .unipass-bg {
+    position: absolute;
+    top: 143px;
+    right: -31px;
+  }
 
   .top-bg {
+    z-index: 1;
     position: relative;
-    user-select: none;
     width: 100%;
 
     img {
@@ -339,6 +347,7 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
 
       span {
         margin-bottom: 4px;
@@ -347,6 +356,7 @@ export default {
   }
 
   .success, .fail {
+    z-index: 1;
     color: #fff;
     padding: 0 20px;
     text-align: center;
@@ -357,41 +367,48 @@ export default {
     .t1 {
       margin-top: 58px;
     }
-
-    .t2 {
-      margin-bottom: 40px;
-    }
   }
 
   .recoder {
-    border-top: 1px dashed #000;
+    z-index: 1;
     width: 100%;
     text-align: center;
-    padding: 20px;
+    padding: 0 20px;
+    color: #fff;
 
-    .sender {
-      font-weight: bold;
-      margin-bottom: 20px;
+    .sender1 {
+      font-size: 14px;
+      line-height: 20px;
+      color: rgba(255, 255, 255, 0.29);
+    }
+
+    .sender2 {
+      font-size: 12px;
+      line-height: 20px;
+      color: rgba(255, 255, 255, 0.29);
     }
 
     .packets {
-      margin-top: 20px;
-      border-bottom: 1px dashed #000;
+      margin-top: 40px;
 
       .packet {
-        border-top: 1px dashed #000;
-        padding: 4px 0;
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        margin-bottom: 30px;
 
         .left {
           text-align: left;
           flex-shrink: 0;
 
-          .date {
-            color: #000;
+          .address {
             font-size: 14px;
+            font-weight: bold;
+          }
+
+          .date {
+            margin-top: 6px;
+            font-size: 12px;
+            font-weight: 400;
           }
         }
 
@@ -408,13 +425,13 @@ export default {
             margin-bottom: 4px;
 
             img.renderer {
-              background: #ffe2b0;
-              border-radius: 4px;
+              border: 1px solid rgba(255, 255, 255, 0.29);
+              border-radius: 12px;
               margin-left: 8px;
               object-fit: cover;
               overflow: hidden;
-              width: 30px;
-              height: 30px;
+              width: 38px;
+              height: 38px;
             }
           }
         }
@@ -423,27 +440,41 @@ export default {
   }
 
   .btns {
+    z-index: 1;
     display: flex;
     align-items: flex-end;
     justify-content: center;
     width: 100%;
-    margin-top: 80px;
-    margin-bottom: 40px;
+    margin-top: 60px;
+    margin-bottom: 60px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #FFF;
+    line-height: 20px;
 
     .balance {
+      font-size: 12px;
       cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
       img {
-        width: 55px;
-        height: 55px;
+        width: 66px;
+        height: 66px;
       }
 
-      text-align: center;
-      color: #000;
+      span {
+        margin-top: 6px;
+      }
+    }
+
+    .balance:hover {
+      color: rgba(0, 0, 0, 0.89);
     }
 
     .balance.nft {
-      margin-left: 55px;
+      margin-left: 98px;
     }
   }
 
@@ -503,9 +534,12 @@ export default {
   }
 }
 
-#page-gift.zh {
-  .success, .fail {
-    letter-spacing: 6px;
+body.zh {
+  #page-gift {
+    .success, .fail {
+      letter-spacing: 2px;
+      font-weight: 500;
+    }
   }
 }
 </style>

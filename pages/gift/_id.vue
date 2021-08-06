@@ -1,5 +1,8 @@
 <template>
   <div id="page-gift">
+    <div v-if="unipassLoading" id="unipass-loading">
+      <span class="loader"></span>
+    </div>
     <img class="unipass-bg" src="~/assets/img/unipass-bg.svg" />
     <div class="top-bg">
       <img src="~/assets/img/top-bg.svg" />
@@ -68,7 +71,7 @@
           <span>{{ t_('send') }}</span>
         </div>
       </div>
-      <div v-if="recoder" class="recoder">
+      <div v-if="recoder && statusCode !== -2" class="recoder">
         <div class="sender1">
           {{ address(recoder.senderAddress) }} {{ t_('recoder.who') }}
         </div>
@@ -116,6 +119,7 @@ export default {
   },
   data() {
     return {
+      unipassLoading: true,
       status: '',
       statusCode: null,
       password: '',
@@ -164,6 +168,7 @@ export default {
       return end
     },
     address(address) {
+      address = address || ''
       if (address.includes('@')) return address
       const start = address.slice(0, 3)
       const end = address.slice(-3)
@@ -183,12 +188,13 @@ export default {
         this.bindLogin(true)
         return
       }
-      this.$nextTick(() => {
+      this.$nextTick(async () => {
         this.getRecoder()
-        this.getStatus({
+        await this.getStatus({
           address: 'do_not_need_address',
           password: getKeyPassword('do_not_need_password'),
         })
+        this.unipassLoading = false
       })
     },
     bindGet() {

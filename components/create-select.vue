@@ -23,11 +23,9 @@
           <template v-for="(e, i) in nftListFilter">
             <div :key="i" class="nft">
               <div class="nft-info" @click="bindCheckAll(e, i)">
-                <el-image
+                <img
                   class="nft-image"
                   :src="`${e.renderer}?x-oss-process=image/resize,h_100,m_lfit`"
-                  fit="cover"
-                  lazy
                 />
                 <div class="info">
                   <div class="name">
@@ -282,6 +280,7 @@ export default {
 
       .nft {
         .nft-info {
+          object-fit: cover;
           width: 100%;
           padding: 16px 8px 16px 22px;
           cursor: pointer;

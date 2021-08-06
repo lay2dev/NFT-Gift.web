@@ -106,7 +106,9 @@ export function getDataFromUrl(action: number) {
         _email: unipassData.data.email,
         _pubkey: unipassData.data.pubkey,
       }
-      saveData(PROVIDER, JSON.stringify(provider))
+      if (action === ActionType.Init || ActionType.Login) {
+        saveData(PROVIDER, JSON.stringify(provider))
+      }
     }
   } else {
     info = unipassData.info

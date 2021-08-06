@@ -275,7 +275,7 @@ export default {
         })
         if (tx) {
           this.status = 'success'
-          this.this.getRecoder()
+          this.getRecoder()
         } else {
           this.status = 'fail'
           // 交易无效
@@ -298,7 +298,7 @@ export default {
         }
       } else {
         // 登录失败
-        this.$message.warning(this.t_('tip3'))
+        // this.$message.warning(this.t_('tip3'))
       }
       this.loading = false
     },
@@ -479,6 +479,8 @@ export default {
   }
 
   .get {
+    z-index: 1;
+
     .t1, .t2 {
       color: #fff;
       font-size: 28px;

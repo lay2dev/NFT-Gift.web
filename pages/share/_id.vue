@@ -128,7 +128,6 @@ export default {
     flex-direction: column;
     align-items: center;
     position: relative;
-    padding: 0 10px;
 
     .canvas {
       position: absolute;
@@ -152,6 +151,10 @@ export default {
 
     .top-bg {
       width: 100%;
+    }
+
+    .t1, .t2, .t3, .password, .t4 {
+      padding: 0 10px;
     }
 
     .t1 {

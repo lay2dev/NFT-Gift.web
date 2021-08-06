@@ -193,7 +193,7 @@ export default {
       this.$nextTick(async () => {
         this.getRecoder()
         await this.getStatus({
-          address: 'do_not_need_address',
+          address: this.provider._address.addressString,
           password: getKeyPassword('do_not_need_password'),
         })
         this.unipassLoading = false
@@ -238,9 +238,7 @@ export default {
       return res
     },
     async getRedPacketData({ address, password }) {
-      const loading = this.$loading({
-        lock: true,
-      })
+      this.unipassLoading = true
       let res
       res = await this.getStatus({ address, password })
       if (res.success) {
@@ -294,7 +292,7 @@ export default {
         this.$message.error(this.t_('tip2'))
       }
       this.loading = false
-      loading.close()
+      this.unipassLoading = false
     },
     async bindLogin(init) {
       this.loading = true

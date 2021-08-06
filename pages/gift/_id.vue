@@ -73,12 +73,14 @@
       </div>
       <div v-if="recoder && statusCode !== -2" class="recoder">
         <div class="sender1">
-          {{ address(recoder.senderAddress) }} {{ t_('recoder.who') }}
+          {{ t_('recoder.form') }} {{ address(recoder.senderAddress) }}
+          {{ t_('recoder.who') }}
         </div>
         <span class="sender2">
-          {{ t_('recoder.t1') }} {{ recoder.picked }} {{ t_('recoder.t2') }}
-          {{ recoder.packetNum - recoder.picked }} {{ t_('recoder.t3') }}
-          {{ recoder.nftNum }} {{ t_('recoder.t4') }}
+          {{ t_('recoder.t1') }} {{ recoder.packets.length }}
+          {{ t_('recoder.t2') }}
+          {{ recoder.packetNum - recoder.packets.length }}
+          {{ t_('recoder.t3') }} {{ recoder.nftNum }} {{ t_('recoder.t4') }}
         </span>
         <div class="packets">
           <div v-for="(e, i) in recoder.packets" :key="i" class="packet">
@@ -405,6 +407,7 @@ export default {
         .left {
           text-align: left;
           flex-shrink: 0;
+          width: 150px;
 
           .address {
             font-size: 14px;

@@ -94,7 +94,7 @@ module.exports = {
       },
       code2: {
         t1: '404',
-        t2: 'Something wrong with the red packet',
+        t2: 'Something wrong with the link',
       },
       code1: {
         t1: 'Sorry',
@@ -112,15 +112,14 @@ module.exports = {
       placeholder: 'Enter the command',
     },
     btn: 'Claim',
-    open: 'Open wallet',
+    open: 'Check assets',
     send: 'Create red packet',
     tip1: 'Transaction is invalid',
     tip2: 'Wrong password',
     tip3: 'Login failed',
-    // ckt...465 shared NFT
-    // x packets claimed, x packets left, total x NFT
     recoder: {
-      who: 'shared NFT',
+      form: 'Share form',
+      who: '',
       t1: '',
       t2: 'packets claimed,',
       t3: 'packets left, total',

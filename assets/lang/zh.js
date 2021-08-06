@@ -90,15 +90,15 @@ module.exports = {
     fail: {
       code3: {
         t1: '抱歉',
-        t2: '你已经领过这个红包了',
+        t2: '您已经领过这个红包了',
       },
       code2: {
         t1: '404',
         t2: 'NFT红包地址有误',
       },
       code1: {
-        t1: '抱歉',
-        t2: 'NFT红包已经被抢完了',
+        t1: '对不起',
+        t2: '所有的NFT红包都被抢完了',
       },
     },
     question: {
@@ -112,13 +112,14 @@ module.exports = {
       placeholder: '输口令，领NFT',
     },
     btn: '立 即 领 取',
-    open: '打开钱包',
+    open: '查看资产页',
     send: '发同款红包',
     tip1: '交易无效',
     tip2: '红包口令错误',
     tip3: '登录失败',
     recoder: {
-      who: '的 NFT 红包',
+      form: '来自',
+      who: '的分享',
       t1: '已领',
       t2: '个红包，还剩',
       t3: '个红包，共',

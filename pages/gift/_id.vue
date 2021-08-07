@@ -5,7 +5,7 @@
     </div>
     <img class="unipass-bg" src="~/assets/img/unipass-bg.svg" />
     <div class="top-bg">
-      <img src="~/assets/img/top-bg.svg" />
+      <img src="~/assets/img/top-bg.png" />
       <div v-if="provider && provider._email" class="email">
         <span>{{ t_('account') }}</span>
         <span>{{ provider._email }}</span>

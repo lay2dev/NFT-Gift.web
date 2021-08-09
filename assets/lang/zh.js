@@ -115,6 +115,7 @@ module.exports = {
     open: '查看资产页',
     send: '发同款红包',
     wechat: '关注公众号',
+    wechatScan: '扫一扫关注微信公众号',
     tip1: '交易无效',
     tip2: '红包口令错误',
     tip3: '登录失败',

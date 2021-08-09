@@ -63,15 +63,15 @@
     <template v-if="status === 'success' || status === 'fail'">
       <div class="btns">
         <div class="balance" @click="bindWallet">
-          <img :src="require('~/assets/img/gift-open-wallet.svg')" />
+          <img src="~/assets/img/gift-open-wallet.svg" />
           <span>{{ t_('open') }}</span>
         </div>
         <div class="balance nft" @click="bindCreate">
-          <img :src="require('~/assets/img/gift-create-redpacket.svg')" />
+          <img src="~/assets/img/gift-create-redpacket.svg" />
           <span>{{ t_('send') }}</span>
         </div>
-        <div v-if="isWexin" class="balance nft" @click="bindWechat">
-          <img :src="require('~/assets/img/gift-create-wechat.svg')" />
+        <div class="balance nft" @click="bindWechat">
+          <img src="~/assets/img/gift-create-wechat.svg" />
           <span>{{ t_('wechat') }}</span>
         </div>
       </div>
@@ -107,6 +107,16 @@
       </div>
     </template>
     <mine-asset :show.sync="showAsset" :nft="nftItem" />
+    <el-dialog
+      class="dialog-qrcode-wechat"
+      center
+      width="225px"
+      :show-close="false"
+      :visible.sync="showWechat"
+    >
+      <img class="qrcode" src="~/assets/img/qrcode-wechat.png" />
+      <span>{{ t_('wechatScan') }}</span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -136,12 +146,14 @@ export default {
       recoder: null,
       showAsset: false,
       nftItem: {},
+      // wecaht
+      showWechat: true,
     }
   },
   computed: {
-    isWexin() {
-      return navigator.userAgent.toLowerCase().includes('micromessenger')
-    },
+    // isWexin() {
+    //   return navigator.userAgent.toLowerCase().includes('micromessenger')
+    // },
     giftPassword() {
       // 大小写不敏感
       return this.password.toLowerCase() || 'unipass'
@@ -193,7 +205,7 @@ export default {
       this.$router.push('/create/')
     },
     bindWechat() {
-      window.location = 'https://weixin.qq.com/r/2BGdhRbEcEsPrVLm90TK'
+      this.showWechat = true
     },
     init() {
       if (!this.provider) {
@@ -322,6 +334,35 @@ export default {
 }
 </script>
 <style lang="stylus">
+.dialog-qrcode-wechat {
+  .el-dialog {
+    border-radius: 8px;
+
+    .el-dialog__header {
+      padding: 0;
+    }
+
+    .el-dialog__body {
+      word-break: break-word;
+      text-align: center;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+
+      .qrcode {
+        border: 2px dashed #aaa;
+        width: 100%;
+      }
+
+      span {
+        margin-top: 16px;
+      }
+    }
+  }
+}
+
 #page-gift {
   margin: 0 auto;
   max-width: 480px;

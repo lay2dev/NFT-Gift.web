@@ -114,6 +114,7 @@ module.exports = {
     btn: '立 即 领 取',
     open: '查看资产页',
     send: '发同款红包',
+    wechat: '关注公众号',
     tip1: '交易无效',
     tip2: '红包口令错误',
     tip3: '登录失败',

@@ -114,6 +114,7 @@ module.exports = {
     btn: 'Claim',
     open: 'Check assets',
     send: 'Create red packet',
+    wechat: 'Follow Wechat',
     tip1: 'Transaction is invalid',
     tip2: 'Wrong password',
     tip3: 'Login failed',

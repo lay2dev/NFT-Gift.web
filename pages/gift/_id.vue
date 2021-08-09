@@ -70,6 +70,10 @@
           <img :src="require('~/assets/img/gift-create-redpacket.svg')" />
           <span>{{ t_('send') }}</span>
         </div>
+        <div v-if="isWexin" class="balance nft" @click="bindWechat">
+          <img :src="require('~/assets/img/gift-create-wechat.svg')" />
+          <span>{{ t_('wechat') }}</span>
+        </div>
       </div>
       <div v-if="recoder && statusCode !== -2" class="recoder">
         <div class="sender1">
@@ -135,6 +139,9 @@ export default {
     }
   },
   computed: {
+    isWexin() {
+      return navigator.userAgent.toLowerCase().includes('micromessenger')
+    },
     giftPassword() {
       // 大小写不敏感
       return this.password.toLowerCase() || 'unipass'
@@ -184,6 +191,9 @@ export default {
     },
     bindCreate() {
       this.$router.push('/create/')
+    },
+    bindWechat() {
+      window.location = 'https://weixin.qq.com/r/2BGdhRbEcEsPrVLm90TK'
     },
     init() {
       if (!this.provider) {
@@ -450,7 +460,8 @@ export default {
     z-index: 1;
     display: flex;
     align-items: flex-end;
-    justify-content: center;
+    justify-content: space-around;
+    padding: 0 26px;
     width: 100%;
     margin-top: 60px;
     margin-bottom: 60px;
@@ -478,10 +489,6 @@ export default {
 
     .balance:hover {
       color: rgba(0, 0, 0, 0.89);
-    }
-
-    .balance.nft {
-      margin-left: 98px;
     }
   }
 

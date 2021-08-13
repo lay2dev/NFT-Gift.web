@@ -115,6 +115,7 @@ module.exports = {
     open: 'Check assets',
     send: 'Create red packet',
     wechat: 'Follow Wechat',
+    wechatTitle: 'UniPass Wechat',
     wechatScan: 'Follow the Wechat official account',
     tip1: 'Transaction is invalid',
     tip2: 'Wrong password',

@@ -107,16 +107,7 @@
       </div>
     </template>
     <mine-asset :show.sync="showAsset" :nft="nftItem" />
-    <el-dialog
-      class="dialog-qrcode-wechat"
-      center
-      width="225px"
-      :show-close="false"
-      :visible.sync="showWechat"
-    >
-      <img class="qrcode" src="~/assets/img/qrcode-wechat.png" />
-      <span>{{ t_('wechatScan') }}</span>
-    </el-dialog>
+    <follow-wechat :show.sync="showWechat" />
   </div>
 </template>
 <script>
@@ -125,6 +116,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { getKeyPassword, decryptMasterKey } from '~/assets/js/nft/utils'
 import { redPacketTransfer } from '~/assets/js/nft/transfer'
 import MineAsset from '~/components/mine-asset.vue'
+import FollowWechat from '~/components/follow-wechat.vue'
 import 'dayjs/locale/zh-cn'
 dayjs.locale('zh-cn')
 dayjs.extend(relativeTime)
@@ -132,6 +124,7 @@ dayjs.extend(relativeTime)
 export default {
   components: {
     MineAsset,
+    FollowWechat,
   },
   data() {
     return {
@@ -147,13 +140,10 @@ export default {
       showAsset: false,
       nftItem: {},
       // wecaht
-      showWechat: true,
+      showWechat: false,
     }
   },
   computed: {
-    // isWexin() {
-    //   return navigator.userAgent.toLowerCase().includes('micromessenger')
-    // },
     giftPassword() {
       // 大小写不敏感
       return this.password.toLowerCase() || 'unipass'
@@ -334,35 +324,6 @@ export default {
 }
 </script>
 <style lang="stylus">
-.dialog-qrcode-wechat {
-  .el-dialog {
-    border-radius: 8px;
-
-    .el-dialog__header {
-      padding: 0;
-    }
-
-    .el-dialog__body {
-      word-break: break-word;
-      text-align: center;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-
-      .qrcode {
-        border: 2px dashed #aaa;
-        width: 100%;
-      }
-
-      span {
-        margin-top: 16px;
-      }
-    }
-  }
-}
-
 #page-gift {
   margin: 0 auto;
   max-width: 480px;

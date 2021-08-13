@@ -1,5 +1,5 @@
-import path from 'path'
-import fs from 'fs'
+// import path from 'path'
+// import fs from 'fs'
 export default {
   ssr: false,
   // Target: https://go.nuxtjs.dev/config-target
@@ -17,13 +17,7 @@ export default {
       },
       { hid: 'description', name: 'description', content: '' },
     ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      {
-        ref: 'stylesheet',
-        href: 'https://cdn.jsdelivr.net/npm/normalize.css@latest/normalize.min.css',
-      },
-    ],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     script: [
       // { src: '' },
     ],
@@ -116,11 +110,11 @@ export default {
 
   // server
   server: {
-    host: '0.0.0.0',
+    // host: '0.0.0.0',
     port: 5001,
-    https: {
-      key: fs.readFileSync(path.resolve(__dirname, 'bin/cert.key')),
-      cert: fs.readFileSync(path.resolve(__dirname, 'bin/cert.crt')),
-    },
+    // https: {
+    //   key: fs.readFileSync(path.resolve(__dirname, 'bin/cert.key')),
+    //   cert: fs.readFileSync(path.resolve(__dirname, 'bin/cert.crt')),
+    // },
   },
 }

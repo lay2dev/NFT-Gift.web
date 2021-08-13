@@ -7,7 +7,7 @@
 export default {
   created() {
     const lang = navigator.language.startsWith('zh') ? 'zh' : 'en'
-    this.$i18n.locale = lang
+    this.$i18n.locale = 'en'
   },
   mounted() {
     const lang = navigator.language.startsWith('zh') ? 'zh' : 'en'

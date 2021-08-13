@@ -1,4 +1,10 @@
 module.exports = {
+  components: {
+    wechat: {
+      title: 'UniPass 公众号',
+      scan: '微信扫一扫关注公众号',
+    },
+  },
   home: {
     lang: '中文',
     exit: '退出登录',
@@ -115,8 +121,6 @@ module.exports = {
     open: '查看资产页',
     send: '发同款红包',
     wechat: '关注公众号',
-    wechatTitle: 'UniPass 公众号',
-    wechatScan: '微信扫一扫关注公众号',
     tip1: '交易无效',
     tip2: '红包口令错误',
     tip3: '登录失败',

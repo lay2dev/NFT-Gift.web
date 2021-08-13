@@ -6,10 +6,11 @@
     width="350px"
     :show-close="false"
     :visible.sync="showDialog"
+    append-to-body
   >
-    <div class="title">{{ t_('wechatTitle') }}</div>
+    <div class="title">{{ t_('title') }}</div>
     <img class="qrcode" src="~/assets/img/qrcode-wechat-400.png" />
-    <div class="tip">{{ t_('wechatScan') }}</div>
+    <div class="tip">{{ t_('scan') }}</div>
   </el-dialog>
 </template>
 <script>
@@ -29,7 +30,7 @@ export default {
   },
   methods: {
     t_(key) {
-      return this.$t(`gift.${key}`)
+      return this.$t(`components.wechat.${key}`)
     },
   },
 }

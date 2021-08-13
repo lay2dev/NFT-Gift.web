@@ -5,13 +5,14 @@
 </template>
 <script>
 export default {
-  created() {
-    const lang = navigator.language.startsWith('zh') ? 'zh' : 'en'
-    this.$i18n.locale = 'en'
-  },
   mounted() {
-    const lang = navigator.language.startsWith('zh') ? 'zh' : 'en'
     const list = ['zh', 'en']
+    let lang = navigator.language.startsWith('zh') ? 'zh' : 'en'
+    const query = this.$route.query
+    if (list.includes(query.lang)) {
+      lang = query.lang
+    }
+    this.$i18n.locale = lang
     for (const s of list) {
       if (s === lang) {
         document.body.classList.add(s)

@@ -24,10 +24,7 @@
           <template v-for="(e, i) in nfts">
             <div v-if="e.checked.length" :key="i" class="nft">
               <div class="nft-info">
-                <img
-                  class="nft-image"
-                  :src="`${e.renderer}?x-oss-process=image/resize,h_100,m_lfit`"
-                />
+                <imgs class="nft-image" :h="100" :src="e.renderer" />
                 <div class="info">
                   <div class="name">
                     {{ e.name }}
@@ -394,6 +391,7 @@ export default {
             margin-right: 6px;
 
             .nft-image {
+              display: flex;
               object-fit: cover;
               background: #eee;
               height: 50px;

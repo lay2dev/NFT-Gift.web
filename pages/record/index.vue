@@ -36,9 +36,7 @@
               {{ e.packetNum }} {{ t_('redPacket') }} {{ e.nftNum }} NFT
             </div>
           </template>
-          <div class="date">
-            {{ dayjs(e.createdAt).format(t_('date')) }}
-          </div>
+          <div class="date">{{ formatDate(e) }}</div>
           <div class="state">
             {{
               e.direction === 'in'
@@ -130,9 +128,7 @@
             <div v-for="(packet, i2) in e.packets" :key="i2" class="packet">
               <div class="nfts">
                 <div v-for="(nft, i3) in packet.nfts" :key="i3" class="nft">
-                  <img
-                    :src="`${nft.renderer}?x-oss-process=image/resize,h_50,m_lfit`"
-                  />
+                  <imgs :h="50" :src="nft.renderer" />
                   <div class="nft-title" :title="nft.name">
                     {{ nft.name }}
                   </div>
@@ -201,6 +197,13 @@ export default {
   methods: {
     t_(key) {
       return this.$t(`record.${key}`)
+    },
+    formatDate(e) {
+      let date = e.createdAt
+      if (e.direction === 'in' && e.packets[0]) {
+        date = e.packets[0].receivedAt
+      }
+      return dayjs(date).format(this.t_('date'))
     },
     async bindLoad($state) {
       this.page += 1
@@ -375,7 +378,7 @@ export default {
         width: 100%;
         color: #aaa;
 
-        img {
+        > img {
           width: 16px;
           height: 16px;
         }
@@ -465,7 +468,7 @@ export default {
                 display: flex;
                 align-items: center;
 
-                img {
+                .imgs {
                   width: 24px;
                   height: 24px;
                   border-radius: 4px;

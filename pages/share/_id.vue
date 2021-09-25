@@ -2,7 +2,8 @@
   <div id="page-share">
     <back />
     <div id="red-box" ref="red-box" v-loading="loading">
-      <img class="top-bg" src="~/assets/img/top-bg.png" @load="bindLoad" />
+      <!-- <img class="top-bg" src="~/assets/img/top-bg.png" @load="bindLoad" /> -->
+      <div class="top-bg"></div>
       <template v-if="question">
         <div class="t1">{{ t_('question.t1') }}</div>
         <div class="t2">{{ t_('question.t2') }}</div>
@@ -151,6 +152,10 @@ export default {
 
     .top-bg {
       width: 100%;
+      height: 102px;
+      background: #f33b3d;
+      border-radius: 0px 0px 60% 60%;
+      border-bottom: 2px solid #ffd874;
     }
 
     .t1, .t2, .t3, .password, .t4 {

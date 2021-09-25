@@ -31,7 +31,7 @@
 <script>
 // https://segmentfault.com/a/1190000011478657
 import QRCode from 'qrcode'
-import html2canvas from 'html2canvas'
+import * as htmltoimage from "html-to-image"
 export default {
   data() {
     return {
@@ -51,23 +51,21 @@ export default {
       this.shareUrl += `?q=${encodeURIComponent(this.question)}`
     }
     this.initQRCode()
+    this.bindLoad()
   },
   methods: {
     t_(key) {
       return this.$t(`share.${key}`)
     },
     bindLoad() {
-      this.$nextTick(() => {
-        const redBox = this.$refs['red-box']
-        html2canvas(redBox, {
-          useCORS: true,
-        }).then((canvas) => {
-          if (canvas && canvas.getContext) {
-            const png = canvas.toDataURL('image/png')
-            this.png = png
-          }
+      setTimeout(() => {
+        this.$nextTick(() => {
+          const redBox = this.$refs['red-box']
+          htmltoimage.toPng(redBox, { pixelRatio: 3 }).then((dataUrl) => {
+            this.png = dataUrl
+          })
         })
-      })
+      }, 800)
     },
     bindShare() {
       let v = `${this.t_('copiedContent4Cmd')}${this.shareUrl}`

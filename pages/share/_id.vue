@@ -31,7 +31,7 @@
 <script>
 // https://segmentfault.com/a/1190000011478657
 import QRCode from 'qrcode'
-import * as htmltoimage from "html-to-image"
+import * as htmltoimage from 'html-to-image'
 export default {
   data() {
     return {
@@ -51,7 +51,6 @@ export default {
       this.shareUrl += `?q=${encodeURIComponent(this.question)}`
     }
     this.initQRCode()
-    this.bindLoad()
   },
   methods: {
     t_(key) {
@@ -104,6 +103,7 @@ export default {
       })
       this.QRCode = url
       this.loading = false
+      this.bindLoad()
     },
   },
 }
